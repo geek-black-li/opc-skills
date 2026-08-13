@@ -1,0 +1,101 @@
+# 通用业务 Skill 模板。
+# skill-creator 会复制此文件、替换 {{...}} 占位符，并写入
+# skills-custom/<category>/<skill-id>/skill.yaml。模板本身不被 manifest 扫描。
+schema_version: "1.0"
+id: "{{skill_id}}"
+name: "{{skill_name}}"
+version: "1.0.0"
+description: "{{skill_description}}"
+category: "{{category}}"
+origin: custom
+status: active
+
+triggers:
+  intents:
+    - "{{primary_trigger}}"
+  keywords:
+    - "{{keyword}}"
+
+input_schema:
+  type: object
+  properties:
+    context:
+      type: string
+      description: "执行当前 Skill 所需的项目背景、目标和已知约束。"
+    artifacts:
+      type: array
+      description: "需要读取或处理的文件、目录、链接或文本材料。"
+      items:
+        type: string
+    requirements:
+      type: array
+      description: "必须满足的具体要求和验收条件。"
+      items:
+        type: string
+  required:
+    - context
+  additionalProperties: true
+
+output_schema:
+  type: object
+  properties:
+    summary:
+      type: string
+      description: "结果摘要。"
+    deliverables:
+      type: array
+      description: "已生成或已更新的交付物。"
+      items:
+        type: string
+    validation:
+      type: array
+      description: "验证动作、证据和结果。"
+      items:
+        type: string
+    follow_ups:
+      type: array
+      description: "尚需用户处理或后续执行的事项；没有则为空数组。"
+      items:
+        type: string
+  required:
+    - summary
+    - deliverables
+    - validation
+  additionalProperties: false
+
+constraints:
+  - "仅在用户授权的项目和文件范围内执行。"
+  - "先读取现有上下文与约束，保留无关的用户修改。"
+  - "不编造缺失事实；信息不足且会实质影响结果时明确指出。"
+  - "对写入、发布、删除和外部通信等操作遵守最小权限与确认边界。"
+  - "完成前按任务风险执行可复现验证，并报告实际证据。"
+
+prompt: |-
+  你正在执行“{{skill_name}}”。
+
+  目标：
+  {{goal}}
+
+  执行步骤：
+  1. 读取输入中的 context、artifacts、requirements，以及项目内适用的约束文件。
+  2. 明确范围、依赖、风险和可验证的完成条件；仅在必要时提出问题。
+  3. 按以下领域流程执行：
+     {{workflow}}
+  4. 保留用户已有工作，不修改任务范围外的文件或外部状态。
+  5. 执行与风险相称的验证；失败时报告真实状态，不宣称完成。
+  6. 严格按 output_schema 返回 summary、deliverables、validation 和 follow_ups。
+
+  质量标准：
+  {{quality_criteria}}
+
+metadata:
+  author: "{{author}}"
+  created_at: "{{created_at}}"
+  updated_at: "{{updated_at}}"
+  tags:
+    - "{{tag}}"
+  source:
+    type: original
+    reference: ""
+    license: ""
+    checksum: ""

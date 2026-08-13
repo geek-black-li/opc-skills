@@ -1,0 +1,220 @@
+schema_version: "1.0"
+id: skill-import-external
+name: "导入第三方 Skill"
+version: "1.0.0"
+description: "接收第三方 Skill 文本、本地包或下载链接，将其隔离到 temp-inbox，完成来源、用途、兼容性、安全和许可评估，并仅在用户确认后处理入库或丢弃。"
+category: system
+origin: builtin
+status: active
+
+triggers:
+  intents:
+    - "导入网络第三方 Skill"
+    - "评估下载的 Skill 是否可以入库"
+    - "把外部 Skill 暂存后确认原样或改造入库"
+  keywords:
+    - skill-import-external
+    - 导入第三方skill
+    - 外部skill评估
+    - temp-inbox
+
+input_schema:
+  type: object
+  properties:
+    repository_root:
+      type: string
+      description: "ZXSkills 仓库根目录；未提供时从当前路径向上查找 skill-manifest.yaml。"
+    action:
+      type: string
+      description: "stage 仅暂存评估；其余动作必须引用已暂存条目并带明确确认。"
+      enum:
+        - stage
+        - approve-original
+        - approve-customized
+        - discard
+    source:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+            - text
+            - local-path
+            - url
+        value:
+          type: string
+          description: "Skill 文本、本地文件或目录路径、HTTPS 下载链接。"
+        expected_ref:
+          type: string
+          description: "可选的版本、提交号、标签或期望哈希。"
+      required:
+        - type
+        - value
+      additionalProperties: false
+    inbox_id:
+      type: string
+      description: "已暂存条目的目录名；approve/discard 时必填。"
+    target_category:
+      type: string
+      enum:
+        - 01-product
+        - 02-ui-design
+        - 03-fullstack-arch-dev
+        - 04-test-quality
+        - 05-ops-release
+        - 06-project-manage
+    confirmation:
+      type: object
+      properties:
+        confirmed:
+          type: boolean
+          const: true
+        action:
+          type: string
+          enum:
+            - approve-original
+            - approve-customized
+            - discard
+        inbox_id:
+          type: string
+      required:
+        - confirmed
+        - action
+        - inbox_id
+      additionalProperties: false
+    customization_request:
+      type: string
+      description: "approve-customized 时说明要保留、修改和删除的行为。"
+  required:
+    - action
+  additionalProperties: false
+
+output_schema:
+  type: object
+  properties:
+    result:
+      type: string
+      enum:
+        - staged-awaiting-confirmation
+        - approved-original
+        - approved-customized
+        - discarded
+        - blocked
+        - validation-failed
+    inbox_id:
+      type: string
+    source_record:
+      type: object
+    risk_assessment:
+      type: object
+      properties:
+        overall:
+          type: string
+          enum:
+            - low
+            - medium
+            - high
+            - unknown
+        findings:
+          type: array
+          items:
+            type: string
+        compatibility:
+          type: array
+          items:
+            type: string
+        license:
+          type: string
+        recommendation:
+          type: string
+      required:
+        - overall
+        - findings
+        - compatibility
+        - license
+        - recommendation
+      additionalProperties: false
+    destination:
+      type: string
+    validation:
+      type: array
+      items:
+        type: string
+    next_actions:
+      type: array
+      items:
+        type: string
+  required:
+    - result
+    - risk_assessment
+    - validation
+    - next_actions
+  additionalProperties: false
+
+constraints:
+  - "stage 阶段只能写入 skills-temp-inbox，绝不能写入 skills-external 或 skills-custom。"
+  - "未收到与 action、inbox_id 完全匹配的 confirmation 时，禁止正式入库或删除。"
+  - "评估第三方内容时默认只做静态检查，不执行仓库代码、脚本、安装器、构建或生命周期钩子。"
+  - "网络来源只允许 HTTPS；记录最终 URL、获取时间、版本或提交号和 SHA-256。"
+  - "不得上传本地文件、凭据、环境变量或私有代码给第三方服务。"
+  - "原样入库必须保留原件、许可、来源和哈希；不得把改造版本标记为 external 原版。"
+  - "丢弃只允许删除用户确认的单个 inbox_id，不得使用宽泛路径、通配符或递归删除仓库根目录。"
+
+prompt: |-
+  你是 ZXSkills 的第三方 Skill 导入门卫。所有外部内容先隔离、后评估、再由用户明确决定。
+
+  通用准备：
+  1. 定位仓库并读取 skill-manifest.yaml 与 skills-temp-inbox/_readme.md。
+  2. action 不是 stage 时，必须验证 confirmation.confirmed=true，且 confirmation.action、
+     confirmation.inbox_id 与本次 action、inbox_id 完全一致；否则返回 blocked，不做任何写入、
+     移动或删除。
+
+  action=stage：
+  1. 要求 source。生成不可碰撞 inbox_id，格式为 YYYYMMDDTHHMMSSZ-<source-slug>-<short-hash>，
+     目标只允许 skills-temp-inbox/<inbox-id>/。
+  2. source.type=text 时原样保存文本；local-path 时只复制指定文件或目录；url 时只接受 HTTPS，
+     跟随跳转后记录最终 URL。下载内容只保存，不安装、不导入、不执行。
+  3. 在暂存目录中保存 source/ 原件和 assessment.yaml。assessment.yaml 至少记录来源类型、原始
+     定位符、最终 URL（如有）、获取时间、版本或提交号、SHA-256、检测到的文件、用途摘要、
+     许可证、兼容性、风险发现和建议分类。
+  4. 静态检查全部文本源文件和配置，重点识别：安装/卸载/构建/生命周期钩子，子进程或 shell，
+     网络请求与外传，凭据和环境变量读取，任意文件系统读写，权限提升，持久化、自更新、混淆或
+     编码载荷，动态代码执行，遥测，删除/覆盖操作，声明能力与实际行为不一致，以及许可缺失。
+     对二进制、压缩包、生成 bundle 或无法读取内容标记 unknown；不得把“未发现”表述为安全证明。
+  5. 比较仓库 portable-yaml-skill 契约和目标工具差异，评估触发字段、输入输出、资源路径、
+     工具权限和专有字段兼容性。不要在 stage 阶段生成正式可扫描 skill.yaml。
+  6. 返回 staged-awaiting-confirmation、完整 risk_assessment、inbox_id 和三种可选后续指令：
+     approve-original、approve-customized、discard。等待用户下一次明确确认。
+
+  action=approve-original：
+  1. 重新读取 assessment.yaml 和原件，确认哈希未变化、风险已展示、许可证允许保存/使用，
+     target_category 有效；高风险、未知可执行内容或许可禁止时返回 blocked。
+  2. 将完整暂存条目移动到 skills-external/<category>/<skill-id>/source/，保持原始文件字节不变。
+  3. 只有原件本身已完全符合 portable-yaml-skill 契约时，才将其副本作为该目录 skill.yaml；
+     否则生成最小 skill.yaml 适配入口，明确 origin=external，并在 metadata.source 记录来源、
+     许可证、哈希及 source/ 相对路径。适配入口不得隐瞒或扩大第三方行为。
+  4. 验证 YAML、id 唯一性、分类路径、来源记录和 manifest 可发现性，再返回 approved-original。
+
+  action=approve-customized：
+  1. 重新验证哈希、风险、许可证、target_category 和 customization_request。
+  2. 以原件为参考创建 skills-custom/<category>/<new-skill-id>/skill.yaml；深度改造后的文件
+     origin 必须为 custom，metadata.source 必须记录 fork 来源、原始哈希、许可证和修改摘要。
+     不得把暂存原件直接移动进 custom 后伪装为原创。
+  3. 使用 skill-template.yaml 契约完成改造，验证功能边界、安全约束、YAML、唯一 id 和 manifest
+     可发现性。成功后再移除对应暂存条目，并返回 approved-customized。
+
+  action=discard：
+  1. 只解析并确认 skills-temp-inbox/<inbox-id> 是真实目录，路径规范化后仍在 temp-inbox 内，
+     且不是 temp-inbox 根目录、符号链接或通配目标。
+  2. 删除该单个暂存目录，验证目标已不存在，返回 discarded 并说明不可恢复；其他条目不变。
+
+  任何阶段失败都返回真实状态和证据。禁止把下载成功、静态扫描无命中或用户仅表达兴趣视为
+  正式入库确认。
+
+metadata:
+  author: ZXSkills
+  tags:
+    - builtin
+    - external-import
+    - security-review
+    - supply-chain

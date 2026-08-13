@@ -1,0 +1,117 @@
+# ZXSkills 统一发现入口。此文件只描述可加载 Skill 的扫描规则，不逐条登记 Skill。
+manifest_version: "1.0"
+
+repository:
+  id: zxskills
+  name: "全栈 OPC 本地 Skills 仓库"
+  description: "覆盖产品、设计、研发、测试、发布和项目管理完整交付链路的本地 Skill 集合。"
+  default_language: zh-CN
+
+# 仓库采用通用 YAML 数据结构；接入工具只需将这些字段映射到自身的 Skill/Rule/Prompt 机制。
+skill_contract:
+  format: portable-yaml-skill
+  schema_version: "1.0"
+  required_fields:
+    - schema_version
+    - id
+    - name
+    - version
+    - description
+    - category
+    - origin
+    - status
+    - triggers
+    - input_schema
+    - output_schema
+    - constraints
+    - prompt
+  supported_extensions:
+    - .yaml
+    - .yml
+
+# 扫描器按顺序加载；出现重复 id 时立即报错，不允许用加载顺序静默覆盖。
+discovery:
+  duplicate_id_policy: error
+  sources:
+    - id: builtin
+      origin: builtin
+      root: builtin
+      recursive: false
+      include:
+        - "*.yaml"
+        - "*.yml"
+      exclude: []
+
+    - id: external
+      origin: external
+      root: skills-external
+      recursive: true
+      include:
+        - "**/skill.yaml"
+        - "**/skill.yml"
+      exclude:
+        - "**/source/**"
+        - "**/_readme.md"
+        - "**/.*"
+
+    - id: custom
+      origin: custom
+      root: skills-custom
+      recursive: true
+      include:
+        - "**/skill.yaml"
+        - "**/skill.yml"
+      exclude:
+        - "**/source/**"
+        - "**/references/**"
+        - "**/assets/**"
+        - "**/scripts/**"
+        - "**/_readme.md"
+        - "**/.*"
+
+  # 全局硬排除优先于任何 source 规则。temp-inbox 永远不能成为加载源。
+  global_exclude:
+    - "skills-temp-inbox/**"
+    - "skill-template.yaml"
+    - "**/_readme.md"
+    - "**/.DS_Store"
+    - "**/.git/**"
+
+categories:
+  - id: 01-product
+    name: 产品能力
+    scope: "需求调研、需求分析、产品设计、原型和产品验收。"
+  - id: 02-ui-design
+    name: UI 设计能力
+    scope: "界面设计、设计规范、交互细节、视觉交付和还原校验。"
+  - id: 03-fullstack-arch-dev
+    name: 全栈与架构能力
+    scope: "技术架构、方案设计、前后端开发、数据与系统集成。"
+  - id: 04-test-quality
+    name: 测试能力
+    scope: "测试策略、测试计划、用例、自动化、质量评估和测试报告。"
+  - id: 05-ops-release
+    name: 运维发布能力
+    scope: "环境、构建、部署、发布、回滚、监控和迭代更新。"
+  - id: 06-project-manage
+    name: 项目管理能力
+    scope: "范围、计划、进度、风险、沟通、里程碑和交付管控。"
+
+validation:
+  skill_id_pattern: "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+  version_pattern: "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+  allowed_status:
+    - active
+    - draft
+    - deprecated
+  load_status:
+    - active
+  allowed_origins:
+    - builtin
+    - external
+    - custom
+  require_unique_id: true
+  require_path_category_match_for:
+    - external
+    - custom
+  reject_unresolved_placeholders: true

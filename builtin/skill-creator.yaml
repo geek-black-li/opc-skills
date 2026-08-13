@@ -1,0 +1,158 @@
+schema_version: "1.0"
+id: skill-creator
+name: "新建 Skill"
+version: "1.0.0"
+description: "在 ZXSkills 仓库中创建新的自定义业务 Skill，并使用仓库模板、分类规则和验证约束生成可发现的 skill.yaml。"
+category: system
+origin: builtin
+status: active
+
+triggers:
+  intents:
+    - "新建一个可复用 Skill"
+    - "把通用能力沉淀为 Skill"
+    - "根据 self-improve 建议创建 Skill"
+  keywords:
+    - skill-creator
+    - 新建skill
+    - 创建skill
+    - 沉淀能力
+
+input_schema:
+  type: object
+  properties:
+    repository_root:
+      type: string
+      description: "ZXSkills 仓库根目录；未提供时从当前路径向上查找 skill-manifest.yaml。"
+    category:
+      type: string
+      description: "六个业务分类之一。"
+      enum:
+        - 01-product
+        - 02-ui-design
+        - 03-fullstack-arch-dev
+        - 04-test-quality
+        - 05-ops-release
+        - 06-project-manage
+    skill_id:
+      type: string
+      description: "小写字母、数字和横杠组成的唯一标识。"
+      pattern: "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+    name:
+      type: string
+      description: "清晰、易检索的 Skill 名称。"
+    description:
+      type: string
+      description: "说明能力和适用场景的简短描述。"
+    triggers:
+      type: object
+      description: "调用意图和关键词。"
+    goal:
+      type: string
+      description: "Skill 要稳定完成的目标。"
+    workflow:
+      type: array
+      description: "按执行顺序排列的操作步骤。"
+      items:
+        type: string
+    quality_criteria:
+      type: array
+      description: "可验证的质量和完成标准。"
+      items:
+        type: string
+    input_schema:
+      type: object
+      description: "可选的自定义输入结构；未提供时沿用模板结构。"
+    output_schema:
+      type: object
+      description: "可选的自定义输出结构；未提供时沿用模板结构。"
+    constraints:
+      type: array
+      description: "安全、权限、范围和业务约束。"
+      items:
+        type: string
+    author:
+      type: string
+      description: "作者或维护者。"
+  required:
+    - category
+    - skill_id
+    - name
+    - description
+    - goal
+    - workflow
+    - quality_criteria
+  additionalProperties: false
+
+output_schema:
+  type: object
+  properties:
+    result:
+      type: string
+      enum:
+        - created
+        - needs-input
+        - conflict
+        - validation-failed
+    skill_path:
+      type: string
+    skill_id:
+      type: string
+    category:
+      type: string
+    validation:
+      type: array
+      items:
+        type: string
+    next_actions:
+      type: array
+      items:
+        type: string
+  required:
+    - result
+    - skill_id
+    - category
+    - validation
+    - next_actions
+  additionalProperties: false
+
+constraints:
+  - "只在 skills-custom/<category>/<skill-id>/skill.yaml 创建业务 Skill。"
+  - "不得把新建业务 Skill 写入 builtin、skills-external 或 skills-temp-inbox。"
+  - "不得覆盖同名文件或重复 id；发现冲突时停止并返回 conflict。"
+  - "不得创建用户未要求的业务 Skill、脚本、参考资料或资产。"
+  - "不得留下未替换的模板占位标记。"
+  - "只修改仓库中本次创建所需的路径，保留其他文件。"
+
+prompt: |-
+  你是 ZXSkills 仓库的 Skill 创建器。把用户确认需要沉淀的通用能力写成一个可被
+  skill-manifest.yaml 发现的自定义 Skill。
+
+  执行流程：
+  1. 定位 repository_root，读取 skill-manifest.yaml、skill-template.yaml，以及目标分类的
+     skills-custom/<category>/_readme.md。若任一核心文件缺失，停止并返回 validation-failed。
+  2. 校验 category 必须属于 manifest.categories；校验 skill_id 符合 manifest 中的正则。
+  3. 递归扫描 builtin、skills-external、skills-custom 中可加载的 YAML，确认 skill_id 全局唯一；
+     不读取或加载 skills-temp-inbox 作为正式 Skill。
+  4. 检查输入是否足以形成明确触发条件、可执行 workflow 和可验证 quality_criteria。
+     缺失关键信息时返回 needs-input，并只列出会实质影响结果的问题。
+  5. 复制 skill-template.yaml 的字段结构，完整替换占位符。保持 schema_version 为 "1.0"、
+     origin 为 custom、status 为 active；版本从 "1.0.0" 开始。
+  6. 将 prompt 写成面向执行者的命令式指令，包含范围、步骤、失败处理和输出契约。
+     description 与 triggers 应覆盖用户可能使用的自然表达，但避免把项目独有细节写成通用规则。
+  7. 创建目录 skills-custom/<category>/<skill-id>/，只写入 skill.yaml。
+     仅当能力确实需要复用资源时，才在该目录增加 scripts、references 或 assets；所有资源必须
+     在 prompt 中说明何时读取或运行。
+  8. 重新解析生成的 YAML，检查必填字段、重复 id、路径与 category 一致性、残留占位符和
+     manifest 可发现性。验证失败时报告问题，不宣称创建成功。
+  9. 严格按 output_schema 返回结果、路径、校验证据和下一步。
+
+  成功条件：文件位于正确 custom 分类、YAML 可解析、id 唯一、无占位符、能被 manifest
+  的 **/skill.yaml 规则发现，且没有改动正式范围之外的文件。
+
+metadata:
+  author: ZXSkills
+  tags:
+    - builtin
+    - skill-authoring
+    - repository-management

@@ -1,0 +1,138 @@
+schema_version: "1.0"
+id: skill-editor
+name: "编辑 Skill"
+version: "1.0.0"
+description: "读取并修改 ZXSkills 仓库中的已有 Skill，在保留兼容性和来源边界的前提下更新内容、版本与验证结果。"
+category: system
+origin: builtin
+status: active
+
+triggers:
+  intents:
+    - "修改已有 Skill"
+    - "优化现有 Skill"
+    - "根据 self-improve 建议增补 Skill"
+  keywords:
+    - skill-editor
+    - 修改skill
+    - 优化skill
+    - 更新skill
+
+input_schema:
+  type: object
+  properties:
+    repository_root:
+      type: string
+      description: "ZXSkills 仓库根目录；未提供时从当前路径向上查找 skill-manifest.yaml。"
+    target:
+      type: string
+      description: "待修改 Skill 的唯一 id 或仓库相对路径。"
+    change_request:
+      type: string
+      description: "需要修改的原因、目标和验收条件。"
+    proposed_changes:
+      type: array
+      description: "可选的具体修改点，通常来自 skill-selfimprove。"
+      items:
+        type: string
+    expected_version_bump:
+      type: string
+      description: "可选的版本调整级别。"
+      enum:
+        - patch
+        - minor
+        - major
+    allow_builtin_edit:
+      type: boolean
+      description: "是否明确授权修改 builtin；默认 false。"
+      default: false
+    external_strategy:
+      type: string
+      description: "目标为第三方 Skill 时的处理方式。"
+      enum:
+        - preserve-wrapper-only
+        - fork-to-custom
+      default: preserve-wrapper-only
+  required:
+    - target
+    - change_request
+  additionalProperties: false
+
+output_schema:
+  type: object
+  properties:
+    result:
+      type: string
+      enum:
+        - updated
+        - needs-input
+        - not-found
+        - protected
+        - validation-failed
+    original_path:
+      type: string
+    updated_path:
+      type: string
+    version_before:
+      type: string
+    version_after:
+      type: string
+    changes:
+      type: array
+      items:
+        type: string
+    validation:
+      type: array
+      items:
+        type: string
+    next_actions:
+      type: array
+      items:
+        type: string
+  required:
+    - result
+    - changes
+    - validation
+    - next_actions
+  additionalProperties: false
+
+constraints:
+  - "先解析目标当前内容，再实施最小范围修改；不得用空模板覆盖已有 Skill。"
+  - "默认不得修改 builtin；只有 allow_builtin_edit=true 的明确授权才允许。"
+  - "不得修改 skills-temp-inbox；暂存 Skill 应交由 skill-import-external 处理。"
+  - "不得直接改写 skills-external 下的第三方 source 原件。"
+  - "若第三方改动会改变核心行为，必须 fork 到 skills-custom，并保留来源与修改说明。"
+  - "不得静默改变 id、category、origin 或许可信息。"
+  - "不得覆盖与本次变更无关的用户修改。"
+
+prompt: |-
+  你是 ZXSkills 仓库的 Skill 编辑器。对已有 Skill 做可追溯、最小且兼容的修改。
+
+  执行流程：
+  1. 定位仓库并读取 skill-manifest.yaml。用 target 精确查找可加载 Skill；若 id 命中多个文件，
+     视为仓库冲突并返回 validation-failed，不自行选择。
+  2. 读取完整目标文件、同目录资源和版本信息；确认 change_request 与当前行为的差距。
+  3. 应用保护规则：
+     - builtin：allow_builtin_edit 不为 true 时返回 protected。
+     - external：source/ 下原件永久只读。仅元数据、触发词或适配问题可按
+       preserve-wrapper-only 修改 skill.yaml 适配入口；任何核心行为改造都按 fork-to-custom
+       在相同 category 下创建新的 custom Skill，并使用新 id，记录原始来源。
+     - custom：在原文件上做最小修改。
+     - temp-inbox：返回 protected，并提示调用 skill-import-external。
+  4. 在不削弱既有安全约束的前提下更新 description、triggers、schema、constraints、prompt
+     或资源引用。保持所有相对路径有效。
+  5. 按语义化版本更新 version：兼容修正为 patch，向后兼容能力增加为 minor，不兼容契约变更
+     为 major。若用户提供 expected_version_bump 且与实际不符，返回 needs-input 说明冲突。
+  6. 解析全部改动后的 YAML，检查 manifest 必填字段、id 唯一性、路径分类、引用资源、残留
+     占位符以及原有触发场景是否仍可处理。验证失败时保留真实失败状态。
+  7. 严格按 output_schema 返回原路径、最终路径、版本变化、修改点、验证证据与后续事项。
+
+  编辑原则：优先修正明确问题；不顺手重写无关章节；不把个别项目的偶然做法升级为所有项目
+  的强制规则；第三方深度改造必须进入 custom，不能伪装成原版 external。
+
+metadata:
+  author: ZXSkills
+  tags:
+    - builtin
+    - skill-maintenance
+    - repository-management
