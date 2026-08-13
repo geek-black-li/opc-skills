@@ -22,6 +22,16 @@ description: Use when the user explicitly invokes ZXSkills to import or install 
   检查全仓库唯一性后再交给 creator，不要求用户整理内部命名参数。
 - 保持原样的第三方 Skill 使用 external id，不得占用 `zx-`；第三方 source 原件中的名称保持不变。
 
+## 动态分类
+
+- 优先匹配 manifest 中已有分类；名称不同不代表必须新建，按 scope 和最终交付责任判断。
+- 所有现有分类都不匹配时，生成完整 `new_category` 方案，正式编号由写入时按 `07-` 起的
+  `next-unused` 规则确定。
+- Self-Improve 和外部导入 stage 只提出建议，不创建分类。creator、external fork 或用户确认后的
+  approve-original / approve-customized 才能同步更新 manifest，并在 custom/external 两侧生成
+  分类目录与 `_readme.md`。
+- 分类注册与 Skill 写入必须作为一次操作完成；失败时只回滚本次新增内容。
+
 ## 意图路由
 
 | 用户表达 | 执行 |

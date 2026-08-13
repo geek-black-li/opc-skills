@@ -1,5 +1,5 @@
 # ZXSkills 统一发现入口。此文件只描述可加载 Skill 的扫描规则，不逐条登记 Skill。
-manifest_version: "1.1"
+manifest_version: "1.2"
 
 repository:
   id: zxskills
@@ -73,6 +73,7 @@ discovery:
   global_exclude:
     - "skills-temp-inbox/**"
     - "skill-template.yaml"
+    - "category-readme-template.md"
     - "**/_readme.md"
     - "**/.DS_Store"
     - "**/.git/**"
@@ -96,6 +97,39 @@ categories:
   - id: 06-project-manage
     name: 项目管理能力
     scope: "范围、计划、进度、风险、沟通、里程碑和交付管控。"
+
+# 01-06 是优先复用的核心交付分类。只有现有 scope 都无法合理承载时，才按此契约扩展 07+。
+category_extension:
+  enabled: true
+  reserved_core_numbers:
+    - "01"
+    - "02"
+    - "03"
+    - "04"
+    - "05"
+    - "06"
+  first_extension_number: 7
+  max_category_number: 99
+  number_policy: next-unused
+  slug_pattern: "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+  id_pattern: "^(?:0[7-9]|[1-9][0-9])-[a-z0-9]+(?:-[a-z0-9]+)*$"
+  mirrored_roots:
+    - skills-custom
+    - skills-external
+  readme_template: category-readme-template.md
+  required_proposal_fields:
+    - slug
+    - name
+    - scope
+    - includes
+    - excludes
+    - rationale
+  prefer_existing_category: true
+  forbidden_bases:
+    - customer-name
+    - project-name
+    - single-skill-title
+    - one-off-technology
 
 validation:
   skill_id_pattern: "^[a-z0-9]+(?:-[a-z0-9]+)*$"

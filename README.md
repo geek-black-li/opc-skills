@@ -1,6 +1,6 @@
 # ZXSkills：全栈 OPC 本地 Skills 仓库
 
-ZXSkills 用于沉淀一个全栈 OPC 从需求到交付全过程中的可复用 AI 执行能力。仓库按产品、UI 设计、全栈与架构、测试、运维发布、项目管理六个角色域组织，不绑定某一种编程 AI 产品。
+ZXSkills 用于沉淀一个全栈 OPC 从需求到交付全过程中的可复用 AI 执行能力。仓库以产品、UI 设计、全栈与架构、测试、运维发布、项目管理六个角色域作为核心分类；确实无法匹配时可按受控规则扩展新的业务分类。仓库不绑定某一种编程 AI 产品。
 
 仓库本身是一套 Skill 集合：AI 工具或适配器读取根目录的 [`skill-manifest.yaml`](skill-manifest.yaml)，按目录扫描规则发现 `builtin`、`skills-external` 和 `skills-custom` 中的 Skill。新增或删除业务 Skill 时不需要手工维护索引。
 
@@ -227,6 +227,7 @@ ZXSkills/
 ├── README.md
 ├── skill-manifest.yaml
 ├── skill-template.yaml
+├── category-readme-template.md
 ├── scripts/
 │   ├── install-codex.sh
 │   ├── install-codex.ps1
@@ -236,7 +237,9 @@ ZXSkills/
 │   └── codex-agents-reminder.md
 ├── tests/
 │   ├── test-configure-codex-reminder.sh
-│   └── test-configure-codex-reminder.ps1
+│   ├── test-configure-codex-reminder.ps1
+│   ├── test-dynamic-categories.py
+│   └── test-personal-namespace.py
 ├── adapters/
 │   └── codex/zx-skills/
 │       ├── SKILL.md
@@ -266,7 +269,7 @@ ZXSkills/
 
 当前仓库只提供框架、模板和四个内置工具，不预置业务 Skill。后续业务能力统一通过仓库工作流生成或导入。
 
-## 六个业务分类
+## 六个核心业务分类
 
 | 顺序 | 目录 | 存放范围 |
 | --- | --- | --- |
@@ -278,6 +281,35 @@ ZXSkills/
 | 06 | `06-project-manage` | 范围、计划、进度、风险、沟通、里程碑、交付管控 |
 
 跨域 Skill 放到“对最终交付结果负责”的主分类，其他领域通过触发词、流程步骤或约束表达。不要为了分类完整而复制多份近似 Skill。
+
+### 扩展业务分类
+
+`01–06` 是核心交付分类，应优先复用。只有逐项比较 `skill-manifest.yaml` 中所有分类的 `scope` 和目录 `_readme.md` 后，仍然没有合理归属，才允许创建扩展分类。
+
+扩展规则：
+
+- 从 `07` 到 `99` 选择当前最小未使用编号，manifest 中称为 `next-unused`；不要在分析或暂存阶段提前锁定编号。
+- 分类 id 使用 `<两位编号>-<小写英文领域>`，例如 `07-ai-data`。
+- 领域名称必须代表可持续、跨项目复用的能力边界；不得使用客户名、项目名、单个 Skill 名或一次性技术名称。
+- 必须在 `skill-manifest.yaml` 的 `categories` 中登记 `id`、`name` 和 `scope`。
+- 必须同步创建 `skills-custom/<category>/_readme.md` 和 `skills-external/<category>/_readme.md`，两份说明均由 [`category-readme-template.md`](category-readme-template.md) 生成，包含分类定位、包含范围、排除范围和 ID 规则。
+- 分类注册、两侧说明和目标 Skill 写入视为同一次操作。分类创建失败或 Skill 验证失败时，只回滚本次新增项，不删除操作前已经存在的用户文件。
+
+Self-Improve 发现没有匹配分类时只返回 `new_category` 建议，不修改仓库。第三方 Skill 在 `stage` 阶段也只把建议写入评估记录；必须等用户确认 `approve-original` 或 `approve-customized` 后，才能创建正式分类。
+
+示例：一个稳定覆盖 AI 模型评测、数据质量和数据治理的能力无法由现有六类合理负责：
+
+```text
+new_category.slug = ai-data
+  → 确认当前 07–99 中最小未使用编号为 07
+  → manifest 新增 07-ai-data
+  → 创建 skills-custom/07-ai-data/_readme.md
+  → 创建 skills-external/07-ai-data/_readme.md
+  → 写入 zx-ai-data-model-evaluation 或对应 external Skill
+  → 一并验证；任一步失败则回滚本次新增内容
+```
+
+后续同领域 Skill 直接复用 `07-ai-data`，不再为每个模型、数据集或项目继续拆分新分类。
 
 ## 三类正式 Skill 与一个隔离区
 
@@ -362,6 +394,8 @@ zx-project-risk-management
 - 全仓库 `id` 必须唯一，重复时应报错，不能静默覆盖。
 
 因此，新建业务 Skill 只需写到约定路径；删除时只需删除对应 Skill 目录。适配器重新扫描即可得到最新清单。
+
+`category_extension` 另外定义扩展分类的编号范围、`next-unused` 策略、slug/id 正则、镜像根目录和分类说明模板。它是 creator、editor fork 和确认后的第三方导入共同遵守的写入契约，不会让 manifest 扫描 `skills-temp-inbox` 或模板文件。
 
 ## 通用 Skill 文件规范
 
@@ -555,6 +589,7 @@ source:
 
 - 原始与最终 URL、获取时间、版本或提交号、SHA-256；
 - 文件列表、用途和建议分类；
+- 结构化 `category_assessment`：匹配已有分类时给出分类 id，没有匹配时给出完整 `new_category` 建议但不预分配编号；
 - 许可证与可再分发/改造边界；
 - 工具专有字段和本仓库契约的兼容性差异；
 - 网络、子进程、凭据、文件写入、持久化、自更新、动态执行、遥测、删除等风险；
@@ -656,7 +691,7 @@ confirmation:
 2. 正式 Skill 包含 manifest 声明的所有必填字段。
 3. `id` 符合格式且全局唯一。
 4. custom `id` 使用 `zx-` 前缀，external 正式适配 `id` 不占用 `zx-`。
-5. `category`、`origin` 与所在路径一致。
+5. `category`、`origin` 与所在路径一致；扩展分类已注册 manifest，并同时拥有 custom/external 两份无占位符的 `_readme.md`。
 6. 没有 `{{...}}`、`TBD`、`TODO` 等未完成占位符。
 7. external/custom Skill 使用规范文件名 `skill.yaml` 或 `skill.yml`。
 8. `skills-temp-inbox` 没有出现在任何 discovery source 中，并被全局排除。

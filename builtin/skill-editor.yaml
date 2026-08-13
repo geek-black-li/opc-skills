@@ -1,7 +1,7 @@
 schema_version: "1.0"
 id: skill-editor
 name: "编辑 Skill"
-version: "2.0.0"
+version: "2.1.0"
 description: "读取并修改 ZXSkills 仓库中的已有 Skill，在保留兼容性和来源边界的前提下更新内容、版本与验证结果。"
 category: system
 origin: builtin
@@ -53,6 +53,35 @@ input_schema:
         - preserve-wrapper-only
         - fork-to-custom
       default: preserve-wrapper-only
+    new_category:
+      type: object
+      description: "仅当 fork-to-custom 且现有分类均不匹配时使用的扩展分类方案；字段遵循 category_extension。"
+      properties:
+        slug:
+          type: string
+          pattern: "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+        name:
+          type: string
+        scope:
+          type: string
+        includes:
+          type: array
+          items:
+            type: string
+        excludes:
+          type: array
+          items:
+            type: string
+        rationale:
+          type: string
+      required:
+        - slug
+        - name
+        - scope
+        - includes
+        - excludes
+        - rationale
+      additionalProperties: false
   required:
     - target
     - change_request
@@ -117,8 +146,9 @@ prompt: |-
      - builtin：allow_builtin_edit 不为 true 时返回 protected。
      - external：source/ 下原件永久只读。仅元数据、触发词或适配问题可按
        preserve-wrapper-only 修改 skill.yaml 适配入口；任何核心行为改造都按 fork-to-custom
-       在相同 category 下创建新的 custom Skill，并使用符合 manifest.validation.custom_skill_id_pattern
-       的 zx- 新 id，记录原始来源。
+       创建新的 custom Skill。优先使用相同或其他已有分类；确实不匹配且提供完整 new_category
+       时，按 manifest.category_extension 与 mirrored_roots 执行和 creator 相同的原子化分类注册，
+       再使用符合 manifest.validation.custom_skill_id_pattern 的 zx- 新 id，记录原始来源。
      - custom：在原文件上做最小修改；现有 id 必须符合 custom_skill_id_pattern。发现不符合时
        返回 validation-failed 并建议显式迁移，不得在普通内容更新中静默改名。
      - temp-inbox：返回 protected，并提示调用 skill-import-external。
@@ -128,7 +158,9 @@ prompt: |-
      为 major。若用户提供 expected_version_bump 且与实际不符，返回 needs-input 说明冲突。
   6. 解析全部改动后的 YAML，检查 manifest 必填字段、id 唯一性、custom 的
      custom_skill_id_pattern、路径分类、引用资源、残留占位符以及原有触发场景是否仍可处理。
-     验证失败时保留真实失败状态。
+     若 fork 时新建分类，还要校验 manifest 注册、两侧 _readme.md 与 category-readme-template.md
+     完整替换。任何一步失败时回滚本次新增分类项、mirrored_roots 目录和 fork 文件，不删除已有
+     用户内容；返回 validation-failed 并说明回滚结果。
   7. 严格按 output_schema 返回原路径、最终路径、版本变化、修改点、验证证据与后续事项。
 
   编辑原则：优先修正明确问题；不顺手重写无关章节；不把个别项目的偶然做法升级为所有项目

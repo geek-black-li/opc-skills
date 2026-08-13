@@ -1,7 +1,7 @@
 schema_version: "1.0"
 id: skill-selfimprove
 name: "Skill 自我提炼分析"
-version: "2.0.0"
+version: "2.1.0"
 description: "在一个功能、需求、方案、测试或发布节点完成后，比较本次过程与 ZXSkills 现有能力，判断无需提炼、新建 Skill 或优化已有 Skill。"
 category: system
 origin: builtin
@@ -86,13 +86,37 @@ output_schema:
           properties:
             category:
               type: string
-              enum:
-                - 01-product
-                - 02-ui-design
-                - 03-fullstack-arch-dev
-                - 04-test-quality
-                - 05-ops-release
-                - 06-project-manage
+              description: "已有分类 id；没有匹配分类时为 auto。"
+              pattern: "^(?:auto|[0-9]{2}-[a-z0-9]+(?:-[a-z0-9]+)*)$"
+            new_category:
+              type: object
+              description: "仅当所有已有分类均不匹配时提供；Self-Improve 只建议，不创建分类。"
+              properties:
+                slug:
+                  type: string
+                  pattern: "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+                name:
+                  type: string
+                scope:
+                  type: string
+                includes:
+                  type: array
+                  items:
+                    type: string
+                excludes:
+                  type: array
+                  items:
+                    type: string
+                rationale:
+                  type: string
+              required:
+                - slug
+                - name
+                - scope
+                - includes
+                - excludes
+                - rationale
+              additionalProperties: false
             skill_id:
               type: string
               description: "必须使用 zx- 个人命名空间。"
@@ -204,8 +228,11 @@ prompt: |-
      可重复输入、稳定步骤、关键决策、边界条件、失败模式、验证方法与产出格式。
   2. 定位仓库，读取 skill-manifest.yaml；只按 manifest 的 builtin、external、custom 扫描规则
      检索现有 Skill。明确排除 skills-temp-inbox、模板、说明文件和第三方 source 原件。
-  3. 在六个业务分类中判断主要归属。跨域流程选择对最终交付结果负责的主分类，并把其他领域
-     作为 triggers、workflow 或 constraints 的上下文，不复制出多个重叠 Skill。
+  3. 在 manifest.categories 中判断主要归属，优先复用 01-06 核心分类及已有扩展分类。跨域流程
+     选择对最终交付结果负责的主分类，并把其他领域作为 triggers、workflow 或 constraints 的
+     上下文，不复制出多个重叠 Skill。只有逐项比较所有 scope 后仍无合理归属，才在
+     creator_parameters 中设置 category=auto 并提供完整 new_category；不得按客户名、项目名、
+     单个 Skill 或一次性技术提出分类。Self-Improve 不创建分类、不更新 manifest 或目录。
   4. 按以下标准评估复用性：
      - 是否在不同项目中会以相似输入、步骤和输出重复出现；
      - 是否包含容易遗忘但会显著影响质量、安全或效率的判断；
@@ -222,6 +249,7 @@ prompt: |-
      - create-skill：提供 conclusion、rationale、evidence、creator_parameters。creator_parameters
        必须完整包含 category、skill_id、name、description、triggers、goal、workflow、
        quality_criteria、input_schema、output_schema、constraints，可直接传给 skill-creator；
+       category=auto 时还必须包含 new_category 的 slug、name、scope、includes、excludes、rationale；
      - update-skill：提供 conclusion、rationale、evidence、editor_parameters。editor_parameters
        必须完整包含 target、change_request、proposed_changes、expected_version_bump；目标为
        external 时还必须提供 external_strategy，可直接传给 skill-editor。

@@ -34,7 +34,7 @@ if creator_skill_id.get("pattern") != CUSTOM_PATTERN:
     fail("skill-creator input does not require a zx- id")
 if "custom_skill_id_pattern" not in creator["prompt"]:
     fail("skill-creator does not validate the manifest custom id rule")
-if creator["version"] != "2.0.0":
+if creator["version"].split(".", 1)[0] != "2":
     fail("skill-creator does not declare the breaking namespace contract")
 
 self_improve = load_yaml("builtin/skill-selfimprove.yaml")

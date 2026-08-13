@@ -1,7 +1,7 @@
 schema_version: "1.0"
 id: skill-import-external
 name: "导入第三方 Skill"
-version: "2.0.0"
+version: "2.1.0"
 description: "接收第三方 Skill 文本、本地包或下载链接，将其隔离到 temp-inbox，完成来源、用途、兼容性、安全和许可评估，并仅在用户确认后处理入库或丢弃。"
 category: system
 origin: builtin
@@ -56,13 +56,37 @@ input_schema:
       description: "已暂存条目的目录名；approve/discard 时必填。"
     target_category:
       type: string
-      enum:
-        - 01-product
-        - 02-ui-design
-        - 03-fullstack-arch-dev
-        - 04-test-quality
-        - 05-ops-release
-        - 06-project-manage
+      description: "已有分类 id；确认入库且确实没有匹配分类时使用 auto。"
+      pattern: "^(?:auto|[0-9]{2}-[a-z0-9]+(?:-[a-z0-9]+)*)$"
+    new_category:
+      type: object
+      description: "确认入库时使用的扩展分类注册参数；stage 的建议从 category_assessment 返回。"
+      properties:
+        slug:
+          type: string
+          pattern: "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+        name:
+          type: string
+        scope:
+          type: string
+        includes:
+          type: array
+          items:
+            type: string
+        excludes:
+          type: array
+          items:
+            type: string
+        rationale:
+          type: string
+      required:
+        - slug
+        - name
+        - scope
+        - includes
+        - excludes
+        - rationale
+      additionalProperties: false
     confirmation:
       type: object
       properties:
@@ -105,6 +129,53 @@ output_schema:
       type: string
     source_record:
       type: object
+    category_assessment:
+      type: object
+      description: "结构化分类结果；stage 返回匹配或建议，确认操作返回最终采用的分类状态。"
+      properties:
+        result:
+          type: string
+          enum:
+            - matched-existing
+            - proposed-new
+            - confirmed-existing
+            - confirmed-new
+            - not-applicable
+        matched_category:
+          type: string
+          description: "匹配或确认采用的 manifest 分类 id。"
+        new_category:
+          type: object
+          description: "仅 proposed-new 时返回；不预分配编号，由确认入库时按最新 manifest 计算。"
+          properties:
+            slug:
+              type: string
+              pattern: "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+            name:
+              type: string
+            scope:
+              type: string
+            includes:
+              type: array
+              items:
+                type: string
+            excludes:
+              type: array
+              items:
+                type: string
+            rationale:
+              type: string
+          required:
+            - slug
+            - name
+            - scope
+            - includes
+            - excludes
+            - rationale
+          additionalProperties: false
+      required:
+        - result
+      additionalProperties: false
     risk_assessment:
       type: object
       properties:
@@ -146,6 +217,7 @@ output_schema:
         type: string
   required:
     - result
+    - category_assessment
     - risk_assessment
     - validation
     - next_actions
@@ -159,6 +231,7 @@ constraints:
   - "不得上传本地文件、凭据、环境变量或私有代码给第三方服务。"
   - "原样入库必须保留原件、许可、来源和哈希；不得把改造版本标记为 external 原版。"
   - "zx- 是个人 custom 命名空间；external 正式适配 id 不得占用，深度改造 custom id 必须使用。"
+  - "stage 阶段不得创建分类、更新 manifest 或写入正式目录；只能记录分类建议。"
   - "丢弃只允许删除用户确认的单个 inbox_id，不得使用宽泛路径、通配符或递归删除仓库根目录。"
 
 prompt: |-
@@ -184,12 +257,29 @@ prompt: |-
      对二进制、压缩包、生成 bundle 或无法读取内容标记 unknown；不得把“未发现”表述为安全证明。
   5. 比较仓库 portable-yaml-skill 契约和目标工具差异，评估触发字段、输入输出、资源路径、
      工具权限和专有字段兼容性。不要在 stage 阶段生成正式可扫描 skill.yaml。
-  6. 返回 staged-awaiting-confirmation、完整 risk_assessment、inbox_id 和三种可选后续指令：
-     approve-original、approve-customized、discard。等待用户下一次明确确认。
+  6. 先匹配 manifest.categories。若都不适合，只在 assessment.yaml 和返回值中记录符合
+     category_extension.required_proposal_fields 的 new_category 建议；stage 阶段不得创建分类。
+     返回 staged-awaiting-confirmation、完整 risk_assessment、inbox_id、category_assessment 和三种
+     可选后续指令：approve-original、approve-customized、discard。category_assessment 匹配已有分类
+     时返回 result=matched-existing 与 matched_category；需要扩展分类时返回 result=proposed-new 与
+     完整 new_category，但不得预分配分类编号。等待用户下一次明确确认。
+
+  确认入库的分类准备（approve-original / approve-customized 共用）：
+  1. target_category 必须命中 manifest.categories；或为 auto 且 new_category 完整、用户本次确认
+     已覆盖该分类建议。优先复用已有分类；禁止按客户、项目、单个 Skill 或一次性技术建类。
+  2. target_category=auto 时，按 manifest.category_extension 的 next-unused、id_pattern、
+     mirrored_roots 和 category-readme-template.md 执行与 creator 相同的原子化分类注册：追加
+     manifest 分类，同时创建 custom/external 两侧目录及 _readme.md。分类编号与 slug 由确认时
+     最新 manifest 决定，不能沿用 stage 时猜测的编号。
+  3. 分类创建和 Skill 入库属于同一事务。任何一步失败都回滚本次新增 manifest 项、两侧目录和
+     Skill 文件；不得删除操作前已有文件，并在 validation 中明确回滚结果。
+  4. 确认操作的 category_assessment 必须返回最终结果：采用已有分类时为 confirmed-existing，
+     新建扩展分类时为 confirmed-new；matched_category 填写最终 manifest 分类 id。
 
   action=approve-original：
   1. 重新读取 assessment.yaml 和原件，确认哈希未变化、风险已展示、许可证允许保存/使用，
-     target_category 有效；高风险、未知可执行内容或许可禁止时返回 blocked。
+     target_category 有效；高风险、未知可执行内容或许可禁止时返回 blocked。完成上述分类准备后
+     才能写入正式 Skill。
   2. 将完整暂存条目移动到 skills-external/<category>/<skill-id>/source/，保持原始文件字节不变。
   3. 为正式 external 适配入口选择 id 时同时校验全局唯一性和 manifest.validation 的
      external_forbidden_id_prefixes。第三方原件若声明了 zx- id，source/ 中保持原文不变，但正式
@@ -201,7 +291,7 @@ prompt: |-
   4. 验证 YAML、id 唯一性、分类路径、来源记录和 manifest 可发现性，再返回 approved-original。
 
   action=approve-customized：
-  1. 重新验证哈希、风险、许可证、target_category 和 customization_request。
+  1. 重新验证哈希、风险、许可证、target_category 和 customization_request，完成共用分类准备。
   2. 以原件为参考创建 skills-custom/<category>/<new-skill-id>/skill.yaml；new-skill-id 必须以
      zx- 开头并符合 manifest.validation.custom_skill_id_pattern。深度改造后的文件
      origin 必须为 custom，metadata.source 必须记录 fork 来源、原始哈希、许可证和修改摘要。
@@ -212,10 +302,11 @@ prompt: |-
   action=discard：
   1. 只解析并确认 skills-temp-inbox/<inbox-id> 是真实目录，路径规范化后仍在 temp-inbox 内，
      且不是 temp-inbox 根目录、符号链接或通配目标。
-  2. 删除该单个暂存目录，验证目标已不存在，返回 discarded 并说明不可恢复；其他条目不变。
+  2. 删除该单个暂存目录，验证目标已不存在，返回 discarded，并令 category_assessment.result 为
+     not-applicable，说明删除不可恢复；其他条目不变。
 
-  任何阶段失败都返回真实状态和证据。禁止把下载成功、静态扫描无命中或用户仅表达兴趣视为
-  正式入库确认。
+  任何阶段失败都返回真实状态和证据；尚未形成分类判断时令 category_assessment.result 为
+  not-applicable。禁止把下载成功、静态扫描无命中或用户仅表达兴趣视为正式入库确认。
 
 metadata:
   author: ZXSkills
