@@ -1,7 +1,7 @@
 schema_version: "1.0"
 id: skill-import-external
 name: "导入第三方 Skill"
-version: "1.0.0"
+version: "2.0.0"
 description: "接收第三方 Skill 文本、本地包或下载链接，将其隔离到 temp-inbox，完成来源、用途、兼容性、安全和许可评估，并仅在用户确认后处理入库或丢弃。"
 category: system
 origin: builtin
@@ -158,6 +158,7 @@ constraints:
   - "网络来源只允许 HTTPS；记录最终 URL、获取时间、版本或提交号和 SHA-256。"
   - "不得上传本地文件、凭据、环境变量或私有代码给第三方服务。"
   - "原样入库必须保留原件、许可、来源和哈希；不得把改造版本标记为 external 原版。"
+  - "zx- 是个人 custom 命名空间；external 正式适配 id 不得占用，深度改造 custom id 必须使用。"
   - "丢弃只允许删除用户确认的单个 inbox_id，不得使用宽泛路径、通配符或递归删除仓库根目录。"
 
 prompt: |-
@@ -190,14 +191,19 @@ prompt: |-
   1. 重新读取 assessment.yaml 和原件，确认哈希未变化、风险已展示、许可证允许保存/使用，
      target_category 有效；高风险、未知可执行内容或许可禁止时返回 blocked。
   2. 将完整暂存条目移动到 skills-external/<category>/<skill-id>/source/，保持原始文件字节不变。
-  3. 只有原件本身已完全符合 portable-yaml-skill 契约时，才将其副本作为该目录 skill.yaml；
+  3. 为正式 external 适配入口选择 id 时同时校验全局唯一性和 manifest.validation 的
+     external_forbidden_id_prefixes。第三方原件若声明了 zx- id，source/ 中保持原文不变，但正式
+     适配 id 必须改用可追溯且不占用 zx- 的名称，并在 metadata.source 记录原始 id 与映射关系。
+     只有原件本身已完全符合 portable-yaml-skill 契约且 id 未使用保留前缀时，才将其副本作为
+     该目录 skill.yaml；
      否则生成最小 skill.yaml 适配入口，明确 origin=external，并在 metadata.source 记录来源、
      许可证、哈希及 source/ 相对路径。适配入口不得隐瞒或扩大第三方行为。
   4. 验证 YAML、id 唯一性、分类路径、来源记录和 manifest 可发现性，再返回 approved-original。
 
   action=approve-customized：
   1. 重新验证哈希、风险、许可证、target_category 和 customization_request。
-  2. 以原件为参考创建 skills-custom/<category>/<new-skill-id>/skill.yaml；深度改造后的文件
+  2. 以原件为参考创建 skills-custom/<category>/<new-skill-id>/skill.yaml；new-skill-id 必须以
+     zx- 开头并符合 manifest.validation.custom_skill_id_pattern。深度改造后的文件
      origin 必须为 custom，metadata.source 必须记录 fork 来源、原始哈希、许可证和修改摘要。
      不得把暂存原件直接移动进 custom 后伪装为原创。
   3. 使用 skill-template.yaml 契约完成改造，验证功能边界、安全约束、YAML、唯一 id 和 manifest

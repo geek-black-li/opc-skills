@@ -1,6 +1,7 @@
 # 通用业务 Skill 模板。
 # skill-creator 会复制此文件、替换 {{...}} 占位符，并写入
-# skills-custom/<category>/<skill-id>/skill.yaml。模板本身不被 manifest 扫描。
+# skills-custom/<category>/<zx-skill-id>/skill.yaml。custom id 必须使用 zx- 个人命名空间；
+# 模板本身不被 manifest 扫描。
 schema_version: "1.0"
 id: "{{skill_id}}"
 name: "{{skill_name}}"

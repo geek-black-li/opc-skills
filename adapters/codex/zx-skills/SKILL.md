@@ -14,6 +14,14 @@ description: Use when the user explicitly invokes ZXSkills to import or install 
 3. 若未找到，再检查用户明确提供的仓库路径。仍未找到时停止，并要求用户提供 ZXSkills 本地路径。
 4. 读取 `skill-manifest.yaml` 后再执行任何路由。不得把 `skills-temp-inbox` 当作正式 Skill 来源。
 
+## 个人命名空间
+
+- `skills-custom` 中个人原创或深度改造 Skill 的 id 必须以 `zx-` 开头。
+- 新建、自优化建议、第三方改造入库和 external fork 均遵守 manifest 的 `custom_skill_id_pattern`。
+- 用户只描述能力、未指定 id 时，按主要分类自动生成 `zx-<domain>-<capability>` 小写横杠 id；
+  检查全仓库唯一性后再交给 creator，不要求用户整理内部命名参数。
+- 保持原样的第三方 Skill 使用 external id，不得占用 `zx-`；第三方 source 原件中的名称保持不变。
+
 ## 意图路由
 
 | 用户表达 | 执行 |
@@ -72,6 +80,6 @@ description: Use when the user explicitly invokes ZXSkills to import or install 
 $zx-skills 帮我安装一个 Skill，地址是 https://example.com/skill
 $zx-skills 总结一下当前链路
 $zx-skills 总结当前链路并沉淀成 Skill
-$zx-skills 优化 api-regression-planning，补充异步消息失败场景
+$zx-skills 优化 zx-testing-api-regression-planning，补充异步消息失败场景
 $zx-skills 列出我的测试类 Skills
 ```

@@ -1,5 +1,5 @@
 # ZXSkills 统一发现入口。此文件只描述可加载 Skill 的扫描规则，不逐条登记 Skill。
-manifest_version: "1.0"
+manifest_version: "1.1"
 
 repository:
   id: zxskills
@@ -99,6 +99,10 @@ categories:
 
 validation:
   skill_id_pattern: "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+  # zx- 是仓库所有者的个人命名空间：custom 必须使用，external 正式适配入口不得占用。
+  custom_skill_id_pattern: "^zx-[a-z0-9]+(?:-[a-z0-9]+)*$"
+  external_forbidden_id_prefixes:
+    - zx-
   version_pattern: "^[0-9]+\\.[0-9]+\\.[0-9]+$"
   allowed_status:
     - active

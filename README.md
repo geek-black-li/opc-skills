@@ -128,7 +128,7 @@ $zx-skills 帮我安装一个 Skill，地址是 https://example.com/skill
 $zx-skills 总结一下当前链路
 $zx-skills 总结当前链路并沉淀成 Skill
 $zx-skills 新建一个 API 回归测试 Skill
-$zx-skills 优化 api-regression-planning，补充异步消息失败场景
+$zx-skills 优化 zx-testing-api-regression-planning，补充异步消息失败场景
 $zx-skills 列出我的测试类 Skills
 ```
 
@@ -300,7 +300,7 @@ skills-external/<category>/<skill-id>/
 └── source/          # 第三方原始文件，保持字节不变
 ```
 
-如果第三方原件已经符合本仓库契约，可复制为 `skill.yaml`；否则保留原件，并生成最小适配入口。适配入口必须记录来源、版本或提交号、许可证和 SHA-256，不能隐瞒或扩大原始行为。
+如果第三方原件已经符合本仓库契约，可复制为 `skill.yaml`；否则保留原件，并生成最小适配入口。适配入口必须记录来源、版本或提交号、许可证和 SHA-256，不能隐瞒或扩大原始行为。`skills-external` 的正式适配 ID 不得使用 `zx-`；如果第三方 source 原件恰好使用该前缀，原件保持不变，正式适配入口改用可追溯且不占用个人命名空间的 ID，并记录映射关系。
 
 ### `skills-custom`：个人核心资产
 
@@ -315,6 +315,30 @@ skills-custom/<category>/<skill-id>/
 ```
 
 只有 `skill.yaml` 或 `skill.yml` 会被扫描；资源目录不会被当成独立 Skill 加载。引用资源时使用相对于 Skill 目录的路径，并在 `prompt` 中说明何时读取或运行。
+
+#### 个人 Skill 命名空间
+
+`zx-` 是仓库所有者的个人 Skill 命名空间。所有 `skills-custom` 中的个人原创和第三方深度改造 Skill 都必须以 `zx-` 开头，用于：
+
+- 一眼识别个人专属能力；
+- 避免与 builtin 和第三方 Skill 重名；
+- 通过 `zx-` 统一检索、筛选和管理；
+- 形成按领域组织的系列，例如 `zx-product-*`、`zx-ui-*`、`zx-dev-*`、`zx-testing-*`、`zx-ops-*`、`zx-project-*`。
+
+推荐格式为 `zx-<domain>-<capability>`，例如：
+
+```text
+zx-product-requirement-analysis
+zx-ui-design-review
+zx-dev-api-architecture
+zx-testing-api-regression-planning
+zx-ops-release-checklist
+zx-project-risk-management
+```
+
+领域段用于检索，允许按实际能力选择更准确的通用词，不强制与六个目录名逐字一致。真正的强制规则只有两项：custom id 必须以 `zx-` 开头，并且全仓库唯一。通过 `$zx-skills` 新建时，用户只需描述能力；总入口会自动生成并校验 `zx-<domain>-<capability>`，不要求手写内部 ID。`builtin` 保持系统工具原名；原样入库的 external Skill 不加 `zx-`。
+
+如果升级前已经存在不带 `zx-` 的 custom Skill，应执行一次显式迁移：为 `id` 补充 `zx-` 命名空间、把目录同步改为新 id、更新仓库内引用，并重新检查全局唯一性和 manifest 可发现性。不要只改 YAML 的 `id` 而保留旧目录，也不要在普通内容编辑时静默重命名。当前仓库初始不预置业务 custom Skill，新使用者无需迁移。
 
 ### `skills-temp-inbox`：外部 Skill 隔离暂存箱
 
@@ -345,7 +369,7 @@ skills-custom/<category>/<skill-id>/
 
 ```yaml
 schema_version: "1.0"
-id: example-skill
+id: zx-product-example-skill
 name: "示例 Skill"
 version: "1.0.0"
 description: "能力说明和适用场景。"
@@ -366,7 +390,9 @@ metadata: {}
 ### 命名和路径
 
 - 目录、文件名和 `id` 使用小写字母、数字、横杠；业务分类保留两位数字前缀。
-- `id` 需匹配 `^[a-z0-9]+(?:-[a-z0-9]+)*$`，并在 builtin、external、custom 中全局唯一。
+- 所有 `id` 需匹配 `^[a-z0-9]+(?:-[a-z0-9]+)*$`，并在 builtin、external、custom 中全局唯一。
+- custom `id` 还必须匹配 `^zx-[a-z0-9]+(?:-[a-z0-9]+)*$`；推荐使用 `zx-<domain>-<capability>`。
+- external 正式适配 `id` 禁止使用保留前缀 `zx-`，但 source 原件内容不因此改写。
 - 自定义 Skill 路径固定为 `skills-custom/<category>/<skill-id>/skill.yaml`。
 - 第三方 Skill 路径固定为 `skills-external/<category>/<skill-id>/skill.yaml`。
 - `category` 必须与所属分类目录一致。
@@ -427,7 +453,7 @@ metadata: {}
 
 ```yaml
 category: 04-test-quality
-skill_id: api-regression-planning
+skill_id: zx-testing-api-regression-planning
 name: "API 回归测试规划"
 description: "为接口变更识别回归范围并生成可执行测试计划。"
 triggers:
@@ -446,12 +472,12 @@ quality_criteria:
   - "计划包含失败、兼容和回滚路径。"
 ```
 
-创建器会基于模板生成 `skills-custom/04-test-quality/api-regression-planning/skill.yaml`，验证后由 manifest 自动发现。
+创建器会基于模板生成 `skills-custom/04-test-quality/zx-testing-api-regression-planning/skill.yaml`，验证后由 manifest 自动发现。
 
 ### 修改示例
 
 ```yaml
-target: api-regression-planning
+target: zx-testing-api-regression-planning
 change_request: "补充事件异步投递失败和重复消费的回归检查。"
 proposed_changes:
   - "在 workflow 中加入事件生产者、消费者和重试策略分析。"
@@ -629,19 +655,20 @@ confirmation:
 1. 所有 `.yaml` / `.yml` 都能被 YAML 1.2 兼容解析器读取。
 2. 正式 Skill 包含 manifest 声明的所有必填字段。
 3. `id` 符合格式且全局唯一。
-4. `category`、`origin` 与所在路径一致。
-5. 没有 `{{...}}`、`TBD`、`TODO` 等未完成占位符。
-6. external/custom Skill 使用规范文件名 `skill.yaml` 或 `skill.yml`。
-7. `skills-temp-inbox` 没有出现在任何 discovery source 中，并被全局排除。
-8. prompt 引用的脚本、参考资料和资产真实存在。
-9. 第三方 Skill 具有来源、许可证、哈希和风险评估记录。
-10. 修改范围内没有覆盖无关用户文件。
+4. custom `id` 使用 `zx-` 前缀，external 正式适配 `id` 不占用 `zx-`。
+5. `category`、`origin` 与所在路径一致。
+6. 没有 `{{...}}`、`TBD`、`TODO` 等未完成占位符。
+7. external/custom Skill 使用规范文件名 `skill.yaml` 或 `skill.yml`。
+8. `skills-temp-inbox` 没有出现在任何 discovery source 中，并被全局排除。
+9. prompt 引用的脚本、参考资料和资产真实存在。
+10. 第三方 Skill 具有来源、许可证、哈希和风险评估记录。
+11. 修改范围内没有覆盖无关用户文件。
 
 ## 仓库维护原则
 
 - 一个 Skill 解决一个边界清楚、可重复调用的问题。
 - 优先优化现有 Skill，避免按项目名复制近似能力。
 - 经验尚未稳定或验证不足时，让 Self-Improve 返回 `no-action`。
-- 原创或深度改造进入 `skills-custom`；已确认且尽量原样保留的第三方内容进入 `skills-external`。
+- 原创或深度改造使用 `zx-` id 进入 `skills-custom`；已确认且尽量原样保留的第三方内容使用非 `zx-` id 进入 `skills-external`。
 - 第三方内容永远先进入 `skills-temp-inbox`，评估和明确确认是不可绕过的正式入库门槛。
 - manifest 是扫描和验证契约；具体 AI 工具的生成索引只是适配产物。

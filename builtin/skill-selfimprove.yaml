@@ -1,7 +1,7 @@
 schema_version: "1.0"
 id: skill-selfimprove
 name: "Skill 自我提炼分析"
-version: "1.0.0"
+version: "2.0.0"
 description: "在一个功能、需求、方案、测试或发布节点完成后，比较本次过程与 ZXSkills 现有能力，判断无需提炼、新建 Skill 或优化已有 Skill。"
 category: system
 origin: builtin
@@ -95,6 +95,8 @@ output_schema:
                 - 06-project-manage
             skill_id:
               type: string
+              description: "必须使用 zx- 个人命名空间。"
+              pattern: "^zx-[a-z0-9]+(?:-[a-z0-9]+)*$"
             name:
               type: string
             description:
@@ -190,6 +192,7 @@ constraints:
   - "不能因一次项目成功就默认建议沉淀；必须证明跨项目复用价值。"
   - "不得读取或加载 skills-temp-inbox 中未评估内容作为正式能力基线。"
   - "输出参数必须可直接作为 skill-creator 或 skill-editor 的输入，不使用未定、待补充等占位表述。"
+  - "create-skill 的 creator_parameters.skill_id 必须以 zx- 开头并符合 custom_skill_id_pattern。"
   - "证据不足时选择 no-action，并在 rationale 中说明需要积累何种证据。"
 
 prompt: |-
@@ -224,7 +227,8 @@ prompt: |-
        external 时还必须提供 external_strategy，可直接传给 skill-editor。
   7. 不要输出多个候选结论，不要让用户二次整理参数，不要直接调用 creator/editor。
 
-  参数质量要求：skill_id 使用小写横杠格式；description 和 triggers 是可检索的真实触发场景；
+  参数质量要求：create-skill 的 skill_id 使用 zx- 个人命名空间，并符合 manifest.validation 的
+  custom_skill_id_pattern；description 和 triggers 是可检索的真实触发场景；
   workflow 是可以执行的有序步骤；quality_criteria 可验证；schema 字段完整；constraints 保留
   权限、数据安全、第三方来源和用户工作区边界。
 
