@@ -1,7 +1,7 @@
 schema_version: "1.0"
 id: skill-creator
 name: "新建 Skill"
-version: "2.1.0"
+version: "2.2.0"
 description: "在 ZXSkills 仓库中创建新的自定义业务 Skill，并使用仓库模板、分类规则和验证约束生成可发现的 skill.yaml。"
 category: system
 origin: builtin
@@ -24,6 +24,29 @@ input_schema:
     repository_root:
       type: string
       description: "ZXSkills 仓库根目录；未提供时从当前路径向上查找 skill-manifest.yaml。"
+    invocation_source:
+      type: string
+      enum:
+        - direct
+        - self-improve
+      default: direct
+      description: "direct 表示用户直接要求创建；self-improve 表示由沉淀提案继续执行，必须校验确认对象。"
+    self_improve_confirmation:
+      type: object
+      description: "invocation_source=self-improve 时必填，绑定用户确认的 Self-Improve 提案。"
+      properties:
+        confirmed:
+          const: true
+        proposal_id:
+          type: string
+          pattern: "^zxsi-[a-f0-9]{16}$"
+        action:
+          const: create-skill
+      required:
+        - confirmed
+        - proposal_id
+        - action
+      additionalProperties: false
     category:
       type: string
       description: "已有分类 id；确实没有匹配分类并提供 new_category 时使用 auto。"
@@ -120,6 +143,7 @@ output_schema:
         - created
         - needs-input
         - conflict
+        - blocked
         - validation-failed
     skill_path:
       type: string
@@ -153,44 +177,56 @@ constraints:
   - "只修改仓库中本次创建所需的路径，保留其他文件。"
   - "能由现有分类合理负责时禁止新建分类；不得按客户、项目、单个 Skill 或一次性技术建类。"
   - "扩展分类必须同时注册 manifest 并在 custom/external 两侧生成 _readme.md，禁止只建单侧目录。"
+  - "invocation_source=self-improve 时，没有匹配 proposal_id 的明确确认不得创建 Skill 或分类。"
+  - "用户直接明确要求新建 Skill 时可使用 invocation_source=direct，不强制经过 Self-Improve。"
 
 prompt: |-
   你是 ZXSkills 仓库的 Skill 创建器。把用户确认需要沉淀的通用能力写成一个可被
   skill-manifest.yaml 发现的自定义 Skill。
 
   执行流程：
-  1. 定位 repository_root，读取 skill-manifest.yaml、skill-template.yaml 和
+  1. 写入前先校验调用来源：
+     - invocation_source=direct：用户当前明确要求创建 Skill，可继续常规流程。
+     - invocation_source=self-improve：必须提供 self_improve_confirmation，且 confirmed=true、
+       action=create-skill。用 category、存在时的 new_category、skill_id、name、description、triggers、
+       goal、workflow、quality_criteria、input_schema、output_schema、constraints 组成 parameters；再将
+       {"conclusion":"create-skill","parameters":parameters} 按键名递归升序、数组保持顺序、UTF-8
+       且无多余空白序列化为 canonical JSON，计算 SHA-256，取前 16 位小写十六进制并加 zxsi- 前缀，
+       重新计算 proposal_id。优先使用 `scripts/compute-proposal-id.py --prefix zxsi-`；手工实现时哈希输入
+       必须是无末尾换行的 canonical JSON UTF-8 字节。缺少确认、action 错误或确认不匹配时返回 blocked，且不得创建分类、目录
+       或文件。不能沿用另一份提案、旧参数或仅凭“可以”继续执行。
+  2. 定位 repository_root，读取 skill-manifest.yaml、skill-template.yaml 和
      category-readme-template.md。先逐项比较 manifest.categories 的 scope 与两侧 _readme.md；只要
      已有分类能合理负责该能力，就必须复用，不能因为名称不完全相同而新建分类。
-  2. category 命中已有 manifest.categories 时，读取目标分类的 custom _readme.md 并继续。
+  3. category 命中已有 manifest.categories 时，读取目标分类的 custom _readme.md 并继续。
      category=auto 时必须提供完整 new_category，并按 manifest.category_extension 校验：slug 使用
      通用领域词且不来自客户名、项目名、单个 Skill 名或一次性技术；rationale 必须说明为什么
      01-06 及已有扩展分类都不匹配。信息不足时返回 needs-input，不修改文件。
-  3. 新建分类时执行一个原子化分类注册事务：重新读取 manifest 防止编号竞争；按 next-unused 从
+  4. 新建分类时执行一个原子化分类注册事务：重新读取 manifest 防止编号竞争；按 next-unused 从
      first_extension_number 到 max_category_number 选择最小未使用编号，格式化为两位数字并组合
      <nn>-<slug>；校验 id_pattern 和目录不存在；将 category 追加到 manifest.categories；按
      mirrored_roots 同时创建 skills-custom/<category>/ 与 skills-external/<category>/；复制
      category-readme-template.md 生成两份 _readme.md，完整替换分类定位、包含范围、排除范围、
      origin_label 和各自 id 规则。不得预先创建空分类，也不得只创建一侧。
-  4. 校验 skill_id 同时符合 manifest.validation
+  5. 校验 skill_id 同时符合 manifest.validation
      中的 skill_id_pattern 和 custom_skill_id_pattern。若调用方传入不带 zx- 的 skill_id，返回
      needs-input 并给出符合规则的建议 id，不静默接受、去除前缀或覆盖已有 Skill。
-  5. 递归扫描 builtin、skills-external、skills-custom 中可加载的 YAML，确认 skill_id 全局唯一；
+  6. 递归扫描 builtin、skills-external、skills-custom 中可加载的 YAML，确认 skill_id 全局唯一；
      不读取或加载 skills-temp-inbox 作为正式 Skill。
-  6. 检查输入是否足以形成明确触发条件、可执行 workflow 和可验证 quality_criteria。
+  7. 检查输入是否足以形成明确触发条件、可执行 workflow 和可验证 quality_criteria。
      缺失关键信息时返回 needs-input，并只列出会实质影响结果的问题。
-  7. 复制 skill-template.yaml 的字段结构，完整替换占位符。保持 schema_version 为 "1.0"、
+  8. 复制 skill-template.yaml 的字段结构，完整替换占位符。保持 schema_version 为 "1.0"、
      origin 为 custom、status 为 active；版本从 "1.0.0" 开始。
-  8. 将 prompt 写成面向执行者的命令式指令，包含范围、步骤、失败处理和输出契约。
+  9. 将 prompt 写成面向执行者的命令式指令，包含范围、步骤、失败处理和输出契约。
      description 与 triggers 应覆盖用户可能使用的自然表达，但避免把项目独有细节写成通用规则。
-  9. 创建目录 skills-custom/<category>/<skill-id>/，只写入 skill.yaml。
+  10. 创建目录 skills-custom/<category>/<skill-id>/，只写入 skill.yaml。
      仅当能力确实需要复用资源时，才在该目录增加 scripts、references 或 assets；所有资源必须
      在 prompt 中说明何时读取或运行。
-  10. 重新解析生成的 YAML，检查必填字段、custom_skill_id_pattern、重复 id、路径与 category
+  11. 重新解析生成的 YAML，检查必填字段、custom_skill_id_pattern、重复 id、路径与 category
       一致性、两侧 _readme.md 无占位符、manifest 分类注册和 Skill 可发现性。若本次新建分类或
       Skill 任一步失败，回滚仅由本次事务新增的 manifest 分类项、两侧目录和 Skill 文件；不得
       删除操作前已存在的目录或用户文件，并返回 validation-failed。
-  11. 严格按 output_schema 返回最终分类 id、Skill 路径、校验证据和下一步。
+  12. 严格按 output_schema 返回最终分类 id、Skill 路径、校验证据和下一步。
 
   成功条件：文件位于正确 custom 分类、YAML 可解析、id 唯一、无占位符、能被 manifest
   的 **/skill.yaml 规则发现；若创建扩展分类，manifest、mirrored_roots 和两份说明必须全部一致，

@@ -14,11 +14,11 @@ ZXSkills 用于沉淀一个全栈 OPC 从需求到交付全过程中的可复用
 | --- | --- |
 | 第三方 Skill 导入 | 下载内容先隔离到暂存箱，完成来源、许可、兼容性和安全评估后再确认入库 |
 | 当前链路总结 | 总结刚完成的需求、开发、测试或发布过程，识别可复用经验 |
-| Skill 创建 | 将确认可复用的经验生成到 `skills-custom` |
-| Skill 优化 | 对已有 Skill 做最小、可追溯的更新 |
+| Skill 创建 | 先展示可提炼内容和价值，用户确认具体提案后生成到 `skills-custom` |
+| Skill 优化 | 先展示通用增补项、排除项和风险，确认后对已有 Skill 做最小、可追溯更新 |
 | 仓库查看 | 按分类列出正式 Skill 和仓库状态 |
 
-当前仓库**没有预置产品、设计、开发、测试等业务 Skill**。`skills-external` 和 `skills-custom` 初始为空；业务能力需要由使用者在实际项目中逐步沉淀或评估导入。
+当前仓库只沉淀已经过实际项目验证的业务能力，目前包含 `zx-project-organizer`；不会为了填满分类预置一批空泛 Skill。后续能力继续通过实际项目的 Self-Improve、手动创建或第三方评估导入逐步积累。
 
 ## 5 分钟开始使用 Codex
 
@@ -127,12 +127,47 @@ powershell -ExecutionPolicy Bypass -File .\scripts\configure-codex-reminder.ps1 
 $zx-skills 帮我安装一个 Skill，地址是 https://example.com/skill
 $zx-skills 总结一下当前链路
 $zx-skills 总结当前链路并沉淀成 Skill
+$zx-skills 确认提炼 <proposal_id>
+$zx-skills 放弃提炼 <proposal_id>
+$zx-skills 使用 zx-project-organizer，帮我审计当前项目结构
+$zx-skills 确认执行项目结构提案 <zpo-proposal_id>
+$zx-skills 放弃项目结构提案 <zpo-proposal_id>
 $zx-skills 新建一个 API 回归测试 Skill
 $zx-skills 优化 zx-testing-api-regression-planning，补充异步消息失败场景
 $zx-skills 列出我的测试类 Skills
 ```
 
 总入口会自动判断意图并读取对应的 builtin Skill，不要求使用者填写内部 YAML 参数。
+
+“总结并沉淀/优化”不是预先授权写入。第一次调用只会展示：哪些内容可以提炼、为什么值得提炼、
+跨项目适用场景、证据、必须排除的项目独有内容、计划改动和风险，并返回 `proposal_id`。只有下一条
+消息明确确认同一个 `proposal_id`，creator/editor 才能写入；参数一旦变化，旧确认立即失效。
+
+仓库使用 [`scripts/compute-proposal-id.py`](scripts/compute-proposal-id.py) 统一计算 `zxsi-*` 和 `zpo-*`
+内容指纹，避免不同工具对 JSON 空格、键顺序、中文转义或末尾换行处理不同。适配器可把 JSON 文件或
+标准输入交给脚本；脚本会自行生成无末尾换行的 canonical JSON 字节再计算 SHA-256。
+
+### 项目结构整理为什么也分两步
+
+`zx-project-organizer` 的审计模式始终只读。初始化或重构项目时，第一次调用也只生成提案：已确认/
+推断/未知事实及来源、推荐结构、完整文件内容、迁移映射、是否初始化 Git 和 `zpo-*` 提案 ID。
+确认前不会创建目录、写 README、移动文件或运行 `git init`。
+
+确认提案：
+
+```text
+$zx-skills 确认执行项目结构提案 <zpo-proposal_id>
+```
+
+放弃提案：
+
+```text
+$zx-skills 放弃项目结构提案 <zpo-proposal_id>
+```
+
+确认时会使用第一次展示的原始提案载荷重新计算 ID，并重新检查工作区是否仍适合执行；不会让 AI
+临时重新发挥生成另一套目录或文件。ID 不匹配、载荷丢失、目标冲突或项目状态变化时返回 `blocked`，
+先给出新提案再等待确认。`initialize_git` 默认是 `false`，只有提案中明确为 `true` 才可能执行。
 
 ### 第三方 Skill 为什么需要再次确认
 
@@ -205,7 +240,9 @@ ZXSkills 入口和完成提醒是两项独立配置。`install-codex.* uninstall
 
 ### 完成提醒会自动修改仓库吗
 
-不会。提醒规则只让 Codex 判断是否应该建议你运行 `$zx-skills 总结一下当前链路`。只有你明确调用 `$zx-skills`，并在需要写入时给出沉淀或入库指令，仓库才会按相应工作流发生变更。
+不会。提醒规则只让 Codex 判断是否应该建议你运行 `$zx-skills 总结一下当前链路`。Self-Improve
+即使被手动或自动调用也只会分析；新建/优化提案还要用匹配的 `proposal_id` 再次确认，第三方入库则要
+确认匹配的 `inbox_id`，仓库才会发生对应变更。
 
 ### 为什么不直接开启 ZXSkills 隐式调用
 
@@ -264,10 +301,13 @@ ZXSkills/
     ├── 03-fullstack-arch-dev/_readme.md
     ├── 04-test-quality/_readme.md
     ├── 05-ops-release/_readme.md
-    └── 06-project-manage/_readme.md
+    └── 06-project-manage/
+        ├── _readme.md
+        └── zx-project-organizer/skill.yaml
 ```
 
-当前仓库只提供框架、模板和四个内置工具，不预置业务 Skill。后续业务能力统一通过仓库工作流生成或导入。
+仓库框架不批量预置业务 Skill；当前仅包含已在真实项目中提炼并回归验证的
+`zx-project-organizer`。后续业务能力统一通过仓库工作流生成或导入。
 
 ## 六个核心业务分类
 
@@ -319,7 +359,7 @@ new_category.slug = ai-data
 
 - `skill-creator`：从模板创建新的自定义业务 Skill。
 - `skill-editor`：修改已有 Skill，保护 builtin、第三方原件和用户无关改动。
-- `skill-selfimprove`：在工作节点结束后只做复用价值分析，固定返回三选一结论。
+- `skill-selfimprove`：在工作节点结束后只做复用价值分析，固定返回三选一结论；创建/优化建议必须等待用户确认。
 - `skill-import-external`：接收第三方内容，先隔离和评估，再等待用户确认。
 
 ### `skills-external`：已确认的第三方 Skill
@@ -370,7 +410,7 @@ zx-project-risk-management
 
 领域段用于检索，允许按实际能力选择更准确的通用词，不强制与六个目录名逐字一致。真正的强制规则只有两项：custom id 必须以 `zx-` 开头，并且全仓库唯一。通过 `$zx-skills` 新建时，用户只需描述能力；总入口会自动生成并校验 `zx-<domain>-<capability>`，不要求手写内部 ID。`builtin` 保持系统工具原名；原样入库的 external Skill 不加 `zx-`。
 
-如果升级前已经存在不带 `zx-` 的 custom Skill，应执行一次显式迁移：为 `id` 补充 `zx-` 命名空间、把目录同步改为新 id、更新仓库内引用，并重新检查全局唯一性和 manifest 可发现性。不要只改 YAML 的 `id` 而保留旧目录，也不要在普通内容编辑时静默重命名。当前仓库初始不预置业务 custom Skill，新使用者无需迁移。
+如果升级前已经存在不带 `zx-` 的 custom Skill，应执行一次显式迁移：为 `id` 补充 `zx-` 命名空间、把目录同步改为新 id、更新仓库内引用，并重新检查全局唯一性和 manifest 可发现性。不要只改 YAML 的 `id` 而保留旧目录，也不要在普通内容编辑时静默重命名。
 
 ### `skills-temp-inbox`：外部 Skill 隔离暂存箱
 
@@ -532,9 +572,12 @@ expected_version_bump: minor
   → 扫描 manifest 中的正式 Skill（排除 temp-inbox）
   → 固定返回三选一
        ① no-action
-       ② create-skill + creator_parameters
-       ③ update-skill + editor_parameters
-  → 用户或上层编排器决定是否调用 creator/editor
+       ② create-skill + 可提炼说明 + creator_parameters
+       ③ update-skill + 可提炼说明 + editor_parameters
+  → ②/③ 固定返回 awaiting-confirmation + proposal_id，然后停止
+  → 用户查看提炼价值、项目独有排除项、具体改动和风险
+  → 用户后续确认同一个 proposal_id
+  → 重新计算 ID，匹配后才调用 creator/editor；不匹配则阻止写入
 ```
 
 调用示例：
@@ -553,10 +596,21 @@ auto_triggered: true
 返回必须恰好匹配一个分支：
 
 - `no-action`：说明项目独有、证据不足或已有 Skill 已覆盖，并明确可复用边界。
-- `create-skill`：返回完整 `creator_parameters`，可原样交给 `skill-creator`。
-- `update-skill`：返回完整 `editor_parameters`，可原样交给 `skill-editor`。
+- `create-skill`：说明准备提炼的通用能力与价值，返回完整 `creator_parameters` 和 `proposal_id`。
+- `update-skill`：说明准备补强的通用能力与价值，返回完整 `editor_parameters` 和 `proposal_id`。
 
-Self-Improve 永远只分析，不创建、修改、移动或删除仓库文件。自动触发也不会改变这一边界。
+两个建议分支都必须包含：可提炼能力、为什么值得提炼、至少两个跨项目场景、复用证据、项目独有
+排除项、确认后计划改动和风险。第一次输出固定为 `awaiting-confirmation`，并给出：
+
+```text
+$zx-skills 确认提炼 <proposal_id>
+$zx-skills 放弃提炼 <proposal_id>
+```
+
+Self-Improve 永远只分析，不创建、修改、移动或删除仓库文件。自动触发、用户说“总结并沉淀”或
+“总结并优化”都不会改变这一边界，也不会让同一轮自动调用 creator/editor。`proposal_id` 是具体
+creator/editor 参数的内容指纹；确认缺失、ID 不匹配或参数变化时，下游返回 `blocked`，需要展示新提案
+并重新确认。用户直接明确提出“新建一个 Skill”或“修改某个 Skill”时仍可走手动工作流 A。
 
 ## 工作流 C：导入第三方 Skill
 
@@ -698,12 +752,14 @@ confirmation:
 9. prompt 引用的脚本、参考资料和资产真实存在。
 10. 第三方 Skill 具有来源、许可证、哈希和风险评估记录。
 11. 修改范围内没有覆盖无关用户文件。
+12. Self-Improve 创建/优化提案具有 `proposal_id`，且 creator/editor 只接受匹配的后续确认。
 
 ## 仓库维护原则
 
 - 一个 Skill 解决一个边界清楚、可重复调用的问题。
 - 优先优化现有 Skill，避免按项目名复制近似能力。
 - 经验尚未稳定或验证不足时，让 Self-Improve 返回 `no-action`。
+- Self-Improve 先解释提炼内容和跨项目价值；没有匹配提案的用户确认，不得创建或优化 Skill。
 - 原创或深度改造使用 `zx-` id 进入 `skills-custom`；已确认且尽量原样保留的第三方内容使用非 `zx-` id 进入 `skills-external`。
 - 第三方内容永远先进入 `skills-temp-inbox`，评估和明确确认是不可绕过的正式入库门槛。
 - manifest 是扫描和验证契约；具体 AI 工具的生成索引只是适配产物。

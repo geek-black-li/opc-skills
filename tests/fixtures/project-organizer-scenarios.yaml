@@ -1,0 +1,32 @@
+scenarios:
+  - id: unknown-empty-project
+    description: "空工作区且项目边界未知时，只能请求关键信息。"
+    expected_result: needs-input
+    expected_changes: []
+
+  - id: confirmed-mobile-api-project
+    description: "已确认移动端与 API 边界时，提案应忠实反映事实且不夹带行业模板。"
+    expected_result: awaiting-confirmation
+    required_paths:
+      - mobile/
+      - api/
+    forbidden_paths:
+      - frontend/
+      - backend/
+      - ai/
+
+  - id: mismatched-proposal-confirmation
+    description: "确认中的 proposal_id 与当前提案不匹配时禁止写入。"
+    expected_result: blocked
+    expected_changes: []
+
+  - id: initialize-without-git-opt-in
+    description: "initialize_git 未显式设为 true 时不得初始化 Git。"
+    expected_result: initialized
+    forbidden_operations:
+      - git-init
+
+  - id: unconfirmed-reorganization
+    description: "老项目没有确认迁移映射时只输出迁移提案。"
+    expected_result: migration-proposed
+    expected_changes: []

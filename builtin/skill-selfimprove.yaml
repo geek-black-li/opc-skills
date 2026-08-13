@@ -1,8 +1,8 @@
 schema_version: "1.0"
 id: skill-selfimprove
 name: "Skill 自我提炼分析"
-version: "2.1.0"
-description: "在一个功能、需求、方案、测试或发布节点完成后，比较本次过程与 ZXSkills 现有能力，判断无需提炼、新建 Skill 或优化已有 Skill。"
+version: "3.0.0"
+description: "在功能、需求、方案、测试或发布节点完成后，比较本次过程与 ZXSkills 现有能力，先说明哪些内容值得提炼及原因，再输出等待用户确认的创建或优化提案。"
 category: system
 origin: builtin
 status: active
@@ -12,11 +12,13 @@ triggers:
     - "评估刚完成的工作是否值得沉淀"
     - "功能节点结束后做 Skill 自优化分析"
     - "把项目经验转为可复用能力建议"
+    - "总结并优化现有 Skill"
   keywords:
     - skill-selfimprove
     - self-improve
     - 自我提炼
     - skill沉淀评估
+    - 总结优化skill
 
 input_schema:
   type: object
@@ -42,7 +44,7 @@ input_schema:
         type: string
     auto_triggered:
       type: boolean
-      description: "是否由功能节点完成事件自动触发。"
+      description: "是否由功能节点完成事件自动触发；自动触发仍然只分析。"
       default: false
   required:
     - project_context
@@ -54,6 +56,8 @@ output_schema:
   oneOf:
     - title: "无需提炼"
       properties:
+        result:
+          const: no-action
         conclusion:
           const: no-action
         rationale:
@@ -64,23 +68,79 @@ output_schema:
             type: string
         reusable_boundary:
           type: string
+        next_actions:
+          type: array
+          items:
+            type: string
       required:
+        - result
         - conclusion
         - rationale
         - evidence
         - reusable_boundary
+        - next_actions
       additionalProperties: false
 
-    - title: "建议新建 Skill"
+    - title: "建议新建 Skill，等待确认"
       properties:
+        result:
+          const: awaiting-confirmation
         conclusion:
           const: create-skill
+        proposal_id:
+          type: string
+          pattern: "^zxsi-[a-f0-9]{16}$"
         rationale:
           type: string
         evidence:
           type: array
           items:
             type: string
+        extraction_assessment:
+          type: object
+          properties:
+            reusable_capability:
+              type: string
+              description: "准备沉淀的通用能力，不包含项目名称或一次性实现细节。"
+            why_worth_distilling:
+              type: array
+              description: "为什么值得形成 Skill，说明质量、效率、安全或一致性价值。"
+              items:
+                type: string
+            cross_project_scenarios:
+              type: array
+              description: "至少两个合理的跨项目复用场景。"
+              items:
+                type: string
+            reuse_evidence:
+              type: array
+              description: "支撑复用判断的过程、产物、失败修正或验证证据。"
+              items:
+                type: string
+            project_specific_exclusions:
+              type: array
+              description: "明确不会写入 Skill 的客户名、项目名、私有路径、临时数据和偶然做法。"
+              items:
+                type: string
+            planned_change:
+              type: array
+              description: "确认后将创建或修改的具体内容。"
+              items:
+                type: string
+            risks:
+              type: array
+              description: "过度泛化、证据不足、兼容性或与现有 Skill 重叠等风险。"
+              items:
+                type: string
+          required:
+            - reusable_capability
+            - why_worth_distilling
+            - cross_project_scenarios
+            - reuse_evidence
+            - project_specific_exclusions
+            - planned_change
+            - risks
+          additionalProperties: false
         creator_parameters:
           type: object
           properties:
@@ -158,23 +218,81 @@ output_schema:
             - output_schema
             - constraints
           additionalProperties: false
+        next_actions:
+          type: array
+          items:
+            type: string
       required:
+        - result
         - conclusion
+        - proposal_id
         - rationale
         - evidence
+        - extraction_assessment
         - creator_parameters
+        - next_actions
       additionalProperties: false
 
-    - title: "建议优化已有 Skill"
+    - title: "建议优化已有 Skill，等待确认"
       properties:
+        result:
+          const: awaiting-confirmation
         conclusion:
           const: update-skill
+        proposal_id:
+          type: string
+          pattern: "^zxsi-[a-f0-9]{16}$"
         rationale:
           type: string
         evidence:
           type: array
           items:
             type: string
+        extraction_assessment:
+          type: object
+          properties:
+            reusable_capability:
+              type: string
+              description: "准备补强的通用能力，不包含项目名称或一次性实现细节。"
+            why_worth_distilling:
+              type: array
+              description: "为什么值得更新 Skill，说明质量、效率、安全或一致性价值。"
+              items:
+                type: string
+            cross_project_scenarios:
+              type: array
+              description: "至少两个合理的跨项目复用场景。"
+              items:
+                type: string
+            reuse_evidence:
+              type: array
+              description: "支撑复用判断的过程、产物、失败修正或验证证据。"
+              items:
+                type: string
+            project_specific_exclusions:
+              type: array
+              description: "明确不会写入 Skill 的客户名、项目名、私有路径、临时数据和偶然做法。"
+              items:
+                type: string
+            planned_change:
+              type: array
+              description: "确认后对目标 Skill 的具体增补或修正。"
+              items:
+                type: string
+            risks:
+              type: array
+              description: "破坏兼容性、过度泛化、证据不足或范围膨胀等风险。"
+              items:
+                type: string
+          required:
+            - reusable_capability
+            - why_worth_distilling
+            - cross_project_scenarios
+            - reuse_evidence
+            - project_specific_exclusions
+            - planned_change
+            - risks
+          additionalProperties: false
         editor_parameters:
           type: object
           properties:
@@ -203,62 +321,81 @@ output_schema:
             - proposed_changes
             - expected_version_bump
           additionalProperties: false
+        next_actions:
+          type: array
+          items:
+            type: string
       required:
+        - result
         - conclusion
+        - proposal_id
         - rationale
         - evidence
+        - extraction_assessment
         - editor_parameters
+        - next_actions
       additionalProperties: false
 
 constraints:
   - "只做读取、比较和评估，不创建、修改、移动或删除任何仓库文件。"
-  - "固定且只能返回 no-action、create-skill、update-skill 三种结论之一。"
+  - "固定且只能返回 no-action、create-skill、update-skill 三种 conclusion 之一。"
+  - "create-skill 或 update-skill 必须返回 result=awaiting-confirmation，并在当前轮停止。"
+  - "必须先告诉用户哪些内容可提炼、为什么值得提炼、跨项目场景和项目独有排除项。"
   - "不能因一次项目成功就默认建议沉淀；必须证明跨项目复用价值。"
   - "不得读取或加载 skills-temp-inbox 中未评估内容作为正式能力基线。"
-  - "输出参数必须可直接作为 skill-creator 或 skill-editor 的输入，不使用未定、待补充等占位表述。"
+  - "参数必须完整且可直接供 creator/editor 使用，不使用未定、待补充等占位表述。"
   - "create-skill 的 creator_parameters.skill_id 必须以 zx- 开头并符合 custom_skill_id_pattern。"
-  - "证据不足时选择 no-action，并在 rationale 中说明需要积累何种证据。"
+  - "证据不足时选择 no-action，并说明需要积累何种证据。"
+  - "自动触发和用户说‘总结并优化’都不构成写入确认。"
 
 prompt: |-
   你是 ZXSkills 的 Self-Improve 分析器。你的职责是把刚完成的项目过程与正式 Skill 仓库比较，
-  给出一次可执行的沉淀决策。你只分析，不修改任何文件。
+  先向用户解释“哪些可以提炼、为什么值得提炼”，再给出一份可确认的沉淀提案。你永远只分析，
+  不修改任何文件，也不在当前轮触发写入。
 
   分析流程：
-  1. 读取 project_context、process_summary、artifacts 和 validation_evidence，提取：解决的问题、
-     可重复输入、稳定步骤、关键决策、边界条件、失败模式、验证方法与产出格式。
-  2. 定位仓库，读取 skill-manifest.yaml；只按 manifest 的 builtin、external、custom 扫描规则
-     检索现有 Skill。明确排除 skills-temp-inbox、模板、说明文件和第三方 source 原件。
-  3. 在 manifest.categories 中判断主要归属，优先复用 01-06 核心分类及已有扩展分类。跨域流程
-     选择对最终交付结果负责的主分类，并把其他领域作为 triggers、workflow 或 constraints 的
-     上下文，不复制出多个重叠 Skill。只有逐项比较所有 scope 后仍无合理归属，才在
-     creator_parameters 中设置 category=auto 并提供完整 new_category；不得按客户名、项目名、
-     单个 Skill 或一次性技术提出分类。Self-Improve 不创建分类、不更新 manifest 或目录。
-  4. 按以下标准评估复用性：
-     - 是否在不同项目中会以相似输入、步骤和输出重复出现；
-     - 是否包含容易遗忘但会显著影响质量、安全或效率的判断；
-     - 是否能脱离本项目专有名称、数据和临时环境后仍成立；
-     - 是否已有 Skill 覆盖，差异究竟是缺陷、兼容扩展还是完全不同的能力；
-     - 是否有实际产物或验证证据支持，而非仅有设想。
-  5. 使用唯一决策规则：
+  1. 读取 project_context、process_summary、artifacts 和 validation_evidence，提取解决的问题、
+     可重复输入、稳定步骤、关键判断、边界条件、失败模式、验证方法和产出格式。只把当前可见或
+     可验证的信息作为证据；推断必须明确标记。
+  2. 定位仓库并读取 skill-manifest.yaml；只扫描 manifest 定义的 builtin、external、custom，
+     明确排除 skills-temp-inbox、模板、说明文件和第三方 source 原件。
+  3. 在 manifest.categories 中判断主要归属，优先复用已有分类。跨域流程选择对最终交付负责的
+     主分类。所有现有 scope 都不匹配时才设置 category=auto 并提供完整 new_category；不得按客户、
+     项目、单个 Skill 或一次性技术建类。Self-Improve 不创建分类。
+  4. 评估复用性：
+     - 是否会在不同项目中以相似输入、步骤和输出重复出现；
+     - 是否包含容易遗漏且显著影响质量、安全、效率或一致性的判断；
+     - 去掉项目名称、客户数据、私有路径、临时环境和偶然实现后是否仍成立；
+     - 现有 Skill 是否已经覆盖，新增内容是缺陷修复、兼容扩展还是独立能力；
+     - 是否有真实产物、失败修正或验证证据，而不只是设想。
+  5. 使用唯一决策：
      - no-action：项目独有、证据不足、价值过小，或现有 Skill 已充分覆盖；
-     - create-skill：存在明确、独立、跨项目复用的能力，且没有合适的现有 Skill；
-     - update-skill：现有 Skill 已覆盖主要意图，但缺少本次证实有效的步骤、约束、触发词、
-       失败处理或验证标准。
-  6. 输出必须严格匹配 output_schema 的一个且仅一个分支：
-     - no-action：提供 conclusion、rationale、evidence、reusable_boundary；
-     - create-skill：提供 conclusion、rationale、evidence、creator_parameters。creator_parameters
-       必须完整包含 category、skill_id、name、description、triggers、goal、workflow、
-       quality_criteria、input_schema、output_schema、constraints，可直接传给 skill-creator；
-       category=auto 时还必须包含 new_category 的 slug、name、scope、includes、excludes、rationale；
-     - update-skill：提供 conclusion、rationale、evidence、editor_parameters。editor_parameters
-       必须完整包含 target、change_request、proposed_changes、expected_version_bump；目标为
-       external 时还必须提供 external_strategy，可直接传给 skill-editor。
-  7. 不要输出多个候选结论，不要让用户二次整理参数，不要直接调用 creator/editor。
+     - create-skill：存在明确、独立、跨项目可复用能力，且没有合适现有 Skill；
+     - update-skill：现有 Skill 覆盖主要意图，但缺少本次证实有效的步骤、约束、触发、失败处理
+       或验证标准。
+  6. create-skill 或 update-skill 时，必须先完整输出 extraction_assessment：
+     - reusable_capability：哪些内容可以总结提炼到 Skill；
+     - why_worth_distilling：为什么值得提炼，具体价值是什么；
+     - cross_project_scenarios：至少两个跨项目复用场景；
+     - reuse_evidence：证据；
+     - project_specific_exclusions：哪些项目独有内容必须排除；
+     - planned_change：确认后究竟创建或修改什么；
+     - risks：过度泛化、兼容性、证据或范围风险。
+  7. 生成完整 creator_parameters 或 editor_parameters 后计算 proposal_id：将
+     {"conclusion": <conclusion>, "parameters": <creator_parameters 或 editor_parameters>}
+     按键名递归升序、数组保持展示顺序、UTF-8 且无多余空白序列化为 canonical JSON，计算 SHA-256，
+     取前 16 位小写十六进制并加 zxsi- 前缀。仓库脚本可用时优先将 JSON 交给
+     `scripts/compute-proposal-id.py --prefix zxsi-` 计算。哈希对象是 canonical JSON 的原始 UTF-8 字节，
+     末尾没有换行；不得把 shell 管道或文件结尾附加的换行计入哈希。参数变化必须得到新的 proposal_id。
+  8. create-skill/update-skill 固定返回 result=awaiting-confirmation，并给出两条可复制指令：
+     `$zx-skills 确认提炼 <proposal_id>` 和 `$zx-skills 放弃提炼 <proposal_id>`。
+     即使用户本轮说了“总结并沉淀”“总结并优化”或 auto_triggered=true，同一轮不得调用 creator/editor，
+     不得写入仓库。只有用户后续发送与 proposal_id 匹配的明确确认，入口适配器才能继续。
+  9. no-action 返回 result=no-action，说明不提炼的原因与可复用边界，不生成虚假的提案 ID。
 
-  参数质量要求：create-skill 的 skill_id 使用 zx- 个人命名空间，并符合 manifest.validation 的
-  custom_skill_id_pattern；description 和 triggers 是可检索的真实触发场景；
-  workflow 是可以执行的有序步骤；quality_criteria 可验证；schema 字段完整；constraints 保留
-  权限、数据安全、第三方来源和用户工作区边界。
+  参数质量：skill_id 使用 zx- 命名空间；description 和 triggers 是真实触发场景；workflow 可执行；
+  quality_criteria 可验证；schema 完整；constraints 保留权限、数据安全、来源和工作区边界。项目独有内容
+  只能出现在排除说明或证据中，不能被硬编码为通用 Skill 规则。
 
 metadata:
   author: ZXSkills
@@ -266,3 +403,4 @@ metadata:
     - builtin
     - self-improve
     - knowledge-capture
+    - confirmation-gate

@@ -41,12 +41,19 @@ description: Use when the user explicitly invokes ZXSkills to import or install 
 | “确认改造入库…” | 读取导入评估，执行 `approve-customized` |
 | “丢弃这个外部 Skill…” | 读取导入评估，执行 `discard` |
 | “总结当前链路/这次工作” | 读取 `builtin/skill-selfimprove.yaml`，只分析总结 |
-| “总结并沉淀/做成 Skill” | 先执行 self-improve，再按唯一结论路由 creator 或 editor |
-| “新建一个 Skill…” | 读取 `builtin/skill-creator.yaml` |
-| “修改/优化某个 Skill…” | 读取 `builtin/skill-editor.yaml` |
+| “总结并沉淀/总结并优化/做成 Skill” | 只执行 self-improve，输出提案并停止，等待用户确认 |
+| “确认提炼 `<proposal_id>`” | 校验当前任务中的提案与 ID，匹配后再路由 creator 或 editor |
+| “放弃提炼 `<proposal_id>`” | 结束该提案，不写入仓库 |
+| “新建一个 Skill…” | 以 `invocation_source=direct` 读取 `builtin/skill-creator.yaml` |
+| “修改/优化某个 Skill…” | 以 `invocation_source=direct` 读取 `builtin/skill-editor.yaml` |
+| “使用/调用 `<skill-id>` …” | 扫描正式 Skill，按唯一 id 加载并执行该 Skill |
+| “确认执行项目结构提案 `<zpo-id>`” | 找到原提案，以 `action=apply` 和匹配 confirmation 再次执行原 Skill |
+| “放弃项目结构提案 `<zpo-id>`” | 结束该提案，不修改目标项目 |
 | “有哪些 Skill/仓库状态” | 按 manifest 扫描正式 Skill 并简要列出 |
 
-如果一句话同时包含多个意图，按依赖顺序执行。例如“总结并沉淀”先分析，再创建或更新。无法可靠区分时选择只读的总结分析，并提出一个最小问题。
+如果一句话同时包含“总结”和“沉淀/优化”，只执行只读 Self-Improve，不得在同一轮继续创建或修改。
+无法可靠区分时选择只读分析。只有不依赖 Self-Improve、直接且明确的“新建/修改 Skill”请求才使用
+`invocation_source=direct`。
 
 ## 第三方 Skill
 
@@ -70,11 +77,43 @@ description: Use when the user explicitly invokes ZXSkills to import or install 
 3. `评估结论`：固定为 `no-action`、`create-skill` 或 `update-skill`，并说明理由。
 4. `下一步`：给出一条可复制的 `$zx-skills ...` 指令。
 
-用户明确说“沉淀”“落地”或“做成 Skill”时：
+用户明确说“沉淀”“落地”“做成 Skill”或“总结并优化”时，也必须先停在分析提案：
 
-- self-improve 返回 `create-skill`：把完整 `creator_parameters` 交给 `skill-creator.yaml` 执行。
-- 返回 `update-skill`：把完整 `editor_parameters` 交给 `skill-editor.yaml` 执行。
-- 返回 `no-action`：不强行创建文件，说明原因。
+- `no-action`：说明项目独有、证据不足或已有能力已经覆盖，不强行创建文件。
+- `create-skill` / `update-skill`：先向用户说明 `哪些内容可以提炼`、`为什么值得提炼`、跨项目场景、
+  证据、项目独有排除项、确认后具体改动和风险；返回 `result=awaiting-confirmation`、`proposal_id`
+  与完整 creator/editor 参数。
+- 同一轮不得调用 creator/editor，不得因为用户最初说了“沉淀”就把它解释成对尚未展示提案的确认。
+- 最后给出两条可复制指令：
+  - `$zx-skills 确认提炼 <proposal_id>`
+  - `$zx-skills 放弃提炼 <proposal_id>`
+
+用户后续确认时：
+
+1. 在当前任务上下文中找到完全匹配的 `proposal_id`；找不到时停止，要求用户粘贴原提案，不凭印象重建。
+2. 按 Self-Improve 规则对当前 creator/editor 参数重新计算 `proposal_id`；确认不匹配或参数已改变时返回
+   `blocked`，重新展示新提案等待再次确认。
+3. `create-skill` 路径把原参数连同 `invocation_source=self-improve` 及
+   `self_improve_confirmation={confirmed:true, proposal_id, action:create-skill}` 交给 creator。
+4. `update-skill` 路径同理传给 editor，action 为 `update-skill`。
+5. 写入后返回真实验证结果。`放弃提炼` 只结束本提案，不删除任何已经存在的文件。
+
+## 业务 Skill 提案确认
+
+正式业务 Skill 可以定义自己的提案确认协议。当前 `zx-project-organizer` 在 initialize/reorganize 的
+`action=propose` 阶段只读检查，返回 `result=awaiting-confirmation` 或 `migration-proposed` 以及 `zpo-*`
+`proposal_id`；总入口必须原样展示提案和以下两条指令：
+
+- `$zx-skills 确认执行项目结构提案 <zpo-proposal_id>`
+- `$zx-skills 放弃项目结构提案 <zpo-proposal_id>`
+
+收到确认后，在当前任务上下文中找到原始 mode、project_root、context、`proposal_payload` 和
+`proposal_id`，以 `action=apply`、
+`approved_proposal={proposal_id:<zpo-id>, canonical_payload:<原 proposal_payload>}` 和
+`confirmation={confirmed:true, proposal_id:<zpo-id>}` 再次调用 `zx-project-organizer`。不得重新生成或润色
+已确认提案。Skill 会从 canonical payload 重新计算 ID，并重新检查工作区是否仍适合执行；确认不匹配、
+原载荷不可读取、哈希不一致或目标状态已变化时返回 `blocked`，不得猜测或沿用不安全的旧计划。
+`放弃项目结构提案` 不执行 apply，也不删除任何已有内容。
 
 ## 输出和变更
 
@@ -90,6 +129,11 @@ description: Use when the user explicitly invokes ZXSkills to import or install 
 $zx-skills 帮我安装一个 Skill，地址是 https://example.com/skill
 $zx-skills 总结一下当前链路
 $zx-skills 总结当前链路并沉淀成 Skill
+$zx-skills 确认提炼 zxsi-0123456789abcdef
+$zx-skills 放弃提炼 zxsi-0123456789abcdef
+$zx-skills 使用 zx-project-organizer，帮我审计当前项目结构
+$zx-skills 确认执行项目结构提案 zpo-0123456789abcdef
+$zx-skills 放弃项目结构提案 zpo-0123456789abcdef
 $zx-skills 优化 zx-testing-api-regression-planning，补充异步消息失败场景
 $zx-skills 列出我的测试类 Skills
 ```
