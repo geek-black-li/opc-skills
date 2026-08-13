@@ -72,6 +72,7 @@ switch ($Action) {
         Write-Host "Codex entrypoint: $TargetDir"
         Write-Host "Repository: $RepositoryRoot"
         Write-Host 'Restart Codex if needed, then run: $zx-skills 查看仓库状态'
+        Write-Host 'Optional completion reminder: powershell -ExecutionPolicy Bypass -File .\scripts\configure-codex-reminder.ps1 install'
     }
 
     "status" {

@@ -68,6 +68,7 @@ case "$action" in
     echo "Codex entrypoint: $target_dir"
     echo "Repository: $repository_root"
     echo 'Restart Codex if needed, then run: $zx-skills 查看仓库状态'
+    echo 'Optional completion reminder: bash scripts/configure-codex-reminder.sh install'
     ;;
 
   status)

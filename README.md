@@ -77,6 +77,48 @@ $zx-skills 查看仓库状态
 
 Codex 原生 Skill 使用 `$skill-name` 显式调用；`/skills` 只用于查看 Skill 列表。如果安装后没有出现，先完全重启 Codex，再检查安装脚本输出的目标路径。
 
+### 第四步（推荐）：开启项目节点完成提醒
+
+如果希望 Codex 在完成并验证一个功能、方案、测试、问题排查或发布节点后，主动判断本次链路是否值得沉淀，可以安装 ZXSkills 的全局提醒规则。
+
+macOS / Linux：
+
+```bash
+bash scripts/configure-codex-reminder.sh install
+```
+
+Windows PowerShell：
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\configure-codex-reminder.ps1 install
+```
+
+脚本把 [`templates/codex-agents-reminder.md`](templates/codex-agents-reminder.md) 中的受管片段追加到 Codex 全局指令文件：通常是 `~/.codex/AGENTS.md`；如果已经存在非空的 `~/.codex/AGENTS.override.md`，则写入当前生效的 override 文件。已有全局规则会被保留，重复运行不会产生重复片段。
+
+这套配置的边界是：**只提醒，不自动执行**。Codex 只会在值得沉淀的重要节点结束时，在最终答复末尾建议运行：
+
+```text
+$zx-skills 总结一下当前链路
+```
+
+它不会自动调用 `$zx-skills`，也不会自动创建、修改、移动或删除 ZXSkills 仓库文件。普通问答、未完成或被阻塞的任务、微小修改、纯项目特有逻辑，以及本任务已经调用过 ZXSkills 时不应提醒。
+
+Codex 会在任务启动时读取用户级全局指令，并让所有项目继承；具体加载顺序见 [Codex `AGENTS.md` 官方说明](https://learn.chatgpt.com/docs/agent-configuration/agents-md)。配置完成后，新建一个 Codex 任务进行验证；无需把提醒规则复制到每个开发项目。
+
+检查或关闭提醒：
+
+```bash
+bash scripts/configure-codex-reminder.sh status
+bash scripts/configure-codex-reminder.sh uninstall
+```
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\configure-codex-reminder.ps1 status
+powershell -ExecutionPolicy Bypass -File .\scripts\configure-codex-reminder.ps1 uninstall
+```
+
+`uninstall` 只删除带有 `zx-skills-reminder` 标记的受管片段，不删除其他全局 Codex 指令。需要手动配置时，也可以打开模板并把完整标记片段合并到自己的全局 `AGENTS.md`；不要用模板覆盖原文件。
+
 ## 日常用法
 
 只需要记住一个入口 `$zx-skills`，后面直接说自然语言：
@@ -126,7 +168,7 @@ powershell -ExecutionPolicy Bypass -File .\scripts\install-codex.ps1 status
 powershell -ExecutionPolicy Bypass -File .\scripts\install-codex.ps1 uninstall
 ```
 
-卸载只删除 Codex 用户级入口，不删除本地 ZXSkills 仓库，也不会删除 `skills-custom`、`skills-external` 或暂存箱内容。
+ZXSkills 入口和完成提醒是两项独立配置。`install-codex.* uninstall` 只删除 Codex 用户级入口；如果同时配置了完成提醒，再运行 `configure-codex-reminder.* uninstall`。两类卸载都不会删除本地 ZXSkills 仓库、`skills-custom`、`skills-external` 或暂存箱内容。
 
 ## 工具支持状态
 
@@ -161,6 +203,14 @@ powershell -ExecutionPolicy Bypass -File .\scripts\install-codex.ps1 uninstall
 
 不能。所有外部内容必须先进入 `skills-temp-inbox`，只有匹配 `inbox_id` 的明确确认才能迁移到正式目录。
 
+### 完成提醒会自动修改仓库吗
+
+不会。提醒规则只让 Codex 判断是否应该建议你运行 `$zx-skills 总结一下当前链路`。只有你明确调用 `$zx-skills`，并在需要写入时给出沉淀或入库指令，仓库才会按相应工作流发生变更。
+
+### 为什么不直接开启 ZXSkills 隐式调用
+
+ZXSkills 同时包含导入、创建和修改能力。为避免宽泛的自动匹配触发写入流程，Codex 适配器保持 `allow_implicit_invocation: false`；全局 `AGENTS.md` 只承担轻量提醒，具体操作继续由使用者通过 `$zx-skills` 明确发起。显式/隐式调用机制见 [Codex Skills 官方说明](https://learn.chatgpt.com/docs/build-skills)。
+
 ## 设计目标
 
 - 覆盖完整项目交付链路，而不是按某一款 AI 工具拆分目录。
@@ -179,7 +229,14 @@ ZXSkills/
 ├── skill-template.yaml
 ├── scripts/
 │   ├── install-codex.sh
-│   └── install-codex.ps1
+│   ├── install-codex.ps1
+│   ├── configure-codex-reminder.sh
+│   └── configure-codex-reminder.ps1
+├── templates/
+│   └── codex-agents-reminder.md
+├── tests/
+│   ├── test-configure-codex-reminder.sh
+│   └── test-configure-codex-reminder.ps1
 ├── adapters/
 │   └── codex/zx-skills/
 │       ├── SKILL.md
