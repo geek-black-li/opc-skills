@@ -1,0 +1,6 @@
+interface:
+  display_name: "ZXSkills"
+  short_description: "统一管理第三方导入、链路总结和个人 Skill 沉淀"
+  default_prompt: "Use $zx-skills to summarize the current workflow and decide whether to create or update a reusable skill."
+policy:
+  allow_implicit_invocation: false

@@ -6,6 +6,32 @@ ZXSkills 用于沉淀一个全栈 OPC 从需求到交付全过程中的可复用
 
 > 安全边界：任何网络下载或外部导入的 Skill 都必须先进入 `skills-temp-inbox`。该目录被 manifest 全局排除，未经静态评估和用户明确确认，不得进入 `skills-external` 或 `skills-custom`。
 
+## Codex 最简单用法
+
+安装仓库自带的 Codex 适配入口后，只需要记住一个命令式 Skill：`$zx-skills`。
+
+```text
+$zx-skills 帮我安装一个 Skill，地址是 https://example.com/skill
+$zx-skills 总结一下当前链路
+$zx-skills 总结当前链路并沉淀成 Skill
+$zx-skills 优化 api-regression-planning，补充异步消息失败场景
+$zx-skills 列出我的测试类 Skills
+```
+
+Codex 原生 Skill 使用 `$skill-name` 显式调用，而不是自定义 `/命令`，所以入口是 `$zx-skills`。总入口会自动判断意图并读取对应的 builtin Skill，用户不需要填写内部 YAML 参数。
+
+第三方 Skill 的“安装”仍保留一次安全确认：首次调用只进入 `skills-temp-inbox` 并完成静态评估；评估后按提示执行 `$zx-skills 确认原样入库 <inbox_id>`、`确认改造入库` 或 `丢弃`。
+
+Codex 用户级安装推荐使用符号链接，让 Codex 始终读取仓库最新版：
+
+```bash
+ln -s \
+  "/absolute/path/to/ZXSkills/adapters/codex/zx-skills" \
+  "$HOME/.agents/skills/zx-skills"
+```
+
+Codex 会自动检测 Skill 变更；如果列表中没有出现，重启 Codex 后通过 `/skills` 检查，或直接输入 `$zx-skills`。
+
 ## 设计目标
 
 - 覆盖完整项目交付链路，而不是按某一款 AI 工具拆分目录。
@@ -22,6 +48,10 @@ ZXSkills/
 ├── README.md
 ├── skill-manifest.yaml
 ├── skill-template.yaml
+├── adapters/
+│   └── codex/zx-skills/
+│       ├── SKILL.md
+│       └── agents/openai.yaml
 ├── builtin/
 │   ├── skill-creator.yaml
 │   ├── skill-editor.yaml
