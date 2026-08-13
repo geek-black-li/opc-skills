@@ -6,31 +6,160 @@ ZXSkills 用于沉淀一个全栈 OPC 从需求到交付全过程中的可复用
 
 > 安全边界：任何网络下载或外部导入的 Skill 都必须先进入 `skills-temp-inbox`。该目录被 manifest 全局排除，未经静态评估和用户明确确认，不得进入 `skills-external` 或 `skills-custom`。
 
-## Codex 最简单用法
+## 目前提供什么
 
-安装仓库自带的 Codex 适配入口后，只需要记住一个命令式 Skill：`$zx-skills`。
+当前版本提供一套可持续积累个人 Skills 的仓库框架，以及一个 Codex 原生总入口 `$zx-skills`：
+
+| 能力 | 用途 |
+| --- | --- |
+| 第三方 Skill 导入 | 下载内容先隔离到暂存箱，完成来源、许可、兼容性和安全评估后再确认入库 |
+| 当前链路总结 | 总结刚完成的需求、开发、测试或发布过程，识别可复用经验 |
+| Skill 创建 | 将确认可复用的经验生成到 `skills-custom` |
+| Skill 优化 | 对已有 Skill 做最小、可追溯的更新 |
+| 仓库查看 | 按分类列出正式 Skill 和仓库状态 |
+
+当前仓库**没有预置产品、设计、开发、测试等业务 Skill**。`skills-external` 和 `skills-custom` 初始为空；业务能力需要由使用者在实际项目中逐步沉淀或评估导入。
+
+## 5 分钟开始使用 Codex
+
+### 前置条件
+
+- 已安装 Git。
+- 已安装并能正常使用 Codex 桌面端、CLI 或 IDE 扩展。
+- Codex 对本地仓库及 `~/.agents/skills` 具有读取权限。
+
+### 第一步：克隆仓库
+
+只想试用可以直接克隆；准备长期沉淀个人资产时，建议先在 Gitee Fork 本仓库，再克隆自己的 Fork。
+
+```bash
+git clone https://gitee.com/geek_black_li/zx-skills.git
+cd zx-skills
+```
+
+每位使用者都在自己的本地副本中维护 `skills-custom` 和 `skills-external`。本地生成的内容不会自动回写原仓库；如需跨设备同步，请提交并推送到自己的 Fork 或私有远程仓库。
+
+### 第二步：安装 `$zx-skills`
+
+macOS / Linux：
+
+```bash
+bash scripts/install-codex.sh
+```
+
+Windows PowerShell：
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\install-codex.ps1
+```
+
+安装脚本会在用户级 Codex Skill 目录创建指向本仓库的链接：
+
+```text
+~/.agents/skills/zx-skills
+```
+
+脚本可以重复运行。若目标位置已经存在其他文件或指向其他仓库的链接，脚本会拒绝覆盖并提示人工处理。
+
+### 第三步：验证安装
+
+重新打开一个 Codex 任务，输入：
+
+```text
+/skills
+```
+
+确认列表中出现 `zx-skills`，然后执行：
+
+```text
+$zx-skills 查看仓库状态
+```
+
+Codex 原生 Skill 使用 `$skill-name` 显式调用；`/skills` 只用于查看 Skill 列表。如果安装后没有出现，先完全重启 Codex，再检查安装脚本输出的目标路径。
+
+## 日常用法
+
+只需要记住一个入口 `$zx-skills`，后面直接说自然语言：
 
 ```text
 $zx-skills 帮我安装一个 Skill，地址是 https://example.com/skill
 $zx-skills 总结一下当前链路
 $zx-skills 总结当前链路并沉淀成 Skill
+$zx-skills 新建一个 API 回归测试 Skill
 $zx-skills 优化 api-regression-planning，补充异步消息失败场景
 $zx-skills 列出我的测试类 Skills
 ```
 
-Codex 原生 Skill 使用 `$skill-name` 显式调用，而不是自定义 `/命令`，所以入口是 `$zx-skills`。总入口会自动判断意图并读取对应的 builtin Skill，用户不需要填写内部 YAML 参数。
+总入口会自动判断意图并读取对应的 builtin Skill，不要求使用者填写内部 YAML 参数。
 
-第三方 Skill 的“安装”仍保留一次安全确认：首次调用只进入 `skills-temp-inbox` 并完成静态评估；评估后按提示执行 `$zx-skills 确认原样入库 <inbox_id>`、`确认改造入库` 或 `丢弃`。
+### 第三方 Skill 为什么需要再次确认
 
-Codex 用户级安装推荐使用符号链接，让 Codex 始终读取仓库最新版：
+“帮我安装一个 Skill”第一次只会把第三方内容放入 `skills-temp-inbox` 并完成静态评估，不会直接加载或执行。评估完成后，Codex 会给出 `inbox_id`，再选择：
 
-```bash
-ln -s \
-  "/absolute/path/to/ZXSkills/adapters/codex/zx-skills" \
-  "$HOME/.agents/skills/zx-skills"
+```text
+$zx-skills 确认原样入库 <inbox_id>
+$zx-skills 确认改造入库 <inbox_id>，要求：移除特定工具依赖
+$zx-skills 丢弃 <inbox_id>
 ```
 
-Codex 会自动检测 Skill 变更；如果列表中没有出现，重启 Codex 后通过 `/skills` 检查，或直接输入 `$zx-skills`。
+这是仓库的强制供应链安全边界，不能通过一句“直接安装”绕过。
+
+## 更新、检查和卸载
+
+更新仓库后，用户级链接会自动指向最新版，不需要重新安装：
+
+```bash
+git pull --ff-only
+```
+
+macOS / Linux：
+
+```bash
+bash scripts/install-codex.sh status
+bash scripts/install-codex.sh uninstall
+```
+
+Windows PowerShell：
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\install-codex.ps1 status
+powershell -ExecutionPolicy Bypass -File .\scripts\install-codex.ps1 uninstall
+```
+
+卸载只删除 Codex 用户级入口，不删除本地 ZXSkills 仓库，也不会删除 `skills-custom`、`skills-external` 或暂存箱内容。
+
+## 工具支持状态
+
+| 工具 | 状态 | 使用方式 |
+| --- | --- | --- |
+| Codex 桌面端 / CLI / IDE 扩展 | 已提供原生入口 | 安装后使用 `$zx-skills` |
+| Cursor | 尚未提供一键适配 | 可手动读取仓库文件；后续需要 `.cursor/rules` / commands 适配器 |
+| Windsurf | 尚未提供一键适配 | 可手动读取仓库文件；后续需要对应规则或工作流适配器 |
+| 其他本地 AI 工具 | 取决于工具能力 | 按 `skill-manifest.yaml` 和通用 YAML 契约实现适配 |
+
+仓库采用通用源格式，但这不代表所有工具都能原生识别 `skill-manifest.yaml`。
+
+## 开源许可状态
+
+本仓库当前尚未提供 `LICENSE` 文件。公开可见不等于自动获得复制、修改或再发布许可；仓库维护者应在正式对外推广前选择并添加合适的开源或自定义许可证。
+
+## 常见问题
+
+### 输入 `$zx-skills` 没有触发
+
+先运行安装脚本的 `status`，确认入口指向当前仓库；再完全重启 Codex，通过 `/skills` 检查。不要输入 `/zx-skills`，Codex 的 Skill 显式调用符号是 `$`。
+
+### 更新后需要重新安装吗
+
+不需要。安装使用目录链接，`git pull --ff-only` 后即指向最新内容；Codex 未刷新时重启即可。
+
+### 我创建的个人 Skill 会上传到原作者仓库吗
+
+不会。它们只写入你的本地副本。只有你主动执行 Git 提交和推送时才会进入配置的远程仓库，因此长期使用建议维护自己的 Fork 或私有仓库。
+
+### 能否跳过第三方 Skill 的暂存评估
+
+不能。所有外部内容必须先进入 `skills-temp-inbox`，只有匹配 `inbox_id` 的明确确认才能迁移到正式目录。
 
 ## 设计目标
 
@@ -48,6 +177,9 @@ ZXSkills/
 ├── README.md
 ├── skill-manifest.yaml
 ├── skill-template.yaml
+├── scripts/
+│   ├── install-codex.sh
+│   └── install-codex.ps1
 ├── adapters/
 │   └── codex/zx-skills/
 │       ├── SKILL.md
