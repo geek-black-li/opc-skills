@@ -36,25 +36,10 @@ assert manifest["validation"]["custom_skill_id_pattern"].startswith("^zx-")
 assert manifest["validation"]["external_forbidden_id_prefixes"] == ["zx-"]
 
 primary = read("adapters/codex/opc-skills/SKILL.md")
-compat = read("adapters/codex/zx-skills/SKILL.md")
 assert re.search(r"^name: opc-skills$", primary, re.MULTILINE)
 assert "$opc-skills" in primary
-assert "adapters/codex/opc-skills/SKILL.md" in compat
-assert re.search(r"^name: zx-skills$", compat, re.MULTILINE)
-assert len(compat.splitlines()) <= 32
-assert re.findall(r"^#{1,6}\s+(.+)$", compat, re.MULTILINE) == ["OPCSkills 兼容入口"]
-for primary_heading in (
-    "个人命名空间",
-    "动态分类",
-    "意图路由",
-    "第三方 Skill",
-    "总结与沉淀",
-    "业务 Skill 提案确认",
-    "引导式项目创建与整理",
-    "输出和变更",
-    "示例",
-):
-    assert f"## {primary_heading}" not in compat
+assert "$zx-skills" not in primary
+assert not (ROOT / "adapters/codex/zx-skills").exists()
 
 reminder = read("templates/codex-agents-reminder.md")
 assert "<!-- zx-skills-reminder:start -->" in reminder

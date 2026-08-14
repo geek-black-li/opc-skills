@@ -1,6 +1,0 @@
-interface:
-  display_name: "OPCSkills (zx-skills compatibility)"
-  short_description: "旧入口；新任务请优先使用 $opc-skills"
-  default_prompt: "Use the legacy $zx-skills alias and delegate the request to the OPCSkills primary adapter."
-policy:
-  allow_implicit_invocation: false

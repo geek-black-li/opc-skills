@@ -7,8 +7,6 @@ description: Use when the user explicitly invokes OPCSkills to execute a formal 
 
 把 `$opc-skills` 作为 OPCSkills 仓库的主入口。接受自然语言，不要求用户填写内部 YAML 参数；根据意图读取并执行对应 builtin Skill。
 
-`$zx-skills` 是等价兼容别名。
-
 ## 定位仓库
 
 1. 获取本 `SKILL.md` 的真实路径；如果它是符号链接，先解析链接目标。
