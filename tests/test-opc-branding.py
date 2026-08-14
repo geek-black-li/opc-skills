@@ -92,6 +92,19 @@ assert "~/.agents/skills/zx-skills" not in readme
 assert "$zx-skills" not in readme
 assert "adapters/codex/zx-skills/" not in readme
 
+readme_tests_tree = readme.split("├── tests/\n", 1)[1].split("├── adapters/", 1)[0]
+for test_name in (
+    "test-install-codex.sh",
+    "test-install-codex.ps1",
+    "test-opc-branding.py",
+    "test-project-organizer-contract.py",
+    "test-proposal-id.py",
+    "test-selfimprove-confirmation.py",
+):
+    assert (ROOT / "tests" / test_name).is_file(), test_name
+    assert f"│   ├── {test_name}" in readme_tests_tree, test_name
+assert "│   └── …" in readme_tests_tree
+
 daily_use = readme.split("## 日常用法", 1)[1].split("\n## ", 1)[0]
 daily_commands = re.findall(r"^\$(?:opc|zx)-skills\b.*$", daily_use, re.MULTILINE)
 assert daily_commands

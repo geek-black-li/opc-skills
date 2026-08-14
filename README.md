@@ -584,7 +584,15 @@ OPCSkills/
 │   ├── test-configure-codex-reminder.sh
 │   ├── test-configure-codex-reminder.ps1
 │   ├── test-dynamic-categories.py
-│   └── test-personal-namespace.py
+│   ├── test-install-codex.sh
+│   ├── test-install-codex.ps1
+│   ├── test-opc-branding.py
+│   ├── test-personal-namespace.py
+│   ├── test-project-organizer-contract.py
+│   ├── test-project-organizer-directory-first.py
+│   ├── test-proposal-id.py
+│   ├── test-selfimprove-confirmation.py
+│   └── …
 ├── adapters/
 │   └── codex/
 │       ├── opc-skills/
