@@ -88,3 +88,55 @@ assert re.fullmatch(r"zxsi-[0-9a-f]{16}\n", proposal_result.stdout)
 for path in (ROOT / "skills-custom").glob("*/**/skill.y*ml"):
     skill = yaml.safe_load(path.read_text(encoding="utf-8"))
     assert skill["id"].startswith("zx-")
+
+readme = read("README.md")
+for phrase in (
+    "# OPCSkills：全栈 OPC 本地 Skills 仓库",
+    "git clone https://github.com/geek-black-li/opc-skills.git",
+    "cd opc-skills",
+    "$opc-skills 查看仓库状态",
+    "~/.agents/skills/opc-skills",
+    "~/.agents/skills/zx-skills",
+    "Gitee 备用远程",
+    "zx-<category>-<function>",
+):
+    assert phrase in readme, phrase
+
+assert "`$opc-skills` 是仓库主入口" in readme
+assert "`$zx-skills` 仅作为兼容别名" in readme
+assert "Gitee 备用远程需要手动同步，不是自动镜像" in readme
+
+daily_use = readme.split("## 日常用法", 1)[1].split("\n## ", 1)[0]
+daily_commands = re.findall(r"^\$(?:opc|zx)-skills\b.*$", daily_use, re.MULTILINE)
+assert daily_commands
+assert all(command.startswith("$opc-skills") for command in daily_commands), daily_commands
+
+for phrase in (
+    "adapters/codex/opc-skills/",
+    "adapters/codex/zx-skills/",
+    "`status` 只有在两个受管入口都正确指向当前仓库时才通过",
+    "`uninstall` 只删除这两个由安装器管理的链接",
+    "外部路径绝不会被覆盖",
+    "旧版只安装了 `$zx-skills`",
+    "旧标记 `zx-skills-reminder` 会刻意保持不变",
+):
+    assert phrase in readme, phrase
+
+for preserved_contract in (
+    "### 项目结构整理为什么也分两步",
+    "## 常见问题",
+    "### 扩展业务分类",
+    "#### 个人 Skill 命名空间",
+    "### `skills-temp-inbox`：外部 Skill 隔离暂存箱",
+    "## 工作流 A：手动沉淀",
+    "## 工作流 B：自动 Self-Improve",
+    "## 工作流 C：导入第三方 Skill",
+    "## 多工具兼容与接入",
+    "zx-skills-reminder",
+    "zxsi-",
+    "zpo-",
+    "zx-project-organizer",
+    "zx-ui-spec",
+    "zx-ui-check",
+):
+    assert preserved_contract in readme, preserved_contract

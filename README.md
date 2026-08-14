@@ -1,6 +1,6 @@
-# ZXSkills：全栈 OPC 本地 Skills 仓库
+# OPCSkills：全栈 OPC 本地 Skills 仓库
 
-ZXSkills 用于沉淀一个全栈 OPC 从需求到交付全过程中的可复用 AI 执行能力。仓库以产品、UI 设计、全栈与架构、测试、运维发布、项目管理六个角色域作为核心分类；确实无法匹配时可按受控规则扩展新的业务分类。仓库不绑定某一种编程 AI 产品。
+OPCSkills 用于沉淀一个全栈 OPC 从需求到交付全过程中的可复用 AI 执行能力。仓库以产品、UI 设计、全栈与架构、测试、运维发布、项目管理六个角色域作为核心分类；确实无法匹配时可按受控规则扩展新的业务分类。仓库不绑定某一种编程 AI 产品。
 
 仓库本身是一套 Skill 集合：AI 工具或适配器读取根目录的 [`skill-manifest.yaml`](skill-manifest.yaml)，按目录扫描规则发现 `builtin`、`skills-external` 和 `skills-custom` 中的 Skill。新增或删除业务 Skill 时不需要手工维护索引。
 
@@ -8,7 +8,7 @@ ZXSkills 用于沉淀一个全栈 OPC 从需求到交付全过程中的可复用
 
 ## 目前提供什么
 
-当前版本提供一套可持续积累个人 Skills 的仓库框架，以及一个 Codex 原生总入口 `$zx-skills`：
+当前版本提供一套可持续积累个人 Skills 的仓库框架，以及 Codex 原生主入口 `$opc-skills`；原有 `$zx-skills` 入口继续作为兼容别名：
 
 | 能力 | 用途 |
 | --- | --- |
@@ -30,26 +30,21 @@ ZXSkills 用于沉淀一个全栈 OPC 从需求到交付全过程中的可复用
 - 已安装并能正常使用 Codex 桌面端、CLI 或 IDE 扩展。
 - Codex 对本地仓库及 `~/.agents/skills` 具有读取权限。
 
-### 第一步：克隆仓库
+### 第一步：克隆并安装
 
-只想试用可以直接克隆；准备长期沉淀个人资产时，建议先在 Gitee Fork 本仓库，再克隆自己的 Fork。
+只想试用可以直接克隆；准备长期沉淀个人资产时，建议先在 GitHub Fork 本仓库，再克隆自己的 Fork。
 
 ```bash
-git clone https://gitee.com/geek_black_li/zx-skills.git
-cd zx-skills
+git clone https://github.com/geek-black-li/opc-skills.git
+cd opc-skills
+bash scripts/install-codex.sh
 ```
 
 每位使用者都在自己的本地副本中维护 `skills-custom` 和 `skills-external`。本地生成的内容不会自动回写原仓库；如需跨设备同步，请提交并推送到自己的 Fork 或私有远程仓库。
 
-### 第二步：安装 `$zx-skills`
+### 第二步：确认双入口和 Windows 安装
 
-macOS / Linux：
-
-```bash
-bash scripts/install-codex.sh
-```
-
-Windows PowerShell：
+macOS / Linux 在上一步已经完成安装，脚本可随时重复运行。Windows PowerShell 在仓库根目录执行：
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\scripts\install-codex.ps1
@@ -58,10 +53,11 @@ powershell -ExecutionPolicy Bypass -File .\scripts\install-codex.ps1
 安装脚本会在用户级 Codex Skill 目录创建指向本仓库的链接：
 
 ```text
+~/.agents/skills/opc-skills
 ~/.agents/skills/zx-skills
 ```
 
-脚本可以重复运行。若目标位置已经存在其他文件或指向其他仓库的链接，脚本会拒绝覆盖并提示人工处理。
+前者是主入口，后者只用于兼容旧指令和使用习惯。脚本可以重复运行；旧版只安装了 `$zx-skills` 时，重新运行 `install` 即可补齐 `$opc-skills`，不会替换已经正确的兼容入口。若任一目标位置已经存在其他文件、目录或指向其他仓库的链接，脚本会拒绝整个操作并提示人工处理，外部路径绝不会被覆盖。
 
 ### 第三步：验证安装
 
@@ -71,17 +67,24 @@ powershell -ExecutionPolicy Bypass -File .\scripts\install-codex.ps1
 /skills
 ```
 
-确认列表中出现 `zx-skills`，然后执行：
+确认列表中同时出现 `opc-skills` 和 `zx-skills`，然后使用主入口执行：
 
 ```text
-$zx-skills 查看仓库状态
+$opc-skills 查看仓库状态
 ```
 
 Codex 原生 Skill 使用 `$skill-name` 显式调用；`/skills` 只用于查看 Skill 列表。如果安装后没有出现，先完全重启 Codex，再检查安装脚本输出的目标路径。
 
+### 入口与远程兼容边界
+
+- `$opc-skills` 是仓库主入口，也是正常使用时的推荐入口。
+- `$zx-skills` 仅作为兼容别名，继续支持已有指令和使用习惯，不再作为推荐主入口。
+- 个人 Skill ID 继续使用 `zx-*`；提案 ID 继续使用 `zxsi-*` 和 `zpo-*`，已有业务 Skill ID 不会因仓库改名而变化。
+- GitHub 是主仓库和默认克隆源；Gitee 备用远程需要手动同步，不是自动镜像。
+
 ### 第四步（推荐）：开启项目节点完成提醒
 
-如果希望 Codex 在完成并验证一个功能、方案、测试、问题排查或发布节点后，主动判断本次链路是否值得沉淀，可以安装 ZXSkills 的全局提醒规则。
+如果希望 Codex 在完成并验证一个功能、方案、测试、问题排查或发布节点后，主动判断本次链路是否值得沉淀，可以安装 OPCSkills 的全局提醒规则。
 
 macOS / Linux：
 
@@ -100,10 +103,10 @@ powershell -ExecutionPolicy Bypass -File .\scripts\configure-codex-reminder.ps1 
 这套配置的边界是：**只提醒，不自动执行**。Codex 只会在值得沉淀的重要节点结束时，在最终答复末尾建议运行：
 
 ```text
-$zx-skills 总结一下当前链路
+$opc-skills 总结一下当前链路
 ```
 
-它不会自动调用 `$zx-skills`，也不会自动创建、修改、移动或删除 ZXSkills 仓库文件。普通问答、未完成或被阻塞的任务、微小修改、纯项目特有逻辑，以及本任务已经调用过 ZXSkills 时不应提醒。
+它不会自动调用 `$opc-skills`，也不会自动创建、修改、移动或删除 OPCSkills 仓库文件。普通问答、未完成或被阻塞的任务、微小修改、纯项目特有逻辑，以及本任务已经调用过 OPCSkills 时不应提醒。
 
 Codex 会在任务启动时读取用户级全局指令，并让所有项目继承；具体加载顺序见 [Codex `AGENTS.md` 官方说明](https://learn.chatgpt.com/docs/agent-configuration/agents-md)。配置完成后，新建一个 Codex 任务进行验证；无需把提醒规则复制到每个开发项目。
 
@@ -119,24 +122,24 @@ powershell -ExecutionPolicy Bypass -File .\scripts\configure-codex-reminder.ps1 
 powershell -ExecutionPolicy Bypass -File .\scripts\configure-codex-reminder.ps1 uninstall
 ```
 
-`uninstall` 只删除带有 `zx-skills-reminder` 标记的受管片段，不删除其他全局 Codex 指令。需要手动配置时，也可以打开模板并把完整标记片段合并到自己的全局 `AGENTS.md`；不要用模板覆盖原文件。
+提醒配置继续使用历史受管标记；旧标记 `zx-skills-reminder` 会刻意保持不变，以便升级和卸载能够识别既有片段。提醒脚本的 `uninstall` 只删除带有该标记的受管片段，不删除其他全局 Codex 指令。需要手动配置时，也可以打开模板并把完整标记片段合并到自己的全局 `AGENTS.md`；不要用模板覆盖原文件。
 
 ## 日常用法
 
-只需要记住一个入口 `$zx-skills`，后面直接说自然语言：
+正常使用只需要记住主入口 `$opc-skills`，后面直接说自然语言：
 
 ```text
-$zx-skills 帮我安装一个 Skill，地址是 https://example.com/skill
-$zx-skills 总结一下当前链路
-$zx-skills 总结当前链路并沉淀成 Skill
-$zx-skills 确认提炼 <proposal_id>
-$zx-skills 放弃提炼 <proposal_id>
-$zx-skills 使用 zx-project-organizer，帮我审计当前项目结构
-$zx-skills 确认执行项目结构提案 <zpo-proposal_id>
-$zx-skills 放弃项目结构提案 <zpo-proposal_id>
-$zx-skills 新建一个 API 回归测试 Skill
-$zx-skills 优化 zx-test-regression，补充异步消息失败场景
-$zx-skills 列出我的测试类 Skills
+$opc-skills 帮我安装一个 Skill，地址是 https://example.com/skill
+$opc-skills 总结一下当前链路
+$opc-skills 总结当前链路并沉淀成 Skill
+$opc-skills 确认提炼 <proposal_id>
+$opc-skills 放弃提炼 <proposal_id>
+$opc-skills 使用 zx-project-organizer，帮我审计当前项目结构
+$opc-skills 确认执行项目结构提案 <zpo-proposal_id>
+$opc-skills 放弃项目结构提案 <zpo-proposal_id>
+$opc-skills 新建一个 API 回归测试 Skill
+$opc-skills 优化 zx-test-regression，补充异步消息失败场景
+$opc-skills 列出我的测试类 Skills
 ```
 
 总入口会自动判断意图并读取对应的 builtin Skill，不要求使用者填写内部 YAML 参数。
@@ -160,7 +163,7 @@ $zx-skills 列出我的测试类 Skills
 不需要先整理一大段参数，直接说：
 
 ```text
-$zx-skills 使用 zx-project-organizer，引导我创建一个全新项目
+$opc-skills 使用 zx-project-organizer，引导我创建一个全新项目
 ```
 
 Skill 按目录优先的顺序一次只问一个会影响提案的问题。六类决策是：
@@ -196,7 +199,7 @@ Skill 按目录优先的顺序一次只问一个会影响提案的问题。六�
 #### 引导整理一个存量项目
 
 ```text
-$zx-skills 使用 zx-project-organizer，引导我整理现有项目
+$opc-skills 使用 zx-project-organizer，引导我整理现有项目
 ```
 
 Skill 会先只读扫描目录、源码、运行入口、构建配置、Git 状态、正式文档、部署配置和路径引用，区分
@@ -283,7 +286,7 @@ development/backend/apps/ai-huoke-worker/specifications/messages/
 推荐的个人完整结构用法：
 
 ```text
-$zx-skills 使用 zx-project-organizer，按 ZX 完整结构初始化当前项目，不初始化 Git
+$opc-skills 使用 zx-project-organizer，按 ZX 完整结构初始化当前项目，不初始化 Git
 ```
 
 #### 完整提案确认示例
@@ -451,8 +454,8 @@ proposal_id: zpo-0123456789abcdef
 也可使用显式指令：
 
 ```text
-$zx-skills 确认执行项目结构提案 <zpo-proposal_id>
-$zx-skills 放弃项目结构提案 <zpo-proposal_id>
+$opc-skills 确认执行项目结构提案 <zpo-proposal_id>
+$opc-skills 放弃项目结构提案 <zpo-proposal_id>
 ```
 
 数字 `1` 只在已完整展示且当前任务可唯一定位的 `proposal_id` 上确认；确认时使用第一次展示的原始提案
@@ -469,9 +472,9 @@ $zx-skills 放弃项目结构提案 <zpo-proposal_id>
 “帮我安装一个 Skill”第一次只会把第三方内容放入 `skills-temp-inbox` 并完成静态评估，不会直接加载或执行。评估完成后，Codex 会给出 `inbox_id`，再选择：
 
 ```text
-$zx-skills 确认原样入库 <inbox_id>
-$zx-skills 确认改造入库 <inbox_id>，要求：移除特定工具依赖
-$zx-skills 丢弃 <inbox_id>
+$opc-skills 确认原样入库 <inbox_id>
+$opc-skills 确认改造入库 <inbox_id>，要求：移除特定工具依赖
+$opc-skills 丢弃 <inbox_id>
 ```
 
 这是仓库的强制供应链安全边界，不能通过一句“直接安装”绕过。
@@ -498,13 +501,25 @@ powershell -ExecutionPolicy Bypass -File .\scripts\install-codex.ps1 status
 powershell -ExecutionPolicy Bypass -File .\scripts\install-codex.ps1 uninstall
 ```
 
-ZXSkills 入口和完成提醒是两项独立配置。`install-codex.* uninstall` 只删除 Codex 用户级入口；如果同时配置了完成提醒，再运行 `configure-codex-reminder.* uninstall`。两类卸载都不会删除本地 ZXSkills 仓库、`skills-custom`、`skills-external` 或暂存箱内容。
+`status` 只有在两个受管入口都正确指向当前仓库时才通过；任一入口缺失或冲突都会分别显示状态并返回失败。`uninstall` 只删除这两个由安装器管理的链接，不删除仓库本身。若任一目标是普通文件、目录、失效链接或指向其他位置的链接，安装和卸载都会整体拒绝操作；外部路径绝不会被覆盖，也不会被删除。
+
+OPCSkills 入口和完成提醒是两项独立配置。`install-codex.* uninstall` 不会删除提醒；如果同时配置了完成提醒，需要另行运行：
+
+```bash
+bash scripts/configure-codex-reminder.sh uninstall
+```
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\configure-codex-reminder.ps1 uninstall
+```
+
+两类卸载都不会删除本地 OPCSkills 仓库、`skills-custom`、`skills-external` 或暂存箱内容。
 
 ## 工具支持状态
 
 | 工具 | 状态 | 使用方式 |
 | --- | --- | --- |
-| Codex 桌面端 / CLI / IDE 扩展 | 已提供原生入口 | 安装后使用 `$zx-skills` |
+| Codex 桌面端 / CLI / IDE 扩展 | 已提供原生入口 | 安装后使用 `$opc-skills`；`$zx-skills` 仅兼容旧用法 |
 | Cursor | 尚未提供一键适配 | 可手动读取仓库文件；后续需要 `.cursor/rules` / commands 适配器 |
 | Windsurf | 尚未提供一键适配 | 可手动读取仓库文件；后续需要对应规则或工作流适配器 |
 | 其他本地 AI 工具 | 取决于工具能力 | 按 `skill-manifest.yaml` 和通用 YAML 契约实现适配 |
@@ -517,9 +532,13 @@ ZXSkills 入口和完成提醒是两项独立配置。`install-codex.* uninstall
 
 ## 常见问题
 
-### 输入 `$zx-skills` 没有触发
+### 输入 `$opc-skills` 没有触发
 
-先运行安装脚本的 `status`，确认入口指向当前仓库；再完全重启 Codex，通过 `/skills` 检查。不要输入 `/zx-skills`，Codex 的 Skill 显式调用符号是 `$`。
+先运行安装脚本的 `status`，确认 `opc-skills` 和 `zx-skills` 两个入口都指向当前仓库；再完全重启 Codex，通过 `/skills` 检查。不要输入 `/opc-skills`，Codex 的 Skill 显式调用符号是 `$`。
+
+### 旧版只有 `$zx-skills` 怎么升级
+
+在仓库根目录重新运行安装脚本的 `install`。安装器会保留正确的 `$zx-skills` 兼容入口并补建 `$opc-skills` 主入口；不要手工删除旧入口。
 
 ### 更新后需要重新安装吗
 
@@ -535,13 +554,13 @@ ZXSkills 入口和完成提醒是两项独立配置。`install-codex.* uninstall
 
 ### 完成提醒会自动修改仓库吗
 
-不会。提醒规则只让 Codex 判断是否应该建议你运行 `$zx-skills 总结一下当前链路`。Self-Improve
+不会。提醒规则只让 Codex 判断是否应该建议你运行 `$opc-skills 总结一下当前链路`。Self-Improve
 即使被手动或自动调用也只会分析；新建/优化提案还要用匹配的 `proposal_id` 再次确认，第三方入库则要
 确认匹配的 `inbox_id`，仓库才会发生对应变更。
 
-### 为什么不直接开启 ZXSkills 隐式调用
+### 为什么不直接开启 OPCSkills 隐式调用
 
-ZXSkills 同时包含导入、创建和修改能力。为避免宽泛的自动匹配触发写入流程，Codex 适配器保持 `allow_implicit_invocation: false`；全局 `AGENTS.md` 只承担轻量提醒，具体操作继续由使用者通过 `$zx-skills` 明确发起。显式/隐式调用机制见 [Codex Skills 官方说明](https://learn.chatgpt.com/docs/build-skills)。
+OPCSkills 同时包含导入、创建和修改能力。为避免宽泛的自动匹配触发写入流程，Codex 适配器保持 `allow_implicit_invocation: false`；全局 `AGENTS.md` 只承担轻量提醒，具体操作继续由使用者通过 `$opc-skills` 明确发起。显式/隐式调用机制见 [Codex Skills 官方说明](https://learn.chatgpt.com/docs/build-skills)。
 
 ## 设计目标
 
@@ -555,7 +574,7 @@ ZXSkills 同时包含导入、创建和修改能力。为避免宽泛的自动�
 ## 目录结构
 
 ```text
-ZXSkills/
+OPCSkills/
 ├── README.md
 ├── skill-manifest.yaml
 ├── skill-template.yaml
@@ -573,9 +592,12 @@ ZXSkills/
 │   ├── test-dynamic-categories.py
 │   └── test-personal-namespace.py
 ├── adapters/
-│   └── codex/zx-skills/
-│       ├── SKILL.md
-│       └── agents/openai.yaml
+│   └── codex/
+│       ├── opc-skills/
+│       │   ├── SKILL.md
+│       │   └── agents/openai.yaml
+│       └── zx-skills/
+│           └── SKILL.md
 ├── builtin/
 │   ├── skill-creator.yaml
 │   ├── skill-editor.yaml
@@ -605,6 +627,8 @@ ZXSkills/
             ├── skill.yaml
             └── references/zx-full-delivery-structure.yaml
 ```
+
+Codex 主适配器位于 `adapters/codex/opc-skills/`；兼容适配器位于 `adapters/codex/zx-skills/`，只转交给主适配器，不复制仓库逻辑。
 
 仓库框架不批量预置空泛业务 Skill；当前包含 `zx-project-organizer`、`zx-ui-spec` 和 `zx-ui-check`。
 后续业务能力统一通过仓库工作流生成或导入。
@@ -729,7 +753,7 @@ skills-custom/<category>/<skill-id>/
 不推荐：zx-ui-implementation-conformance-audit
 ```
 
-通过 `$zx-skills` 新建时，用户只需描述能力。创建器会先确定分类，再按
+通过 `$opc-skills` 新建时，用户只需描述能力。创建器会先确定分类，再按
 `zx-<category>-<function>` 推荐简短 id，并校验分类词、功能词数量、目录同名和全仓库唯一性，不要求
 用户手写内部参数。`builtin` 保持系统工具原名；原样入库的 external Skill 不加 `zx-`。
 
@@ -931,8 +955,8 @@ auto_triggered: true
 排除项、确认后计划改动和风险。第一次输出固定为 `awaiting-confirmation`，并给出：
 
 ```text
-$zx-skills 确认提炼 <proposal_id>
-$zx-skills 放弃提炼 <proposal_id>
+$opc-skills 确认提炼 <proposal_id>
+$opc-skills 放弃提炼 <proposal_id>
 ```
 
 Self-Improve 永远只分析，不创建、修改、移动或删除仓库文件。自动触发、用户说“总结并沉淀”或
