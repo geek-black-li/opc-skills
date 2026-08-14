@@ -16,8 +16,8 @@ template_path="$repository_root/templates/codex-agents-reminder.md"
 codex_home="${CODEX_HOME:-$HOME/.codex}"
 agents_file="$codex_home/AGENTS.md"
 override_file="$codex_home/AGENTS.override.md"
-start_marker='<!-- zx-skills-reminder:start -->'
-end_marker='<!-- zx-skills-reminder:end -->'
+start_marker='<!-- opc-skills-reminder:start -->'
+end_marker='<!-- opc-skills-reminder:end -->'
 
 if [[ ! -f "$template_path" ]]; then
   echo "Error: reminder template not found: $template_path" >&2
@@ -54,7 +54,7 @@ remove_managed_block() {
   local temp_file
   [[ -f "$file_path" ]] || return
   has_managed_block "$file_path" || return 0
-  temp_file="$(mktemp "$codex_home/.zx-skills-agents.XXXXXX")"
+  temp_file="$(mktemp "$codex_home/.opc-skills-agents.XXXXXX")"
   awk -v start="$start_marker" -v end="$end_marker" '
     $0 == start { skipping = 1; pending_blank = 0; next }
     $0 == end { skipping = 0; next }

@@ -31,7 +31,7 @@ assert_marker_count() {
   local expected="$2"
   local marker
   local actual
-  for marker in '<!-- zx-skills-reminder:start -->' '<!-- zx-skills-reminder:end -->'; do
+  for marker in '<!-- opc-skills-reminder:start -->' '<!-- opc-skills-reminder:end -->'; do
     actual="$(grep -Fxc -- "$marker" "$file_path" || true)"
     [[ "$actual" == "$expected" ]] || fail "$marker appears $actual times in $file_path, expected $expected"
   done
@@ -39,7 +39,7 @@ assert_marker_count() {
 
 export CODEX_HOME="$test_root/codex"
 mkdir -p "$CODEX_HOME"
-printf '# Existing global rules\n\n- Keep before.\n<!-- zx-skills-reminder:start -->\n## ZXSkills 沉淀提醒\n- Legacy command: `$zx-skills 总结一下当前链路`\n<!-- zx-skills-reminder:end -->\n- Keep after.\n' > "$CODEX_HOME/AGENTS.md"
+printf '# Existing global rules\n\n- Keep before.\n- Keep after.\n' > "$CODEX_HOME/AGENTS.md"
 
 "$script_path" install
 assert_contains "$CODEX_HOME/AGENTS.md" '# Existing global rules'
@@ -48,6 +48,7 @@ assert_contains "$CODEX_HOME/AGENTS.md" '- Keep after.'
 assert_marker_count "$CODEX_HOME/AGENTS.md" 1
 assert_contains "$CODEX_HOME/AGENTS.md" '$opc-skills 总结一下当前链路'
 assert_not_contains "$CODEX_HOME/AGENTS.md" '$zx-skills 总结一下当前链路'
+assert_not_contains "$CODEX_HOME/AGENTS.md" 'zx-skills-reminder'
 
 "$script_path" install
 assert_marker_count "$CODEX_HOME/AGENTS.md" 1
@@ -60,7 +61,7 @@ assert_contains "$CODEX_HOME/AGENTS.md" '- Keep before.'
 assert_contains "$CODEX_HOME/AGENTS.md" '- Keep after.'
 assert_marker_count "$CODEX_HOME/AGENTS.md" 0
 
-printf '# Base rules\n\n- Base before.\n<!-- zx-skills-reminder:start -->\n## ZXSkills 沉淀提醒\n- Legacy command: `$zx-skills 总结一下当前链路`\n<!-- zx-skills-reminder:end -->\n- Base after.\n' > "$CODEX_HOME/AGENTS.md"
+printf '# Base rules\n\n- Base before.\n- Base after.\n' > "$CODEX_HOME/AGENTS.md"
 printf '# Temporary override\n' > "$CODEX_HOME/AGENTS.override.md"
 "$script_path" install
 assert_contains "$CODEX_HOME/AGENTS.md" '# Base rules'
@@ -71,6 +72,7 @@ assert_contains "$CODEX_HOME/AGENTS.override.md" '# Temporary override'
 assert_marker_count "$CODEX_HOME/AGENTS.override.md" 1
 assert_contains "$CODEX_HOME/AGENTS.override.md" '$opc-skills 总结一下当前链路'
 assert_not_contains "$CODEX_HOME/AGENTS.override.md" '$zx-skills 总结一下当前链路'
+assert_not_contains "$CODEX_HOME/AGENTS.override.md" 'zx-skills-reminder'
 "$script_path" uninstall
 assert_contains "$CODEX_HOME/AGENTS.override.md" '# Temporary override'
 assert_marker_count "$CODEX_HOME/AGENTS.override.md" 0
@@ -82,7 +84,7 @@ assert_marker_count "$CODEX_HOME/AGENTS.md" 1
 assert_marker_count "$CODEX_HOME/AGENTS.override.md" 0
 "$script_path" uninstall
 
-printf '<!-- zx-skills-reminder:start -->\n' > "$CODEX_HOME/AGENTS.md"
+printf '<!-- opc-skills-reminder:start -->\n' > "$CODEX_HOME/AGENTS.md"
 if "$script_path" install >/dev/null 2>&1; then
   fail "install accepted malformed managed markers"
 fi
@@ -90,4 +92,4 @@ fi
 assert_contains "$repository_root/README.md" 'configure-codex-reminder.sh install'
 assert_contains "$repository_root/README.md" '只提醒，不自动执行'
 
-echo "END-OF-SUITE: OPCSkills POSIX reminder tests passed (legacy upgrade, status, uninstall, override migration, malformed markers, README)."
+echo "END-OF-SUITE: OPCSkills POSIX reminder tests passed (install, idempotency, status, uninstall, active override, malformed markers, unrelated content, README)."

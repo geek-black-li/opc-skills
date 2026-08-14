@@ -15,8 +15,8 @@ else {
 }
 $AgentsFile = Join-Path $CodexHome "AGENTS.md"
 $OverrideFile = Join-Path $CodexHome "AGENTS.override.md"
-$StartMarker = "<!-- zx-skills-reminder:start -->"
-$EndMarker = "<!-- zx-skills-reminder:end -->"
+$StartMarker = "<!-- opc-skills-reminder:start -->"
+$EndMarker = "<!-- opc-skills-reminder:end -->"
 $Utf8NoBom = [Text.UTF8Encoding]::new($false)
 
 if (-not (Test-Path -LiteralPath $TemplatePath -PathType Leaf)) {

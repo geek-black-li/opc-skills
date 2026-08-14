@@ -7,11 +7,13 @@ $TestRoot = Join-Path ([IO.Path]::GetTempPath()) ("opcskills-reminder-" + [guid]
 $CodexHome = Join-Path $TestRoot "codex"
 $OriginalCodexHome = $env:CODEX_HOME
 $Checkpoints = [ordered]@{
-    LegacyUpgrade = $false
+    Install = $false
+    Idempotency = $false
     Status = $false
     Uninstall = $false
-    OverrideMigration = $false
+    ActiveOverride = $false
     MalformedMarkers = $false
+    UnrelatedContent = $false
     Readme = $false
 }
 
@@ -90,7 +92,7 @@ function Assert-ManagedBlockCount {
         [int]$Expected
     )
 
-    foreach ($Marker in @("<!-- zx-skills-reminder:start -->", "<!-- zx-skills-reminder:end -->")) {
+    foreach ($Marker in @("<!-- opc-skills-reminder:start -->", "<!-- opc-skills-reminder:end -->")) {
         $Count = ([regex]::Matches($Content, [regex]::Escape($Marker))).Count
         if ($Count -ne $Expected) {
             Fail-Test "marker '$Marker' appeared $Count time(s), expected $Expected"
@@ -98,7 +100,7 @@ function Assert-ManagedBlockCount {
     }
 }
 
-function New-HistoricalManagedContent {
+function New-UnrelatedContent {
     param(
         [string]$Before,
         [string]$After
@@ -106,10 +108,6 @@ function New-HistoricalManagedContent {
 
     return @(
         $Before,
-        "<!-- zx-skills-reminder:start -->",
-        "## ZXSkills 沉淀提醒",
-        '- Legacy command: `$zx-skills 总结一下当前链路`',
-        "<!-- zx-skills-reminder:end -->",
         $After,
         ""
     ) -join "`n"
@@ -122,7 +120,7 @@ try {
 
     [IO.File]::WriteAllText(
         $AgentsFile,
-        (New-HistoricalManagedContent "# Existing global rules`n`n- Keep before." "- Keep after.")
+        (New-UnrelatedContent "# Existing global rules`n`n- Keep before." "- Keep after.")
     )
     Assert-ActionSucceeded (Invoke-Reminder install) "OPCSkills completion reminder configured."
     $Content = [IO.File]::ReadAllText($AgentsFile)
@@ -132,11 +130,14 @@ try {
     Assert-ManagedBlockCount $Content 1
     Assert-Contains $Content '$opc-skills 总结一下当前链路'
     Assert-NotContains $Content '$zx-skills 总结一下当前链路'
-    $Checkpoints.LegacyUpgrade = $true
+    Assert-NotContains $Content 'zx-skills-reminder'
+    $Checkpoints.Install = $true
+    $Checkpoints.UnrelatedContent = $true
 
     Assert-ActionSucceeded (Invoke-Reminder install) "OPCSkills completion reminder configured."
     $Content = [IO.File]::ReadAllText($AgentsFile)
     Assert-ManagedBlockCount $Content 1
+    $Checkpoints.Idempotency = $true
 
     Assert-ActionSucceeded (Invoke-Reminder status) "OPCSkills completion reminder is configured."
     $Checkpoints.Status = $true
@@ -151,7 +152,7 @@ try {
 
     [IO.File]::WriteAllText(
         $AgentsFile,
-        (New-HistoricalManagedContent "# Base rules`n`n- Base before." "- Base after.")
+        (New-UnrelatedContent "# Base rules`n`n- Base before." "- Base after.")
     )
     [IO.File]::WriteAllText($OverrideFile, "# Temporary override`n")
     Assert-ActionSucceeded (Invoke-Reminder install) "OPCSkills completion reminder configured."
@@ -165,7 +166,8 @@ try {
     Assert-ManagedBlockCount $OverrideContent 1
     Assert-Contains $OverrideContent '$opc-skills 总结一下当前链路'
     Assert-NotContains $OverrideContent '$zx-skills 总结一下当前链路'
-    $Checkpoints.OverrideMigration = $true
+    Assert-NotContains $OverrideContent 'zx-skills-reminder'
+    $Checkpoints.ActiveOverride = $true
 
     Assert-ActionSucceeded (Invoke-Reminder uninstall) "OPCSkills completion reminder removed."
     $OverrideContent = [IO.File]::ReadAllText($OverrideFile)
@@ -181,13 +183,13 @@ try {
     Assert-ManagedBlockCount $OverrideContent 0
     Assert-ActionSucceeded (Invoke-Reminder uninstall) "OPCSkills completion reminder removed."
 
-    [IO.File]::WriteAllText($AgentsFile, "<!-- zx-skills-reminder:start -->`n")
+    [IO.File]::WriteAllText($AgentsFile, "<!-- opc-skills-reminder:start -->`n")
     $MalformedResult = Invoke-Reminder install
     if ($MalformedResult.ExitCode -eq 0) {
         Fail-Test "install accepted malformed managed markers"
     }
     Assert-Contains ($MalformedResult.StdOut + $MalformedResult.StdErr) "Malformed OPCSkills reminder markers"
-    if ([IO.File]::ReadAllText($AgentsFile) -ne "<!-- zx-skills-reminder:start -->`n") {
+    if ([IO.File]::ReadAllText($AgentsFile) -ne "<!-- opc-skills-reminder:start -->`n") {
         Fail-Test "malformed-marker rejection changed the instructions file"
     }
     $Checkpoints.MalformedMarkers = $true
@@ -204,7 +206,7 @@ try {
     if ($env:CODEX_HOME -ne $OriginalCodexHome) {
         Fail-Test "test changed CODEX_HOME in the parent PowerShell process"
     }
-    Write-Host "END-OF-SUITE: OPCSkills PowerShell reminder tests passed (legacy upgrade, status, uninstall, override migration, malformed markers, README)."
+    Write-Host "END-OF-SUITE: OPCSkills PowerShell reminder tests passed (install, idempotency, status, uninstall, active override, malformed markers, unrelated content, README)."
 }
 finally {
     if ([IO.Directory]::Exists($TestRoot)) {
