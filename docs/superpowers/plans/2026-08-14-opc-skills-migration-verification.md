@@ -2,13 +2,15 @@
 
 日期：2026-08-14
 
-验证范围：任务 6 的仓库内门禁（Python、Shell、PowerShell、YAML 与空白检查）。
+验证范围：仓库内迁移及最终修复门禁（Python、Shell、PowerShell、YAML 与空白检查）。
 
-测试前提交：`3c23bd4b6d855fb88ef311292700f1b8070b4d76`
+被测代码提交：`12b5031991af67eaa4f392992a7bc42a0af41cce`
+
+PowerShell 环境：`PowerShell 7.6.3 Core` on macOS。本记录没有在原生 Windows / Windows PowerShell 5.1 上执行 Junction 测试；该项状态为 **NOT VERIFIED**。
 
 ## 执行结果
 
-所有以下命令均于测试前提交对应的工作树状态执行，退出码均为 `0`。
+以下命令均在上述被测提交的干净工作树上执行，退出码均为 `0`。
 
 ### Python 测试（7/7 通过）
 
@@ -29,32 +31,46 @@ done
 - `tests/test-proposal-id.py`
 - `tests/test-selfimprove-confirmation.py`
 
-说明：其中 `test-opc-branding.py` 为导入检查，无独立输出；其余六个测试输出通过信息。Python 测试命令整体退出码为 `0`。
+命令结尾计数：`PYTHON_TEST_FILES_PASSED=7`。
 
 ### Shell 与 PowerShell 测试（4/4 通过）
 
 ```bash
 bash tests/test-install-codex.sh
-bash tests/test-configure-codex-reminder.sh
 pwsh -NoProfile -File tests/test-install-codex.ps1
+bash tests/test-configure-codex-reminder.sh
 pwsh -NoProfile -File tests/test-configure-codex-reminder.ps1
 ```
 
-四个命令均退出 `0`；POSIX 安装与提醒配置测试输出 `PASS` / `passed`，两个 PowerShell 测试无输出但均成功退出。
+安装器套件实际结尾输出：
+
+```text
+PASS: POSIX Codex installer covers dual-entry lifecycle, status, conflicts, fallback, idempotency, and rollback
+PASS: PowerShell Codex installer covers dual-entry lifecycle, status, conflicts, fallback, idempotency, and rollback
+```
+
+提醒套件实际结尾哨兵输出：
+
+```text
+END-OF-SUITE: OPCSkills POSIX reminder tests passed (legacy upgrade, status, uninstall, override migration, malformed markers, README).
+END-OF-SUITE: OPCSkills PowerShell reminder tests passed (legacy upgrade, status, uninstall, override migration, malformed markers, README).
+```
+
+PowerShell 提醒测试的 `install` / `status` / `uninstall` 全部通过子 PowerShell 进程执行，并逐次校验退出码与输出；最终哨兵证明卸载、override 迁移、畸形标记拒绝及 README 断言均已执行。
 
 ### YAML 与空白检查（2/2 通过）
 
 ```bash
-python3 -c 'from pathlib import Path; import yaml; files=list(Path(".").rglob("*.yaml"))+list(Path(".").rglob("*.yml")); [yaml.safe_load(p.read_text(encoding="utf-8")) for p in files if ".git" not in p.parts]; print(f"YAML parsed: {len(files)}")'
-git diff --check
+python3 -c 'from pathlib import Path; import yaml; files=list(Path(".").rglob("*.yaml"))+list(Path(".").rglob("*.yml")); parsed=[p for p in files if ".git" not in p.parts]; [yaml.safe_load(p.read_text(encoding="utf-8")) for p in parsed]; print(f"YAML parsed: {len(parsed)}"); raise SystemExit(0 if len(parsed)==14 else 1)'
+git diff --check d507724..HEAD
 ```
 
-YAML 解析输出：`YAML parsed: 14`。`git diff --check` 无输出，退出码为 `0`。
+YAML 解析输出：`YAML parsed: 14`。`git diff --check d507724..HEAD` 无输出，退出码为 `0`。
 
 ## 工作树状态
 
-在写入本记录前，`git status --short` 无输出（工作树干净）。本记录及设计状态更新将在独立提交中纳入版本控制。
+门禁执行前后，`git status --short` 均无输出。本验证记录将在独立的仅记录提交中纳入版本控制。
 
 ## 后续边界
 
-本记录不包含远程操作。本地 `main` 合并本提交后，仍须按任务 6 的后续步骤完成并验证 Gitee 备份推送、GitHub 双远程切换，以及本地目录迁移和双入口重装。
+本记录不包含远程操作、用户 Skill 目录修改或原生 Windows Junction 执行。后续仍须按迁移计划由主任务完成并验证 Gitee 备份推送、GitHub 双远程切换、本地目录迁移和双入口重装。
