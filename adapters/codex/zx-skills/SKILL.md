@@ -16,17 +16,22 @@ description: Use when the user explicitly invokes ZXSkills to execute a formal l
 
 ## 个人命名空间
 
-- `skills-custom` 中个人原创或深度改造 Skill 的 id 必须以 `zx-` 开头。
+- `skills-custom` 中个人原创或深度改造 Skill 的 id 固定采用 `zx-<category>-<function>`。
+- `zx-` 是个人命名空间；`category` 必须使用目标 manifest 分类的 `skill_token`；`function` 表示
+  主要功能，优先使用一个通俗单词（如 `spec`、`check`、`plan`），确有必要时最多两个单词。
+- 六个核心分类的 token 固定为：产品 `product`、UI `ui`、研发 `dev`、测试 `test`、运维 `ops`、
+  项目管理 `project`。例如 `zx-ui-spec`、`zx-ui-check`、`zx-project-risk`。
 - 新建、自优化建议、第三方改造入库和 external fork 均遵守 manifest 的 `custom_skill_id_pattern`。
-- 用户只描述能力、未指定 id 时，按主要分类自动生成 `zx-<domain>-<capability>` 小写横杠 id；
-  检查全仓库唯一性后再交给 creator，不要求用户整理内部命名参数。
+- 用户只描述能力、未指定 id 时，先确定主要分类，再自动推荐短、直观的 id；检查分类 token、功能段
+  长度和全仓库唯一性后再交给 creator，不要求用户整理内部命名参数。
+- 用户给出的 id 不符合规则时，先解释问题并给出推荐名；不得静默沿用过长名称或错误分类段。
 - 保持原样的第三方 Skill 使用 external id，不得占用 `zx-`；第三方 source 原件中的名称保持不变。
 
 ## 动态分类
 
 - 优先匹配 manifest 中已有分类；名称不同不代表必须新建，按 scope 和最终交付责任判断。
 - 所有现有分类都不匹配时，生成完整 `new_category` 方案，正式编号由写入时按 `07-` 起的
-  `next-unused` 规则确定。
+  `next-unused` 规则确定；方案必须同时包含全仓库唯一的单词型 `skill_token`。
 - Self-Improve 和外部导入 stage 只提出建议，不创建分类。creator、external fork 或用户确认后的
   approve-original / approve-customized 才能同步更新 manifest，并在 custom/external 两侧生成
   分类目录与 `_readme.md`。
@@ -181,6 +186,6 @@ $zx-skills 使用 zx-project-organizer，按 ZX 完整结构初始化当前项�
 $zx-skills 使用 zx-project-organizer，按项目实际情况自适应初始化
 $zx-skills 确认执行项目结构提案 zpo-0123456789abcdef
 $zx-skills 放弃项目结构提案 zpo-0123456789abcdef
-$zx-skills 优化 zx-testing-api-regression-planning，补充异步消息失败场景
+$zx-skills 优化 zx-test-regression，补充异步消息失败场景
 $zx-skills 列出我的测试类 Skills
 ```

@@ -1,7 +1,7 @@
 schema_version: "1.0"
 id: skill-selfimprove
 name: "Skill 自我提炼分析"
-version: "3.0.0"
+version: "4.0.0"
 description: "在功能、需求、方案、测试或发布节点完成后，比较本次过程与 ZXSkills 现有能力，先说明哪些内容值得提炼及原因，再输出等待用户确认的创建或优化提案。"
 category: system
 origin: builtin
@@ -155,6 +155,10 @@ output_schema:
                 slug:
                   type: string
                   pattern: "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+                skill_token:
+                  type: string
+                  description: "用于 custom Skill id 分类段的一个小写通俗单词，必须全仓库唯一。"
+                  pattern: "^[a-z0-9]+$"
                 name:
                   type: string
                 scope:
@@ -171,6 +175,7 @@ output_schema:
                   type: string
               required:
                 - slug
+                - skill_token
                 - name
                 - scope
                 - includes
@@ -179,8 +184,8 @@ output_schema:
               additionalProperties: false
             skill_id:
               type: string
-              description: "必须使用 zx- 个人命名空间。"
-              pattern: "^zx-[a-z0-9]+(?:-[a-z0-9]+)*$"
+              description: "必须使用 zx-<category>-<function>；分类段匹配 skill_token，功能段最多两个通俗单词。"
+              pattern: "^zx-[a-z0-9]+-[a-z0-9]+(?:-[a-z0-9]+)?$"
             name:
               type: string
             description:
@@ -344,7 +349,8 @@ constraints:
   - "不能因一次项目成功就默认建议沉淀；必须证明跨项目复用价值。"
   - "不得读取或加载 skills-temp-inbox 中未评估内容作为正式能力基线。"
   - "参数必须完整且可直接供 creator/editor 使用，不使用未定、待补充等占位表述。"
-  - "create-skill 的 creator_parameters.skill_id 必须以 zx- 开头并符合 custom_skill_id_pattern。"
+  - "create-skill 的 creator_parameters.skill_id 必须符合 zx-<category>-<function> 和 custom_skill_id_pattern。"
+  - "creator_parameters.skill_id 的 category 段必须匹配目标分类的 skill_token；功能段优先使用一个通俗单词，最多两个。"
   - "证据不足时选择 no-action，并说明需要积累何种证据。"
   - "自动触发和用户说‘总结并优化’都不构成写入确认。"
 
@@ -361,7 +367,8 @@ prompt: |-
      明确排除 skills-temp-inbox、模板、说明文件和第三方 source 原件。
   3. 在 manifest.categories 中判断主要归属，优先复用已有分类。跨域流程选择对最终交付负责的
      主分类。所有现有 scope 都不匹配时才设置 category=auto 并提供完整 new_category；不得按客户、
-     项目、单个 Skill 或一次性技术建类。Self-Improve 不创建分类。
+     项目、单个 Skill 或一次性技术建类。new_category.skill_token 必须是一个小写通俗单词且与
+     已有分类不重复。Self-Improve 不创建分类。
   4. 评估复用性：
      - 是否会在不同项目中以相似输入、步骤和输出重复出现；
      - 是否包含容易遗漏且显著影响质量、安全、效率或一致性的判断；
@@ -393,7 +400,8 @@ prompt: |-
      不得写入仓库。只有用户后续发送与 proposal_id 匹配的明确确认，入口适配器才能继续。
   9. no-action 返回 result=no-action，说明不提炼的原因与可复用边界，不生成虚假的提案 ID。
 
-  参数质量：skill_id 使用 zx- 命名空间；description 和 triggers 是真实触发场景；workflow 可执行；
+  参数质量：skill_id 严格使用 `zx-<category>-<function>`，category 段取目标分类的 skill_token，
+  功能段优先使用一个通俗单词、最多两个；description 和 triggers 是真实触发场景；workflow 可执行；
   quality_criteria 可验证；schema 完整；constraints 保留权限、数据安全、来源和工作区边界。项目独有内容
   只能出现在排除说明或证据中，不能被硬编码为通用 Skill 规则。
 

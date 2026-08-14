@@ -34,7 +34,7 @@ def main() -> None:
     editor = load_yaml(EDITOR)
     adapter = ADAPTER.read_text(encoding="utf-8")
 
-    assert selfimprove["version"] == "3.0.0"
+    assert selfimprove["version"] == "4.0.0"
     branches = selfimprove["output_schema"]["oneOf"]
     by_conclusion = {
         branch["properties"]["conclusion"]["const"]: branch for branch in branches
@@ -77,8 +77,8 @@ def main() -> None:
     ):
         assert phrase in selfimprove_prompt, f"missing self-improve gate: {phrase}"
 
-    assert creator["version"] == "2.2.0"
-    assert editor["version"] == "2.2.0"
+    assert creator["version"] == "3.0.0"
+    assert editor["version"] == "3.0.0"
     assert_confirmation_input(creator, "create-skill")
     assert_confirmation_input(editor, "update-skill")
     assert "blocked" in creator["output_schema"]["properties"]["result"]["enum"]

@@ -1,8 +1,8 @@
 schema_version: "1.0"
 id: skill-creator
 name: "新建 Skill"
-version: "2.2.0"
-description: "在 ZXSkills 仓库中创建新的自定义业务 Skill，并使用仓库模板、分类规则和验证约束生成可发现的 skill.yaml。"
+version: "3.0.0"
+description: "在 ZXSkills 仓库中创建新的自定义业务 Skill，并按 zx-<category>-<function> 命名、仓库模板和分类规则生成可发现的 skill.yaml。"
 category: system
 origin: builtin
 status: active
@@ -59,6 +59,10 @@ input_schema:
           type: string
           description: "不含数字前缀的小写英文领域标识。"
           pattern: "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+        skill_token:
+          type: string
+          description: "用于 custom Skill id 分类段的一个小写通俗单词，必须全仓库唯一。"
+          pattern: "^[a-z0-9]+$"
         name:
           type: string
           description: "使用行业通用术语的分类名称。"
@@ -78,6 +82,7 @@ input_schema:
           description: "现有分类无法合理承载该能力的逐项比较结论。"
       required:
         - slug
+        - skill_token
         - name
         - scope
         - includes
@@ -86,8 +91,8 @@ input_schema:
       additionalProperties: false
     skill_id:
       type: string
-      description: "以 zx- 开头、由小写字母、数字和横杠组成的个人 Skill 唯一标识。"
-      pattern: "^zx-[a-z0-9]+(?:-[a-z0-9]+)*$"
+      description: "符合 zx-<category>-<function> 的个人 Skill 唯一标识；分类段取自 skill_token，功能段优先一个通俗单词、最多两个。"
+      pattern: "^zx-[a-z0-9]+-[a-z0-9]+(?:-[a-z0-9]+)?$"
     name:
       type: string
       description: "清晰、易检索的 Skill 名称。"
@@ -169,7 +174,8 @@ output_schema:
 
 constraints:
   - "只在 skills-custom/<category>/<skill-id>/skill.yaml 创建业务 Skill。"
-  - "custom Skill 的 id 必须使用 zx- 个人命名空间，不接受或自动去掉该前缀。"
+  - "custom Skill 的 id 必须严格使用 zx-<category>-<function>，目录名必须与 id 完全一致。"
+  - "category 段必须等于目标 manifest 分类的 skill_token；功能段优先使用一个通俗单词，最多两个单词。"
   - "不得把新建业务 Skill 写入 builtin、skills-external 或 skills-temp-inbox。"
   - "不得覆盖同名文件或重复 id；发现冲突时停止并返回 conflict。"
   - "不得创建用户未要求的业务 Skill、脚本、参考资料或资产。"
@@ -200,17 +206,22 @@ prompt: |-
      已有分类能合理负责该能力，就必须复用，不能因为名称不完全相同而新建分类。
   3. category 命中已有 manifest.categories 时，读取目标分类的 custom _readme.md 并继续。
      category=auto 时必须提供完整 new_category，并按 manifest.category_extension 校验：slug 使用
-     通用领域词且不来自客户名、项目名、单个 Skill 名或一次性技术；rationale 必须说明为什么
+     通用领域词且不来自客户名、项目名、单个 Skill 名或一次性技术；skill_token 必须是一个
+     小写通俗单词、与所有现有 categories.skill_token 不重复；rationale 必须说明为什么
      01-06 及已有扩展分类都不匹配。信息不足时返回 needs-input，不修改文件。
   4. 新建分类时执行一个原子化分类注册事务：重新读取 manifest 防止编号竞争；按 next-unused 从
      first_extension_number 到 max_category_number 选择最小未使用编号，格式化为两位数字并组合
      <nn>-<slug>；校验 id_pattern 和目录不存在；将 category 追加到 manifest.categories；按
      mirrored_roots 同时创建 skills-custom/<category>/ 与 skills-external/<category>/；复制
      category-readme-template.md 生成两份 _readme.md，完整替换分类定位、包含范围、排除范围、
-     origin_label 和各自 id 规则。不得预先创建空分类，也不得只创建一侧。
-  5. 校验 skill_id 同时符合 manifest.validation
-     中的 skill_id_pattern 和 custom_skill_id_pattern。若调用方传入不带 zx- 的 skill_id，返回
-     needs-input 并给出符合规则的建议 id，不静默接受、去除前缀或覆盖已有 Skill。
+     origin_label、skill_token 和各自 id 规则，并把 new_category.skill_token 注册到 manifest.categories。
+     不得预先创建空分类，也不得只创建一侧。
+  5. 按 manifest.validation 校验 skill_id。custom Skill 必须采用固定格式
+     `zx-<category>-<function>`：`zx-` 是个人命名空间；`category` 必须等于目标分类的
+     `skill_token`；`function` 表示 Skill 的主要功能。功能段优先使用一个通俗单词，例如
+     spec、check、plan、review；确有必要时最多使用两个单词。不要把 design、implementation、
+     extractor、conformance 等实现过程逐层堆进名称。若 id 缺少 zx-、分类段不匹配、功能段过长
+     或不够直观，返回 needs-input 并给出符合规则且容易理解的建议 id，不静默改名或覆盖已有 Skill。
   6. 递归扫描 builtin、skills-external、skills-custom 中可加载的 YAML，确认 skill_id 全局唯一；
      不读取或加载 skills-temp-inbox 作为正式 Skill。
   7. 检查输入是否足以形成明确触发条件、可执行 workflow 和可验证 quality_criteria。

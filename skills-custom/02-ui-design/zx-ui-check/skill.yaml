@@ -1,0 +1,199 @@
+schema_version: "1.0"
+id: zx-ui-check
+name: "ZX UI 页面检查"
+version: "1.0.0"
+description: "当需要按照项目 UI 规范，逐页检查 Web 页面或原型的视觉、布局、状态、交互和无障碍问题，并输出带截图和严重级别的问题清单时使用。"
+category: 02-ui-design
+origin: custom
+status: active
+
+triggers:
+  intents:
+    - "按照 UI 设计规范审查当前项目全部页面"
+    - "列出不符合设计规范的页面和具体问题"
+    - "发布前对静态页面执行逐路由视觉验收"
+    - "检查主题、浮层、键盘与页面状态是否符合规范"
+  keywords:
+    - "UI页面检查"
+    - "检查UI页面"
+    - "页面规范检查"
+    - "逐页视觉审查"
+    - "静态页面验收"
+    - "zx-ui-check"
+
+input_schema:
+  type: object
+  properties:
+    project_root:
+      type: string
+      description: "待审查项目根目录。"
+    spec_document:
+      type: string
+      description: "作为权威依据的 UI 设计规范路径。"
+    device_scope:
+      type: string
+      description: "目标设备、视口与不在范围内的设备说明。"
+    routes:
+      type: array
+      items:
+        type: string
+      description: "可选；明确指定的页面路由。省略时从项目路由盘点全部页面。"
+    build_command:
+      type: string
+      description: "可选；项目认可的构建命令。"
+    preview_command:
+      type: string
+      description: "可选；项目认可的本地预览命令。"
+    test_command:
+      type: string
+      description: "可选；与审查基线相关的测试命令。"
+    theme_scope:
+      type: array
+      items:
+        type: string
+      description: "需要核验的主题，例如 light、dark。"
+    audit_depth:
+      type: string
+      enum:
+        - standard
+        - deep
+      default: deep
+  required:
+    - project_root
+    - spec_document
+    - device_scope
+  additionalProperties: false
+
+output_schema:
+  type: object
+  properties:
+    result:
+      type: string
+      enum:
+        - audited
+        - blocked
+    scope_summary:
+      type: string
+    compliant_count:
+      type: integer
+      minimum: 0
+    noncompliant_count:
+      type: integer
+      minimum: 0
+    global_findings:
+      type: array
+      items:
+        type: object
+    page_findings:
+      type: array
+      items:
+        type: object
+    positive_findings:
+      type: array
+      items:
+        type: string
+    validation_evidence:
+      type: array
+      items:
+        type: string
+    evidence_limitations:
+      type: array
+      items:
+        type: string
+    next_actions:
+      type: array
+      items:
+        type: string
+  required:
+    - result
+    - scope_summary
+    - compliant_count
+    - noncompliant_count
+    - global_findings
+    - page_findings
+    - positive_findings
+    - validation_evidence
+    - evidence_limitations
+    - next_actions
+  additionalProperties: false
+
+constraints:
+  - "默认只读审查；没有单独授权时不得修复页面、修改规范、提交、推送、部署或发布。"
+  - "只把用户指定或项目声明的权威规范作为合规依据，不把个人审美偏好写成硬性违规。"
+  - "不得信任未知来源的常驻预览；必须确认页面来自当前目标工作区和最新构建。"
+  - "不得只检查首页或正常状态；必须覆盖全部目标路由和适用的关键状态。"
+  - "不得用构建或单元测试通过替代真实浏览器视觉、交互和焦点验收。"
+  - "不得把项目名称、私有路径、固定端口、固定路由、品牌值或一次性缺陷固化为跨项目默认规则。"
+  - "使用非侵入式浏览器检查，避免接管用户桌面；截图和日志不得暴露范围外敏感信息。"
+  - "证据不足时标记未验证或 blocked，不猜测通过，也不夸大完整无障碍合规。"
+
+prompt: |-
+  你正在执行“ZX UI 页面检查”。目标是把项目内权威 UI 规范转换为可核验检查项，在当前工作区
+  的最新可运行构建中覆盖全部目标路由和关键状态，输出可追溯的不合规清单、跨页根因、证据边界与
+  整改优先级。默认保持只读，不在审查过程中顺手修复实现。
+
+  ## 执行步骤
+
+  1. 定位项目根目录、规范路径、设备范围和工作区状态。读取项目约束文件，保护范围外文件和用户已有
+     未提交修改；确认本次只审查实现，不反向修改权威规范。
+  2. 把规范拆成原子检查项，记录条款位置、适用页面、预期值、判定条件和允许例外。覆盖产品壳、字体与
+     Token、布局、组件尺寸、搜索筛选、数据状态、浮层、主题、键盘和无障碍。只有明确的“必须”、
+     “不得”或数值规则才能判为硬性违规；建议项单独记录。
+  3. 从路由配置、页面入口、导航和条件分支盘点全部目标页面。区分标准页面、专用工作区、动态参数页面
+     和关键视觉状态；多个路由只有在确认渲染结构相同时才能合并取证，覆盖矩阵仍须保留每个路径。
+  4. 运行输入指定或项目认可的构建命令，启动或连接预览。核对进程工作目录、构建产物资源、时间戳或
+     页面资源标识；发现端口由旧工作树、旧构建或未知进程占用时，先解决来源真实性，不能把旧页面作为
+     当前证据。无法证明版本时返回 blocked。
+  5. 按 device_scope 使用非侵入式真实浏览器逐路由检查。记录稳定视口截图、内容边界、横向溢出、导航
+     可见性、控件尺寸、布局测量和主题表现；只验证授权设备，不自行扩展移动端范围。
+  6. 对适用页面检查正常、空数据、搜索无结果、加载、禁用、权限不足、失败、等待、长文本、大数据量、
+     高风险和外部结果不确定状态。不能访问或不能构造的状态标为未验证，不能默认通过。
+  7. 检查 Dialog、Drawer、Popover 等浮层的尺寸、头部、内容区、底部、遮罩、Escape、焦点进入、Tab
+     约束和关闭回焦；检查主题切换、键盘可达性、语义名称与焦点可见性。截图不能替代焦点和键盘实测。
+  8. 使用截图与浏览器测量证明实际表现，使用计算样式和源码解释原因或验证 Token 等实现约束。每个发现
+     映射到明确规范条款，并标记为浏览器实测、源码佐证、合理推断或未验证；推断不能伪装成实测事实。
+  9. 复核所有失败项以排除加载异常、权限、缓存或工具缩放造成的误判。把共享产品壳或公共组件根因与
+     页面独有问题分开汇总，同时枚举共享问题影响的全部页面。
+  10. 按 P0、P1、P2 评定影响，输出所有目标页面的通过、不通过或 blocked 结论、代表性截图、正向发现、
+      证据限制和优先整改顺序。没有发现问题的页面也必须进入覆盖结果。
+  11. 重新执行构建与相关测试并记录实际结果；明确构建验证可编译性、测试验证已有断言、浏览器验证视觉
+      与交互，三者不能互相替代。最后确认审查没有修改项目文件或外部状态。
+
+  ## 严重级别
+
+  - P0：破坏核心可用性、关键信息可读性、明确设备门禁、焦点约束或高风险交互安全。
+  - P1：违反明确布局、尺寸、组件结构、操作语义或关键状态要求，显著影响一致性和任务完成。
+  - P2：次要一致性、低频状态或非阻断体验问题；不得把纯审美偏好列为违规。
+
+  ## 输出要求
+
+  严格按 output_schema 返回：scope_summary 说明路由、状态、设备和主题范围；global_findings 汇总共享根因；
+  page_findings 逐页列出路径、状态、严重级别、规范条款、预期、实际、证据和置信度；positive_findings
+  记录已验证符合项；validation_evidence 记录实际命令、截图和交互结果；evidence_limitations 说明未覆盖
+  的权限、数据、设备、浏览器、读屏或动态状态；next_actions 给出最小整改顺序或后续验证动作。
+
+  质量标准：
+
+  - 审查范围内每个路由都有明确结论、主要问题和可访问的证据链接。
+  - 每个硬性违规都能追溯到规范条款，并至少由截图、DOM 测量、计算样式、交互观察或源码之一支持。
+  - 预览被证明确实来自当前工作区最新构建，不把旧端口或旧工作树页面当作当前结果。
+  - 设备与主题范围遵循用户和规范边界；未授权设备不进入验收结论。
+  - 共享组件或产品壳问题与页面独有问题分开汇总，避免重复计数和逐页复制。
+  - 可访问性结论区分已实测行为和未覆盖范围，不以截图替代键盘、焦点或语义验证。
+  - 报告同时列出不合规项、已符合项、证据限制、验证命令结果和最小下一步。
+  - 保持只读，不修改业务代码、设计规范、ZXSkills 仓库或范围外用户文件。
+
+metadata:
+  author: "ZXSkills"
+  created_at: "2026-08-14"
+  updated_at: "2026-08-14"
+  tags:
+    - ui-design
+    - visual-audit
+    - conformance
+    - accessibility
+  source:
+    type: original
+    reference: ""
+    license: ""
+    checksum: ""

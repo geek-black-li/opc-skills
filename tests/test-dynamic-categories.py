@@ -40,9 +40,19 @@ for key, expected in expected_extension.items():
     if extension.get(key) != expected:
         fail(f"category_extension.{key} is not {expected!r}")
 
-required_proposal_fields = ["slug", "name", "scope", "includes", "excludes", "rationale"]
+required_proposal_fields = [
+    "slug",
+    "skill_token",
+    "name",
+    "scope",
+    "includes",
+    "excludes",
+    "rationale",
+]
 if extension.get("required_proposal_fields") != required_proposal_fields:
     fail("category_extension.required_proposal_fields is incomplete")
+if extension.get("skill_token_pattern") != "^[a-z0-9]+$":
+    fail("dynamic category skill_token is not restricted to one lowercase word")
 
 category_ids = [category["id"] for category in manifest["categories"]]
 if len(category_ids) != len(set(category_ids)):
@@ -82,6 +92,7 @@ template = template_path.read_text(encoding="utf-8")
 for placeholder in (
     "{{origin_label}}",
     "{{category_id}}",
+    "{{skill_token}}",
     "{{category_name}}",
     "{{scope}}",
     "{{includes}}",

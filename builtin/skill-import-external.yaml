@@ -1,7 +1,7 @@
 schema_version: "1.0"
 id: skill-import-external
 name: "导入第三方 Skill"
-version: "2.1.0"
+version: "3.0.0"
 description: "接收第三方 Skill 文本、本地包或下载链接，将其隔离到 temp-inbox，完成来源、用途、兼容性、安全和许可评估，并仅在用户确认后处理入库或丢弃。"
 category: system
 origin: builtin
@@ -65,6 +65,10 @@ input_schema:
         slug:
           type: string
           pattern: "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+        skill_token:
+          type: string
+          description: "用于改造版 custom Skill id 分类段的一个小写通俗单词，必须全仓库唯一。"
+          pattern: "^[a-z0-9]+$"
         name:
           type: string
         scope:
@@ -81,6 +85,7 @@ input_schema:
           type: string
       required:
         - slug
+        - skill_token
         - name
         - scope
         - includes
@@ -151,6 +156,10 @@ output_schema:
             slug:
               type: string
               pattern: "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+            skill_token:
+              type: string
+              description: "用于改造版 custom Skill id 分类段的一个小写通俗单词，必须全仓库唯一。"
+              pattern: "^[a-z0-9]+$"
             name:
               type: string
             scope:
@@ -167,6 +176,7 @@ output_schema:
               type: string
           required:
             - slug
+            - skill_token
             - name
             - scope
             - includes
@@ -230,7 +240,7 @@ constraints:
   - "网络来源只允许 HTTPS；记录最终 URL、获取时间、版本或提交号和 SHA-256。"
   - "不得上传本地文件、凭据、环境变量或私有代码给第三方服务。"
   - "原样入库必须保留原件、许可、来源和哈希；不得把改造版本标记为 external 原版。"
-  - "zx- 是个人 custom 命名空间；external 正式适配 id 不得占用，深度改造 custom id 必须使用。"
+  - "zx- 是个人 custom 命名空间；external 正式适配 id 不得占用，深度改造 custom id 必须使用 zx-<category>-<function>。"
   - "stage 阶段不得创建分类、更新 manifest 或写入正式目录；只能记录分类建议。"
   - "丢弃只允许删除用户确认的单个 inbox_id，不得使用宽泛路径、通配符或递归删除仓库根目录。"
 
@@ -269,7 +279,7 @@ prompt: |-
      已覆盖该分类建议。优先复用已有分类；禁止按客户、项目、单个 Skill 或一次性技术建类。
   2. target_category=auto 时，按 manifest.category_extension 的 next-unused、id_pattern、
      mirrored_roots 和 category-readme-template.md 执行与 creator 相同的原子化分类注册：追加
-     manifest 分类，同时创建 custom/external 两侧目录及 _readme.md。分类编号与 slug 由确认时
+     manifest 分类并注册唯一的 new_category.skill_token，同时创建 custom/external 两侧目录及 _readme.md。分类编号与 slug 由确认时
      最新 manifest 决定，不能沿用 stage 时猜测的编号。
   3. 分类创建和 Skill 入库属于同一事务。任何一步失败都回滚本次新增 manifest 项、两侧目录和
      Skill 文件；不得删除操作前已有文件，并在 validation 中明确回滚结果。
@@ -292,8 +302,9 @@ prompt: |-
 
   action=approve-customized：
   1. 重新验证哈希、风险、许可证、target_category 和 customization_request，完成共用分类准备。
-  2. 以原件为参考创建 skills-custom/<category>/<new-skill-id>/skill.yaml；new-skill-id 必须以
-     zx- 开头并符合 manifest.validation.custom_skill_id_pattern。深度改造后的文件
+  2. 以原件为参考创建 skills-custom/<category>/<new-skill-id>/skill.yaml；new-skill-id 必须符合
+     `zx-<category>-<function>` 和 manifest.validation.custom_skill_id_pattern，category 段等于
+     目标分类的 skill_token，功能段优先使用一个通俗单词、最多两个。深度改造后的文件
      origin 必须为 custom，metadata.source 必须记录 fork 来源、原始哈希、许可证和修改摘要。
      不得把暂存原件直接移动进 custom 后伪装为原创。
   3. 使用 skill-template.yaml 契约完成改造，验证功能边界、安全约束、YAML、唯一 id 和 manifest
