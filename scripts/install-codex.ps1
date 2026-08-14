@@ -88,6 +88,21 @@ function Assert-NoConflicts {
     }
 }
 
+function Remove-CurrentEntrypointLink {
+    param([pscustomobject]$Entry)
+
+    if ((Get-TargetState $Entry) -ne "current") {
+        throw "Refusing to remove entrypoint that is no longer owned by this installation: $($Entry.Target)"
+    }
+
+    $Item = Get-Item -LiteralPath $Entry.Target -Force -ErrorAction SilentlyContinue
+    if ($null -eq $Item -or -not ($Item.Attributes -band [IO.FileAttributes]::ReparsePoint)) {
+        throw "Refusing link-only removal for a non-reparse path: $($Entry.Target)"
+    }
+
+    [IO.Directory]::Delete($Entry.Target)
+}
+
 function Write-EntryStates {
     param([object[]]$States)
     foreach ($State in $States) {
@@ -116,7 +131,7 @@ switch ($Action) {
             for ($Index = $Created.Count - 1; $Index -ge 0; $Index--) {
                 $CreatedEntry = $Created[$Index]
                 if ((Get-TargetState $CreatedEntry) -eq "current") {
-                    Remove-Item -LiteralPath $CreatedEntry.Target -Force
+                    Remove-CurrentEntrypointLink $CreatedEntry
                 }
             }
             throw "Installation failed; newly created entrypoints were rolled back. $($_.Exception.Message)"
@@ -145,7 +160,7 @@ switch ($Action) {
         Assert-NoConflicts $States
         foreach ($State in $States) {
             if ($State.State -eq "current") {
-                Remove-Item -LiteralPath $State.Entry.Target -Force
+                Remove-CurrentEntrypointLink $State.Entry
             }
         }
         Write-Host "OPCSkills Codex entrypoints removed."

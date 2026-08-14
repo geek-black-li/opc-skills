@@ -9,10 +9,110 @@ $SuiteRoot = Join-Path ([IO.Path]::GetTempPath()) ("opcskills-installer-" + [gui
 $OriginalHomeEnvironment = $env:HOME
 $OriginalPowerShellHome = $HOME
 $IsNativeWindows = $env:OS -eq "Windows_NT"
+$RepositorySourceContracts = @(
+    [pscustomobject]@{
+        Path = Join-Path $OpcSource "SKILL.md"
+        Hash = (Get-FileHash -LiteralPath (Join-Path $OpcSource "SKILL.md") -Algorithm SHA256).Hash
+    },
+    [pscustomobject]@{
+        Path = Join-Path $ZxSource "SKILL.md"
+        Hash = (Get-FileHash -LiteralPath (Join-Path $ZxSource "SKILL.md") -Algorithm SHA256).Hash
+    }
+)
 
 function Fail-Test {
     param([string]$Message)
     throw "FAIL: $Message"
+}
+
+function Assert-RepositorySourcesIntact {
+    foreach ($Contract in $RepositorySourceContracts) {
+        if (-not (Test-Path -LiteralPath $Contract.Path -PathType Leaf)) {
+            Fail-Test "repository adapter source was removed: $($Contract.Path)"
+        }
+        $ActualHash = (Get-FileHash -LiteralPath $Contract.Path -Algorithm SHA256).Hash
+        if ($ActualHash -ne $Contract.Hash) {
+            Fail-Test "repository adapter source changed during installer tests: $($Contract.Path)"
+        }
+    }
+}
+
+function Get-TestOwnedReparsePoints {
+    param([string]$Root)
+
+    if (-not [IO.Directory]::Exists($Root)) {
+        return @()
+    }
+
+    $Found = [Collections.Generic.List[object]]::new()
+    $Pending = [Collections.Generic.Stack[string]]::new()
+    $Pending.Push([IO.Path]::GetFullPath($Root))
+    while ($Pending.Count -gt 0) {
+        $Directory = $Pending.Pop()
+        foreach ($Path in [IO.Directory]::EnumerateFileSystemEntries($Directory)) {
+            $Attributes = [IO.File]::GetAttributes($Path)
+            if ($Attributes -band [IO.FileAttributes]::ReparsePoint) {
+                $Found.Add([pscustomobject]@{ Path = $Path; Attributes = $Attributes })
+                continue
+            }
+            if ($Attributes -band [IO.FileAttributes]::Directory) {
+                $Pending.Push($Path)
+            }
+        }
+    }
+    return @($Found)
+}
+
+function Remove-TestOwnedReparsePoint {
+    param(
+        [string]$Path,
+        [string]$Root
+    )
+
+    $FullRoot = [IO.Path]::GetFullPath($Root).TrimEnd("\", "/")
+    $FullPath = [IO.Path]::GetFullPath($Path)
+    $Comparison = if ($IsNativeWindows) {
+        [StringComparison]::OrdinalIgnoreCase
+    }
+    else {
+        [StringComparison]::Ordinal
+    }
+    $RootPrefix = $FullRoot + [IO.Path]::DirectorySeparatorChar
+    if (-not $FullPath.StartsWith($RootPrefix, $Comparison)) {
+        Fail-Test "refusing to detach a reparse point outside the suite root: $FullPath"
+    }
+
+    try {
+        $Attributes = [IO.File]::GetAttributes($FullPath)
+    }
+    catch [IO.FileNotFoundException] {
+        return
+    }
+    catch [IO.DirectoryNotFoundException] {
+        return
+    }
+    if (-not ($Attributes -band [IO.FileAttributes]::ReparsePoint)) {
+        Fail-Test "refusing link-only cleanup for a non-reparse path: $FullPath"
+    }
+
+    if ($Attributes -band [IO.FileAttributes]::Directory) {
+        [IO.Directory]::Delete($FullPath)
+    }
+    else {
+        [IO.File]::Delete($FullPath)
+    }
+}
+
+function Detach-TestOwnedReparsePoints {
+    param([string]$Root)
+
+    foreach ($ReparsePoint in @(Get-TestOwnedReparsePoints $Root)) {
+        Remove-TestOwnedReparsePoint $ReparsePoint.Path $Root
+    }
+    $Remaining = @(Get-TestOwnedReparsePoints $Root)
+    if ($Remaining.Count -ne 0) {
+        Fail-Test "suite cleanup left $($Remaining.Count) reparse point(s) attached"
+    }
 }
 
 function New-CaseContext {
@@ -266,6 +366,147 @@ function Test-RelativeIdempotency {
     }
 }
 
+function Write-RemovalGuardHarness {
+    $HarnessPath = Join-Path $SuiteRoot "invoke-uninstall-with-remove-item-guard.ps1"
+    $Harness = @'
+param(
+    [string]$InstallerPath,
+    [string]$SkillsHome
+)
+
+$ErrorActionPreference = "Stop"
+$env:OPCSKILLS_SKILLS_HOME = $SkillsHome
+
+function Remove-Item {
+    param(
+        [string]$LiteralPath,
+        [switch]$Force,
+        [switch]$Recurse
+    )
+
+    $Item = Get-Item -LiteralPath $LiteralPath -Force -ErrorAction SilentlyContinue
+    if ($null -ne $Item -and ($Item.Attributes -band [IO.FileAttributes]::ReparsePoint)) {
+        throw "unsafe Remove-Item call for managed reparse point: $LiteralPath"
+    }
+
+    $Arguments = @{ LiteralPath = $LiteralPath }
+    if ($Force) { $Arguments.Force = $true }
+    if ($Recurse) { $Arguments.Recurse = $true }
+    Microsoft.PowerShell.Management\Remove-Item @Arguments
+}
+
+try {
+    & $InstallerPath uninstall
+    exit 0
+}
+catch {
+    [Console]::Error.WriteLine($_.Exception.Message)
+    exit 98
+}
+'@
+    [IO.File]::WriteAllText($HarnessPath, $Harness)
+    return $HarnessPath
+}
+
+function Test-LinkOnlyUninstall {
+    $Context = New-CaseContext "link-only-uninstall"
+    Assert-ExitCode (Invoke-Installer $Context install) 0 "link-only uninstall setup"
+
+    $HarnessPath = Write-RemovalGuardHarness
+    $Result = Invoke-TestProcess @(
+        "-NoProfile", "-File", $HarnessPath,
+        "-InstallerPath", $ScriptPath,
+        "-SkillsHome", $Context.Skills
+    ) $Context "Override"
+
+    Assert-ExitCode $Result 0 "link-only uninstall"
+    if (-not [string]::IsNullOrWhiteSpace($Result.StdErr)) {
+        Fail-Test "link-only uninstall wrote stderr: $($Result.StdErr)"
+    }
+    Assert-Absent (Join-Path $Context.Skills "opc-skills")
+    Assert-Absent (Join-Path $Context.Skills "zx-skills")
+    Assert-RepositorySourcesIntact
+}
+
+function Test-SuiteCleanupContract {
+    $Context = New-CaseContext "suite-cleanup-contract"
+    $LiveLink = Join-Path $Context.Skills "live-source-link"
+    New-CurrentLink $LiveLink $OpcSource
+
+    $BrokenTarget = Join-Path $Context.Root "deleted-link-target"
+    [IO.Directory]::CreateDirectory($BrokenTarget) | Out-Null
+    $BrokenLink = Join-Path $Context.Skills "broken-source-link"
+    New-CurrentLink $BrokenLink $BrokenTarget
+    [IO.Directory]::Delete($BrokenTarget)
+
+    $Before = @(Get-TestOwnedReparsePoints $Context.Root)
+    if ($Before.Count -ne 2) {
+        Fail-Test "cleanup contract discovered $($Before.Count) reparse points, expected 2"
+    }
+    Detach-TestOwnedReparsePoints $Context.Root
+    Assert-Absent $LiveLink
+    Assert-Absent $BrokenLink
+    Assert-RepositorySourcesIntact
+}
+
+function Test-NativeWindowsLinkRemovalContract {
+    # macOS cannot execute a native Windows Junction. Keep this narrow AST
+    # contract beside the real link-removal tests so a Junction-incompatible
+    # File.Delete/Remove-Item regression is still caught here.
+    $Tokens = $null
+    $ParseErrors = $null
+    $Ast = [Management.Automation.Language.Parser]::ParseFile(
+        $ScriptPath,
+        [ref]$Tokens,
+        [ref]$ParseErrors
+    )
+    if (@($ParseErrors).Count -ne 0) {
+        Fail-Test "installer has PowerShell parse errors: $($ParseErrors -join '; ')"
+    }
+
+    $Helpers = @($Ast.FindAll({
+        param($Node)
+        $Node -is [Management.Automation.Language.FunctionDefinitionAst] -and
+            $Node.Name -eq "Remove-CurrentEntrypointLink"
+    }, $true))
+    if ($Helpers.Count -ne 1) {
+        Fail-Test "expected one link-only removal helper, found $($Helpers.Count)"
+    }
+
+    $Helper = $Helpers[0]
+    $DirectoryDeleteCalls = @($Helper.Body.FindAll({
+        param($Node)
+        $Node -is [Management.Automation.Language.InvokeMemberExpressionAst] -and
+            $Node.Static -and
+            $Node.Expression.Extent.Text -eq "[IO.Directory]" -and
+            $Node.Member.Extent.Text -eq "Delete"
+    }, $true))
+    if ($DirectoryDeleteCalls.Count -ne 1) {
+        Fail-Test "link-only helper must call the Junction-safe IO.Directory.Delete API exactly once"
+    }
+    if ($DirectoryDeleteCalls[0].Arguments.Count -ne 1) {
+        Fail-Test "link-only helper must use the non-recursive IO.Directory.Delete overload"
+    }
+
+    $UnsafeCommands = @($Helper.Body.FindAll({
+        param($Node)
+        $Node -is [Management.Automation.Language.CommandAst] -and
+            $Node.GetCommandName() -eq "Remove-Item"
+    }, $true))
+    if ($UnsafeCommands.Count -ne 0) {
+        Fail-Test "link-only helper must not call Remove-Item for a directory reparse point"
+    }
+
+    $OwnershipRechecks = @($Helper.Body.FindAll({
+        param($Node)
+        $Node -is [Management.Automation.Language.CommandAst] -and
+            $Node.GetCommandName() -eq "Get-TargetState"
+    }, $true))
+    if ($OwnershipRechecks.Count -ne 1) {
+        Fail-Test "link-only helper must recheck current-install ownership exactly once before deletion"
+    }
+}
+
 function New-Conflict {
     param(
         [string]$Kind,
@@ -422,6 +663,24 @@ function New-Item {
     Microsoft.PowerShell.Management\New-Item @Arguments
 }
 
+function Remove-Item {
+    param(
+        [string]$LiteralPath,
+        [switch]$Force,
+        [switch]$Recurse
+    )
+
+    $Item = Get-Item -LiteralPath $LiteralPath -Force -ErrorAction SilentlyContinue
+    if ($null -ne $Item -and ($Item.Attributes -band [IO.FileAttributes]::ReparsePoint)) {
+        throw "unsafe Remove-Item call during rollback: $LiteralPath"
+    }
+
+    $Arguments = @{ LiteralPath = $LiteralPath }
+    if ($Force) { $Arguments.Force = $true }
+    if ($Recurse) { $Arguments.Recurse = $true }
+    Microsoft.PowerShell.Management\Remove-Item @Arguments
+}
+
 try {
     & $InstallerPath install
     exit 0
@@ -480,6 +739,9 @@ try {
     Test-StatusMatrix
     Test-Fallback
     Test-RelativeIdempotency
+    Test-SuiteCleanupContract
+    Test-NativeWindowsLinkRemovalContract
+    Test-LinkOnlyUninstall
     Test-ConflictMatrix
     Test-Rollback
 
@@ -489,7 +751,13 @@ try {
     Write-Host "PASS: PowerShell Codex installer covers dual-entry lifecycle, status, conflicts, fallback, idempotency, and rollback"
 }
 finally {
-    if (Test-Path -LiteralPath $SuiteRoot) {
-        Remove-Item -LiteralPath $SuiteRoot -Recurse -Force
+    try {
+        if (Test-Path -LiteralPath $SuiteRoot) {
+            Detach-TestOwnedReparsePoints $SuiteRoot
+            Remove-Item -LiteralPath $SuiteRoot -Recurse -Force
+        }
+    }
+    finally {
+        Assert-RepositorySourcesIntact
     }
 }
