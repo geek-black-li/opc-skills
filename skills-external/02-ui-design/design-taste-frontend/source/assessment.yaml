@@ -1,0 +1,94 @@
+schema_version: "1.0"
+result: staged-awaiting-confirmation
+inbox_id: 20260814T231845Z-design-taste-frontend-bb38fd60
+action: stage
+
+source_record:
+  type: url
+  original_locator: "https://github.com/Leonxlnx/taste-skill/archive/3c7017d636c3a4aad378433ea6d0cfa6c921da4a.tar.gz"
+  final_url: "https://codeload.github.com/Leonxlnx/taste-skill/tar.gz/3c7017d636c3a4aad378433ea6d0cfa6c921da4a"
+  repository: "https://github.com/Leonxlnx/taste-skill"
+  expected_ref: 3c7017d636c3a4aad378433ea6d0cfa6c921da4a
+  resolved_commit: 3c7017d636c3a4aad378433ea6d0cfa6c921da4a
+  target_latest_commit_checked_at: "2026-08-14T23:17:39Z"
+  target_latest_commit_date: "2026-05-26T19:31:36Z"
+  fetched_at: "2026-08-14T23:17:39Z"
+  archive_path: source/taste-skill-3c7017d.tar.gz
+  archive_sha256: bb38fd60ebc23a5747b8800c4974b8b98fa80524c9c7c86deb22d0e6363d181a
+  extracted_root: source/taste-skill-3c7017d636c3a4aad378433ea6d0cfa6c921da4a
+  intended_skill_path: source/taste-skill-3c7017d636c3a4aad378433ea6d0cfa6c921da4a/skills/taste-skill
+  intended_skill_file_count: 1
+  intended_skill_manifest_sha256: 40ef50925b446e08a4ad5cead8edeb98f48982eb498b0073fe6a0b27ea736769
+  installed_copy_path: /Users/black_li/.codex/skills/design-taste-frontend
+  installed_copy_comparison: exact-match
+  installed_skill_sha256: aa194351b246b8b4799099d4ed7b033d29eab6e6e3d58d8d2172978be7b3ec89
+  archive_inventory:
+    members: 62
+    regular_files: 39
+    directories: 23
+    symlinks: 0
+    hardlinks: 0
+
+detected_files:
+  summary:
+    markdown: 29
+    webp: 4
+    no_extension: 2
+    yaml: 1
+    png: 1
+    shell: 1
+    text: 1
+  important_paths:
+    - skills/taste-skill/SKILL.md
+    - LICENSE
+    - README.md
+    - CHANGELOG.md
+    - skill.sh
+
+purpose_summary: "为营销落地页、作品集和现有网站重设计提供反模板化的视觉方向、三档设计参数、设计系统选择、排版、色彩、布局、动效、响应式、无障碍和交付前检查；原件明确排除仪表盘、数据表格和多步骤产品界面。"
+
+license:
+  result: allowed
+  identifier: MIT
+  notice: "Copyright (c) 2026 Leonxlnx"
+  obligations:
+    - "保留版权声明和 MIT 许可文本。"
+
+category_assessment:
+  result: matched-existing
+  matched_category: 02-ui-design
+  rationale: "最终交付责任是前端视觉设计、重设计规范和界面还原质量，符合现有 UI 设计能力分类。"
+
+risk_assessment:
+  overall: medium
+  findings:
+    - "目标 Skill 只有一个 Markdown 文件；未发现可执行代码、自动网络请求、凭据读取、动态执行、权限提升、持久化、自更新、遥测或删除逻辑。"
+    - "目标指令明确建议 npm install、npx shadcn 和 yarn add 安装第三方前端包，也提供 picsum.photos、Simple Icons、Shopify CDN 等外部资源；如果代理直接照做，会产生联网、依赖变更和项目文件写入。"
+    - "目标指令要求在可用时优先调用图片生成工具，并在无图片生成工具时使用网络图片；正式适配必须把这些行为置于用户授权、项目许可和隐私边界之内。"
+    - "原件明确只适用于落地页、作品集和重设计，不适用于仪表盘、数据表格和多步骤产品 UI；适配入口不得扩大触发范围。"
+    - "完整仓库还包含十二个兄弟 Skill 和研究材料；根 skill.sh 只返回本地相对路径，不安装、不写文件、不联网。兄弟 Skill 不属于本次目标，也不应被适配入口默认读取或执行。"
+    - "完整归档含 1 个 PNG 和 4 个 WebP 二进制图片，类型与仓库展示用途一致，但无法通过纯文本审计证明其内容安全；目标 Skill 目录不包含二进制文件。"
+    - "未发现私钥、常见云访问密钥或长令牌特征，也未发现混淆或编码执行载荷。"
+    - "上游没有 Git tag；README 和 CHANGELOG 将当前默认版本称为 v2 experimental，正在迭代到 v2.0.0 stable。正式来源必须以锁定提交为准。"
+  compatibility:
+    - "原件是 Markdown frontmatter Skill，不符合 OPCSkills portable-yaml-skill 契约；原样入库需要生成 origin=external 的最小 skill.yaml 适配入口，并把完整原件保存在 source/。"
+    - "OPCSkills 正式 id 可使用 design-taste-frontend：不占用 zx- 个人命名空间，且当前 manifest 扫描范围内无重名。"
+    - "当前 /Users/black_li/.codex/skills/design-taste-frontend/SKILL.md 与锁定上游文件 SHA-256 完全一致，无需更新本机安装。"
+    - "正式适配应限制默认读取范围为 skills/taste-skill，并要求任何网络、图片生成、依赖安装或项目写入先满足用户授权和项目规则。"
+  license: "MIT；允许保存、使用、修改和再分发，但必须保留版权与许可文本。"
+  recommendation: "建议确认原样入库到 02-ui-design：保留完整提交归档、许可和哈希，只为 design-taste-frontend 生成最小 external 适配入口，并保持其落地页、作品集和重设计边界。"
+
+validation:
+  - "下载仅使用 HTTPS，最终 URL 已记录。"
+  - "目标目录截至检查时的最近提交已锁定为 3c7017d636c3a4aad378433ea6d0cfa6c921da4a。"
+  - "归档 SHA-256 和目标 Skill 文件清单哈希已计算并记录。"
+  - "归档路径和成员类型已静态校验；没有越界路径、设备文件、符号链接或硬链接。"
+  - "已扫描目标 SKILL.md、根安装辅助脚本、许可、说明、兄弟 Skill 和研究材料。"
+  - "未执行仓库脚本、安装命令、构建、npm、npx、yarn 或任何第三方代码。"
+  - "本机安装副本与锁定上游目标文件逐字节一致。"
+  - "stage 只写入 skills-temp-inbox；未修改本项的 skills-external、skills-custom 或 manifest。"
+
+next_actions:
+  - "$opc-skills 确认原样入库 20260814T231845Z-design-taste-frontend-bb38fd60"
+  - "$opc-skills 确认改造入库 20260814T231845Z-design-taste-frontend-bb38fd60，要求：限制为落地页、作品集和重设计，所有联网、安装和写入均需明确授权"
+  - "$opc-skills 丢弃 20260814T231845Z-design-taste-frontend-bb38fd60"

@@ -1,0 +1,130 @@
+schema_version: "1.0"
+id: design-taste-frontend
+name: "Design Taste Frontend"
+version: "1.0.0"
+description: "为营销落地页、作品集和现有网站重设计提供反模板化的视觉方向、设计参数、设计系统选择、排版、色彩、布局、动效与交付前检查。"
+category: 02-ui-design
+origin: external
+status: active
+
+triggers:
+  intents:
+    - "设计具有明确视觉方向的营销落地页"
+    - "设计或改进作品集网站"
+    - "审计并重设计现有营销网站或品牌页面"
+  keywords:
+    - design-taste-frontend
+    - 落地页设计
+    - 作品集设计
+    - 网站重设计
+    - 反模板化
+
+input_schema:
+  type: object
+  properties:
+    context:
+      type: string
+      description: "页面类型、产品或品牌、目标受众、页面目标、视觉倾向和现有约束。"
+    mode:
+      type: string
+      description: "任务类型。"
+      enum:
+        - landing-page
+        - portfolio
+        - redesign
+    artifacts:
+      type: array
+      description: "用户提供且允许读取的现有页面、代码、品牌资产、截图或参考材料。"
+      items:
+        type: string
+    requirements:
+      type: array
+      description: "必须满足的设计、技术、无障碍和验收要求。"
+      items:
+        type: string
+  required:
+    - context
+  additionalProperties: false
+
+output_schema:
+  type: object
+  properties:
+    summary:
+      type: string
+      description: "结果摘要。"
+    design_read:
+      type: string
+      description: "页面类型、受众、视觉语言和设计系统方向的一句话判断。"
+    recommendations:
+      type: array
+      description: "经过任务约束筛选的视觉、布局、动效和实现建议。"
+      items:
+        type: string
+    deliverables:
+      type: array
+      description: "用户授权后生成或更新的交付物。"
+      items:
+        type: string
+    validation:
+      type: array
+      description: "交付前检查、实际验证证据和结果。"
+      items:
+        type: string
+    follow_ups:
+      type: array
+      description: "尚需用户决定或提供的内容。"
+      items:
+        type: string
+  required:
+    - summary
+    - design_read
+    - recommendations
+    - validation
+  additionalProperties: false
+
+constraints:
+  - "能力范围仅限营销落地页、作品集和现有网站重设计；不用于仪表盘、数据表格或多步骤产品 UI。"
+  - "默认只读取 source/source/taste-skill-3c7017d636c3a4aad378433ea6d0cfa6c921da4a/skills/taste-skill/SKILL.md；不得加载同一归档中的兄弟 Skill、研究材料或根 skill.sh。"
+  - "原件中的 npm、npx、yarn、外部图片、CDN、图片生成和其他联网建议不构成执行授权；只有用户明确授权且项目规则允许时才能执行。"
+  - "不得向外部图片或生成服务发送私有项目内容、凭据或用户未授权的数据。"
+  - "先检查现有技术栈、品牌资产和用户修改；未经明确授权不得安装依赖、覆盖文件或扩大重设计范围。"
+  - "原件中的设计规则是上下文相关建议，不得覆盖用户要求、仓库规则、无障碍要求或既有设计系统。"
+  - "原件按 MIT 许可入库；版权、许可、来源记录和归档哈希必须随 source/ 保留。"
+
+prompt: |-
+  执行本 Skill 时，先完整读取相邻的
+  source/source/taste-skill-3c7017d636c3a4aad378433ea6d0cfa6c921da4a/skills/taste-skill/SKILL.md，
+  但不要读取或调用该完整归档中的其他 Skill、研究材料或根脚本。
+
+  首先核对任务是否属于营销落地页、作品集或现有网站重设计。若任务是仪表盘、数据表格或多步骤产品界面，
+  明确说明不在本 Skill 原始范围内，并选择更匹配的正式 Skill；不得扩大本适配入口的触发边界。
+
+  对范围内任务：
+  1. 读取 context、mode、artifacts 和 requirements，并检查现有项目约束、技术栈、品牌资产与用户修改。
+  2. 按原件给出一句 design_read，并根据任务而非默认审美确定设计参数和设计系统方向。
+  3. redesign 模式先审计再修改；保留有效品牌、信息架构、功能、数据和分析标识。
+  4. 只采用与当前任务相关的原件规则。任何依赖安装、外部资源、图片生成、联网或项目写入都必须另有用户授权。
+  5. 用户授权实施时，按设计方向完成真实交付物，并执行原件的响应式、无障碍、内容和 pre-flight 检查。
+  6. 按 output_schema 返回 summary、design_read、recommendations、deliverables、validation 和 follow_ups。
+
+metadata:
+  author: "Leonxlnx"
+  tags:
+    - external
+    - frontend-design
+    - landing-page
+    - portfolio
+    - redesign
+  source:
+    type: external-original
+    original_id: design-taste-frontend
+    repository: "https://github.com/Leonxlnx/taste-skill"
+    reference: 3c7017d636c3a4aad378433ea6d0cfa6c921da4a
+    resolved_commit: 3c7017d636c3a4aad378433ea6d0cfa6c921da4a
+    upstream_version: "v2 experimental; no Git tag"
+    adapter_version_note: "1.0.0 是 OPCSkills 适配入口版本；上游来源以锁定提交为准。"
+    license: MIT
+    archive_sha256: bb38fd60ebc23a5747b8800c4974b8b98fa80524c9c7c86deb22d0e6363d181a
+    assessment: source/assessment.yaml
+    archive: source/source/taste-skill-3c7017d.tar.gz
+    original_skill: source/source/taste-skill-3c7017d636c3a4aad378433ea6d0cfa6c921da4a/skills/taste-skill/SKILL.md

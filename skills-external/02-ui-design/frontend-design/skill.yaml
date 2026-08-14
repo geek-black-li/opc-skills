@@ -1,0 +1,128 @@
+schema_version: "1.0"
+id: frontend-design
+name: "Frontend Design"
+version: "1.0.0"
+description: "为新建或重塑界面提供具有明确主题身份的视觉方向，通过主题、受众、配色、字体、布局、文案和自评避免模板化设计。"
+category: 02-ui-design
+origin: external
+status: active
+
+triggers:
+  intents:
+    - "为新界面确定独特且有依据的视觉方向"
+    - "重塑现有界面的配色、字体、布局和视觉层级"
+    - "评审并减少界面的模板化或 AI 默认风格"
+  keywords:
+    - frontend-design
+    - 前端视觉设计
+    - 视觉方向
+    - 界面重塑
+    - 设计自评
+
+input_schema:
+  type: object
+  properties:
+    context:
+      type: string
+      description: "产品或主题、目标受众、页面任务、现有视觉状态和设计约束。"
+    mode:
+      type: string
+      description: "任务类型。"
+      enum:
+        - new-ui
+        - reshape-existing
+    artifacts:
+      type: array
+      description: "用户提供且允许读取的代码、界面、截图、品牌材料或参考。"
+      items:
+        type: string
+    requirements:
+      type: array
+      description: "必须满足的设计、实现、无障碍和验收要求。"
+      items:
+        type: string
+  required:
+    - context
+  additionalProperties: false
+
+output_schema:
+  type: object
+  properties:
+    summary:
+      type: string
+      description: "结果摘要。"
+    design_plan:
+      type: array
+      description: "颜色、字体、布局和标志性元素组成的简明设计计划。"
+      items:
+        type: string
+    recommendations:
+      type: array
+      description: "经过自评后保留的设计与实现建议。"
+      items:
+        type: string
+    deliverables:
+      type: array
+      description: "用户授权后生成或更新的交付物。"
+      items:
+        type: string
+    validation:
+      type: array
+      description: "对主题针对性、响应式、键盘焦点、动效和实际界面的验证结果。"
+      items:
+        type: string
+    follow_ups:
+      type: array
+      description: "尚需用户决定或提供的内容。"
+      items:
+        type: string
+  required:
+    - summary
+    - design_plan
+    - recommendations
+    - validation
+  additionalProperties: false
+
+constraints:
+  - "默认只读取 source/source/skills-2235be7c60b551f5de82ade908fd3816455afcda/skills/frontend-design/SKILL.md 和同目录 LICENSE.txt。"
+  - "不得因完整来源归档包含其他 Anthropic Skill、脚本、API 文档或二进制资源而加载或执行它们。"
+  - "仅在用户授权的项目和文件范围内设计或实施；保留现有功能、品牌资产和无关修改。"
+  - "截图、自评和代码实现必须使用当前环境已获授权的能力；不得把原件描述解释成额外工具、联网、安装或外部通信权限。"
+  - "设计选择必须源自具体主题、受众和页面目标；不得用个人偏好或模板化风格替代用户要求。"
+  - "原件按 Apache-2.0 许可入库；许可、归属、来源记录、第三方声明和归档哈希必须随 source/ 保留。"
+
+prompt: |-
+  执行本 Skill 时，先完整读取相邻的
+  source/source/skills-2235be7c60b551f5de82ade908fd3816455afcda/skills/frontend-design/SKILL.md，
+  并按需读取同目录 LICENSE.txt。不得加载或执行完整归档中的其他 Skill、脚本、API 文档或二进制资源。
+
+  1. 读取 context、mode、artifacts 和 requirements，以及目标项目内适用的约束。
+  2. 从具体主题、受众和页面唯一任务出发；如果用户没有给出且合理假设不会偏离意图，明确说明所采用的具体主题判断。
+  3. 先形成紧凑设计计划：4 至 6 个命名颜色、至少两个字体角色、布局概念和一个与主题相关的标志性元素。
+  4. 在实施前对计划进行一次模板化自评；任何可无差别套用到同类项目的选择都要重新设计，并说明修正依据。
+  5. 用户授权实施时严格沿用修正后的计划，保留现有项目工作，并检查 CSS 冲突、响应式、键盘焦点和 reduced motion。
+  6. 只有当前环境和用户授权允许时才使用截图等验证能力；不自行联网、安装依赖或扩大文件写入范围。
+  7. 按 output_schema 返回 summary、design_plan、recommendations、deliverables、validation 和 follow_ups。
+
+metadata:
+  author: "Anthropic"
+  tags:
+    - external
+    - frontend-design
+    - visual-direction
+    - typography
+    - self-critique
+  source:
+    type: external-original
+    original_id: frontend-design
+    repository: "https://github.com/anthropics/skills"
+    reference: 2235be7c60b551f5de82ade908fd3816455afcda
+    resolved_commit: 2235be7c60b551f5de82ade908fd3816455afcda
+    upstream_version: "unversioned commit; no frontend-design Git tag"
+    adapter_version_note: "1.0.0 是 OPCSkills 适配入口版本；上游来源以锁定提交为准。"
+    license: Apache-2.0
+    archive_sha256: 201092fb26e019936e2155b15128cef07e02471da57bc8ae96aa0d0357afa1fe
+    assessment: source/assessment.yaml
+    archive: source/source/anthropics-skills-2235be7.tar.gz
+    original_skill: source/source/skills-2235be7c60b551f5de82ade908fd3816455afcda/skills/frontend-design/SKILL.md
+    original_license: source/source/skills-2235be7c60b551f5de82ade908fd3816455afcda/skills/frontend-design/LICENSE.txt

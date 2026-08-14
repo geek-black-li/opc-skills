@@ -1,0 +1,128 @@
+schema_version: "1.0"
+result: staged-awaiting-confirmation
+inbox_id: "20260814T230645Z-ui-ux-pro-max-v2-15-0-633f8b71"
+action: stage
+
+source_record:
+  type: url
+  original_locator: "https://github.com/nextlevelbuilder/ui-ux-pro-max-skill/archive/refs/tags/v2.15.0.tar.gz"
+  final_url: "https://codeload.github.com/nextlevelbuilder/ui-ux-pro-max-skill/tar.gz/refs/tags/v2.15.0"
+  repository: "https://github.com/nextlevelbuilder/ui-ux-pro-max-skill"
+  expected_ref: "v2.15.0"
+  resolved_commit: "a38d04c3d5c298c851dbe5e6ee1965ee3de42cb5"
+  fetched_at: "2026-08-14T23:06:45Z"
+  archive_path: "source/ui-ux-pro-max-skill-v2.15.0.tar.gz"
+  archive_sha256: "633f8b71a7bea2e354ac0792ed2ffde0b7995cbf4eac2c852235e1f8f46400f6"
+  extracted_root: "source/ui-ux-pro-max-skill-2.15.0"
+  intended_skill_path: "source/ui-ux-pro-max-skill-2.15.0/.claude/skills/ui-ux-pro-max"
+  intended_skill_file_count: 70
+  intended_skill_manifest_sha256: "51b001d7ca3bcece3ab4fd662caa430cc5660f0f5012d791f9914c33cbd51134"
+  archive_inventory:
+    members: 791
+    regular_files: 661
+    directories: 129
+    symlinks: 1
+    symlink_validation: "gallery/data/styles.csv points inside the archive to src/ui-ux-pro-max/data/styles.csv"
+
+detected_files:
+  summary:
+    csv: 144
+    markdown: 142
+    json: 104
+    python: 92
+    ttf: 54
+    typescript: 23
+    tsx: 18
+    commonjs: 14
+    yaml: 9
+    png: 7
+  important_paths:
+    - ".claude/skills/ui-ux-pro-max/SKILL.md"
+    - ".claude/skills/ui-ux-pro-max/data/"
+    - ".claude/skills/ui-ux-pro-max/references/"
+    - ".claude/skills/ui-ux-pro-max/scripts/"
+    - "src/ui-ux-pro-max/templates/platforms/codex.json"
+    - "cli/src/commands/init.ts"
+    - "cli/src/commands/update.ts"
+    - "cli/src/commands/uninstall.ts"
+    - "LICENSE"
+
+purpose_summary: >-
+  提供可离线检索的 UI/UX 设计知识库、设计系统生成、无障碍规则、图表、图标、动效和
+  22 个技术栈的界面实现建议；可按查询输出建议，也可在用户显式传入 --persist 时写入项目设计系统文件。
+
+license:
+  result: allowed
+  identifier: MIT
+  notice: "Copyright (c) 2024 Next Level Builder"
+  obligations:
+    - "保留版权声明和 MIT 许可文本。"
+    - "嵌入字体和数据集的单独来源及许可信息应随原件保留。"
+
+category_assessment:
+  result: matched-existing
+  matched_category: "02-ui-design"
+  rationale: "最终交付责任是 UI 设计规范、交互质量、视觉实现与还原校验，符合现有 UI 设计能力分类。"
+
+risk_assessment:
+  overall: medium
+  findings:
+    - >-
+      目标 70 文件 Skill 的非测试运行时代码只使用 Python 标准库和本地 CSV/JSON；静态扫描未发现
+      网络请求、凭据读取、shell/子进程、动态 eval/exec、权限提升、持久化或遥测。
+    - >-
+      design_system.py 仅在显式 --persist 时写入用户指定 output-dir；默认不覆盖已有 MASTER.md，
+      只有显式 --force 才通过临时文件和 os.replace 覆盖。
+    - >-
+      目标 Skill 自带测试会启动本地 Python 子进程并在临时目录写文件，但不会在 Skill 加载时自动运行。
+    - >-
+      完整仓库 CLI 会访问 GitHub API/Release，可读取命令行 token、UI_PRO_MAX_GITHUB_TOKEN 或
+      GITHUB_TOKEN，并把下载内容写入磁盘；这些行为只在显式调用 CLI 时发生。
+    - >-
+      CLI update 可通过 execFileSync 执行 npm install -g，init --force 可覆盖已安装文件，
+      uninstall 可递归删除计算出的 Skill 目录；未发现 preinstall/postinstall 生命周期钩子，
+      prepublishOnly 只在发布 CLI 时运行。
+    - >-
+      完整仓库还包含六个兄弟 Skill；其中部分脚本可读取 GEMINI_API_KEY/GOOGLE_API_KEY、访问外部 API
+      或调用 shadcn 子进程。它们不属于本次 ui-ux-pro-max 目标子目录，也不应被适配入口默认执行。
+    - >-
+      发现 54 个 TTF 和 7 个 PNG 二进制资源，类型与声明用途相符但无法通过纯文本审计证明其内容安全；
+      目标 ui-ux-pro-max 子目录本身不包含这些字体或 PNG。
+    - "未发现私钥、常见云凭据或长令牌特征，也未发现混淆或编码执行载荷。"
+    - >-
+      版本元数据不一致：Git 标签和发布为 v2.15.0，但根 skill.json 声明 2.13.0，cli/package.json
+      声明 2.5.0；正式适配必须以锁定标签和提交为准，并保留这一上游问题。
+  compatibility:
+    - >-
+      原件是 Markdown frontmatter Skill，不符合 OPCSkills portable-yaml-skill 契约；原样入库需要生成
+      origin=external 的最小 skill.yaml 适配入口，并把完整原件保存在 source/。
+    - >-
+      原始 .claude Skill 使用 ${CLAUDE_PLUGIN_ROOT}/.claude/... 路径，不能直接作为当前 Codex
+      安装文件使用；Codex 版本需要根据上游 codex.json 生成或改写脚本路径。
+    - >-
+      上游 Codex 模板目标是 ~/.agents/skills/ui-ux-pro-max，而当前本机安装位于
+      ~/.codex/skills/ui-ux-pro-max；直接运行官方全局更新器会产生第二份安装，而不是更新现有目录。
+    - >-
+      OPCSkills 正式 id 可使用 ui-ux-pro-max：不占用 zx- 个人命名空间，且当前 manifest 扫描范围内无重名。
+    - "核心 Python 运行时声明无第三方依赖，适配后可在当前 Python 3 环境运行。"
+  license: "MIT；允许保存、使用、修改和再分发，但必须保留版权与许可文本。"
+  recommendation: >-
+    建议确认原样入库到 02-ui-design：保留 v2.15.0 完整来源和哈希，仅为 OPCSkills 生成最小 external
+    适配入口，并限制默认能力到 70 文件 ui-ux-pro-max 子目录。Codex 当前安装的更新应采用备份后原位替换，
+    同时生成适用于 ~/.codex/skills 的脚本路径；不要直接运行上游 CLI，以免额外安装兄弟 Skill、全局 npm 包
+    或在 ~/.agents/skills 形成重复版本。
+
+validation:
+  - "下载仅使用 HTTPS，最终 URL 已记录。"
+  - "标签 v2.15.0 解析到提交 a38d04c3d5c298c851dbe5e6ee1965ee3de42cb5。"
+  - "归档 SHA-256 已计算并记录。"
+  - "归档路径、设备文件和链接目标已静态校验；唯一符号链接未越界。"
+  - "已扫描目标 Skill 的 Markdown、Python、JSON、CSV 和引用文件。"
+  - "已扫描完整仓库的包脚本、CLI 网络/更新/卸载逻辑、环境变量、子进程和文件操作。"
+  - "未执行仓库脚本、安装器、构建、测试、npm 或 Python 运行时代码。"
+  - "stage 只写入 skills-temp-inbox；skills-external、skills-custom 和 manifest 未改动。"
+
+next_actions:
+  - "$opc-skills 确认原样入库 20260814T230645Z-ui-ux-pro-max-v2-15-0-633f8b71"
+  - "$opc-skills 确认改造入库 20260814T230645Z-ui-ux-pro-max-v2-15-0-633f8b71，要求：仅保留 ui-ux-pro-max 核心能力并适配 Codex 当前安装路径"
+  - "$opc-skills 丢弃 20260814T230645Z-ui-ux-pro-max-v2-15-0-633f8b71"

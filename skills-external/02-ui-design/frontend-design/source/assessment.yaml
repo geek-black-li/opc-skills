@@ -1,0 +1,101 @@
+schema_version: "1.0"
+result: staged-awaiting-confirmation
+inbox_id: 20260814T231845Z-frontend-design-201092fb
+action: stage
+
+source_record:
+  type: url
+  original_locator: "https://github.com/anthropics/skills/archive/2235be7c60b551f5de82ade908fd3816455afcda.tar.gz"
+  final_url: "https://codeload.github.com/anthropics/skills/tar.gz/2235be7c60b551f5de82ade908fd3816455afcda"
+  repository: "https://github.com/anthropics/skills"
+  expected_ref: 2235be7c60b551f5de82ade908fd3816455afcda
+  resolved_commit: 2235be7c60b551f5de82ade908fd3816455afcda
+  target_latest_commit_checked_at: "2026-08-14T23:17:41Z"
+  target_latest_commit_date: "2026-06-09T19:33:41Z"
+  fetched_at: "2026-08-14T23:17:41Z"
+  archive_path: source/anthropics-skills-2235be7.tar.gz
+  archive_sha256: 201092fb26e019936e2155b15128cef07e02471da57bc8ae96aa0d0357afa1fe
+  extracted_root: source/skills-2235be7c60b551f5de82ade908fd3816455afcda
+  intended_skill_path: source/skills-2235be7c60b551f5de82ade908fd3816455afcda/skills/frontend-design
+  intended_skill_file_count: 2
+  intended_skill_manifest_sha256: d2f2b4dbd5d91d5f8be15dc533b2887faee85a705d7316878db8f7fb2b8925ad
+  installed_copy_path: /Users/black_li/.codex/skills/frontend-design
+  installed_copy_comparison: exact-match
+  installed_skill_sha256: 1608ea77fbb6fc30d13a97d12cfa8ebf31358d40f0dd97beed24829d6b3f45dd
+  installed_license_sha256: 0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594
+  archive_inventory:
+    members: 483
+    regular_files: 397
+    directories: 86
+    symlinks: 0
+    hardlinks: 0
+
+detected_files:
+  summary:
+    xsd: 117
+    markdown: 93
+    python: 72
+    ttf: 54
+    text: 45
+    xml: 6
+    html: 3
+    shell: 2
+    json: 1
+    javascript: 1
+    pdf: 1
+    gzip: 1
+    no_extension: 1
+  important_paths:
+    - skills/frontend-design/SKILL.md
+    - skills/frontend-design/LICENSE.txt
+    - THIRD_PARTY_NOTICES.md
+    - spec/agent-skills-spec.md
+    - skills/skill-creator/scripts/
+    - skills/web-artifacts-builder/scripts/
+
+purpose_summary: "为新建或重塑界面提供具有明确主题身份的视觉方向，强调基于具体对象和受众选择配色、字体、布局、文案和一个可解释的标志性设计，并通过两轮设计、自评和实现避免模板化输出。"
+
+license:
+  result: allowed
+  identifier: Apache-2.0
+  notice: "Complete terms in skills/frontend-design/LICENSE.txt"
+  obligations:
+    - "再分发时保留 Apache License 2.0 文本和适用的版权、专利、商标及归属声明。"
+    - "如形成衍生作品，应按 Apache-2.0 第 4 节标明修改并保留适用 NOTICE/归属信息。"
+
+category_assessment:
+  result: matched-existing
+  matched_category: 02-ui-design
+  rationale: "最终交付责任是界面视觉方向、设计规范、交互表达与还原质量，符合现有 UI 设计能力分类。"
+
+risk_assessment:
+  overall: medium
+  findings:
+    - "目标 frontend-design 目录只有 SKILL.md 和 Apache-2.0 LICENSE.txt；未发现脚本、网络请求、安装命令、凭据读取、动态执行、权限提升、持久化、自更新、遥测或删除逻辑。"
+    - "目标指令允许在环境支持时截取界面截图用于自评，并要求实现真实界面代码；这些行为仍受用户任务范围、项目写入权限和现有工具规则约束。"
+    - "完整 anthropics/skills 归档含 397 个文件，其中有 72 个 Python、2 个 shell 和 1 个 JavaScript 文件；其他 Skill 的脚本包含子进程、文件写入或删除、LibreOffice、npm、API 和令牌相关行为，但不属于 frontend-design 目标目录，正式入口不得读取或执行。"
+    - "完整归档含 54 个 TTF、1 个 PDF 和 1 个内嵌 tar.gz 等 56 个非 UTF-8 文件；类型与其他 Skill 的字体、预览和组件资源用途相符，但无法通过纯文本审计证明其内容安全。目标 frontend-design 目录没有二进制文件。"
+    - "未发现私钥、常见云访问密钥或长令牌特征；目标目录没有混淆、编码载荷或可执行文件。"
+    - "上游没有 frontend-design 独立 Git tag 或版本号；正式来源必须以锁定提交为准，适配入口版本只表示 OPCSkills 适配版本。"
+  compatibility:
+    - "原件是 Markdown frontmatter Skill，不符合 OPCSkills portable-yaml-skill 契约；原样入库需要生成 origin=external 的最小 skill.yaml 适配入口，并把完整原件保存在 source/。"
+    - "OPCSkills 正式 id 可使用 frontend-design：不占用 zx- 个人命名空间，且当前 manifest 扫描范围内无重名。"
+    - "当前 /Users/black_li/.codex/skills/frontend-design 中的 SKILL.md 和 LICENSE.txt 均与锁定上游逐字节一致，无需更新本机安装。"
+    - "正式适配应把默认读取范围严格限制为 skills/frontend-design，禁止因完整来源归档存在其他 Skill 而扩大能力或执行脚本。"
+  license: "Apache-2.0；允许保存、使用、修改和再分发，需保留许可、归属并按要求标注修改。"
+  recommendation: "建议确认原样入库到 02-ui-design：保留完整提交归档、目标许可、第三方声明和哈希，只为 frontend-design 生成最小 external 适配入口，并限制默认能力到两个目标文件。"
+
+validation:
+  - "下载仅使用 HTTPS，最终 URL 已记录。"
+  - "目标目录截至检查时的最近提交已锁定为 2235be7c60b551f5de82ade908fd3816455afcda。"
+  - "归档 SHA-256 和目标 Skill 文件清单哈希已计算并记录。"
+  - "归档路径和成员类型已静态校验；没有越界路径、设备文件、符号链接或硬链接。"
+  - "已扫描目标 SKILL.md、许可、完整仓库中的代码、配置、说明、凭据引用、子进程、文件操作与二进制清单。"
+  - "未执行仓库脚本、安装器、构建、测试、npm、Python 或 JavaScript 运行时代码。"
+  - "本机安装的目标文件与锁定上游逐字节一致。"
+  - "stage 只写入 skills-temp-inbox；未修改本项的 skills-external、skills-custom 或 manifest。"
+
+next_actions:
+  - "$opc-skills 确认原样入库 20260814T231845Z-frontend-design-201092fb"
+  - "$opc-skills 确认改造入库 20260814T231845Z-frontend-design-201092fb，要求：只保留 frontend-design 目标目录并限制为设计方向与自评能力"
+  - "$opc-skills 丢弃 20260814T231845Z-frontend-design-201092fb"

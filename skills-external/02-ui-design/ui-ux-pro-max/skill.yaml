@@ -1,0 +1,155 @@
+schema_version: "1.0"
+id: ui-ux-pro-max
+name: "UI/UX Pro Max"
+version: "2.15.0"
+description: "使用经过静态评估的 UI/UX Pro Max v2.15.0 本地知识库，为 Web、移动端和桌面端界面提供设计系统、无障碍、交互、响应式、排版、配色、图表与技术栈实现建议。"
+category: 02-ui-design
+origin: external
+status: active
+
+triggers:
+  intents:
+    - "设计、构建、评审或修复 Web、移动端或桌面端界面"
+    - "生成 UI 设计系统、配色、字体、布局或交互建议"
+    - "查询无障碍、图表、图标、动效或技术栈 UI 规范"
+  keywords:
+    - ui-ux-pro-max
+    - UI设计
+    - UX评审
+    - 设计系统
+    - 无障碍
+
+input_schema:
+  type: object
+  properties:
+    context:
+      type: string
+      description: "产品、页面、功能或问题背景。"
+    query:
+      type: string
+      description: "需要检索或解决的具体 UI/UX 问题。"
+    domain:
+      type: string
+      description: "可选的知识库检索域。"
+      enum:
+        - product
+        - style
+        - color
+        - typography
+        - google-fonts
+        - chart
+        - ux
+        - landing
+        - icons
+        - gsap
+        - react
+        - web
+    stack:
+      type: string
+      description: "可选的实现技术栈。"
+      enum:
+        - react
+        - nextjs
+        - vue
+        - svelte
+        - astro
+        - nuxtjs
+        - nuxt-ui
+        - angular
+        - laravel
+        - swiftui
+        - react-native
+        - flutter
+        - jetpack-compose
+        - html-tailwind
+        - shadcn
+        - threejs
+        - javafx
+        - wpf
+        - winui
+        - avalonia
+        - uno
+        - uwp
+    design_system:
+      type: boolean
+      default: false
+      description: "是否生成完整设计系统建议。"
+    persist:
+      type: boolean
+      default: false
+      description: "是否把设计系统写入用户明确指定的输出目录。"
+    output_dir:
+      type: string
+      description: "persist=true 时由用户明确指定的项目内输出目录。"
+  required:
+    - context
+  additionalProperties: false
+
+output_schema:
+  type: object
+  properties:
+    summary:
+      type: string
+    recommendations:
+      type: array
+      items:
+        type: string
+    evidence:
+      type: array
+      items:
+        type: string
+    validation:
+      type: array
+      items:
+        type: string
+    follow_ups:
+      type: array
+      items:
+        type: string
+  required:
+    - summary
+    - recommendations
+    - evidence
+    - validation
+  additionalProperties: false
+
+constraints:
+  - "默认能力范围仅限 source/source/ui-ux-pro-max-skill-2.15.0/.claude/skills/ui-ux-pro-max 中的 70 个核心文件。"
+  - "默认离线运行；不得调用完整仓库 CLI、更新器、卸载器、npm 全局安装、兄弟 Skill、网络服务或凭据。"
+  - "只允许按需运行核心 scripts/search.py、scripts/design_system.py 和 scripts/validate_data.py。"
+  - "仅在用户明确要求持久化且给出项目内 output_dir 时写文件；未经授权不得使用 --force 覆盖现有文件。"
+  - "保留用户现有工作与无关文件；本地知识库结果应作为设计建议，并结合项目约束验证。"
+  - "原件按 MIT 许可入库；版权、许可文本、来源记录和归档哈希必须随 source/ 保留。"
+
+prompt: |
+  使用本 Skill 时，先读取相邻 source/source/ui-ux-pro-max-skill-2.15.0/.claude/skills/ui-ux-pro-max/SKILL.md，
+  再按任务需要读取同一核心目录中的最少量 references、data 或 scripts 文件。
+
+  原件里的 ${CLAUDE_PLUGIN_ROOT}/.claude/skills/ui-ux-pro-max 路径必须解析为上述正式 source 中的核心目录；
+  不得把它解释成其他 Claude、Codex 或全局安装目录。
+
+  根据用户目标选择普通检索或设计系统模式，只运行已静态评估的核心本地脚本。默认不联网、不读取令牌，
+  不执行仓库 CLI、update、uninstall、npm 或兄弟 Skill。只有用户明确授权 persist 并指定 output_dir 时才可写入，
+  且不得自行使用 --force。
+
+  输出必须包含 summary、recommendations、evidence 和 validation；需要用户后续决策时再提供 follow_ups。
+
+metadata:
+  author: "Next Level Builder"
+  tags:
+    - external
+    - ui
+    - ux
+    - design-system
+    - accessibility
+  source:
+    type: external-original
+    original_id: ui-ux-pro-max
+    repository: "https://github.com/nextlevelbuilder/ui-ux-pro-max-skill"
+    reference: v2.15.0
+    resolved_commit: a38d04c3d5c298c851dbe5e6ee1965ee3de42cb5
+    license: MIT
+    archive_sha256: 633f8b71a7bea2e354ac0792ed2ffde0b7995cbf4eac2c852235e1f8f46400f6
+    assessment: source/assessment.yaml
+    original_skill: source/source/ui-ux-pro-max-skill-2.15.0/.claude/skills/ui-ux-pro-max/SKILL.md
+    version_note: "Git 标签为 v2.15.0；上游根 skill.json 为 2.13.0，cli/package.json 为 2.5.0。正式版本以锁定标签和提交为准。"
