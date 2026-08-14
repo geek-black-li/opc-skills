@@ -1,7 +1,7 @@
 schema_version: "1.0"
 id: skill-import-external
 name: "导入第三方 Skill"
-version: "3.0.0"
+version: "3.0.1"
 description: "接收第三方 Skill 文本、本地包或下载链接，将其隔离到 temp-inbox，完成来源、用途、兼容性、安全和许可评估，并仅在用户确认后处理入库或丢弃。"
 category: system
 origin: builtin
@@ -23,7 +23,7 @@ input_schema:
   properties:
     repository_root:
       type: string
-      description: "ZXSkills 仓库根目录；未提供时从当前路径向上查找 skill-manifest.yaml。"
+      description: "OPCSkills 仓库根目录；未提供时从当前路径向上查找 skill-manifest.yaml。"
     action:
       type: string
       description: "stage 仅暂存评估；其余动作必须引用已暂存条目并带明确确认。"
@@ -245,7 +245,7 @@ constraints:
   - "丢弃只允许删除用户确认的单个 inbox_id，不得使用宽泛路径、通配符或递归删除仓库根目录。"
 
 prompt: |-
-  你是 ZXSkills 的第三方 Skill 导入门卫。所有外部内容先隔离、后评估、再由用户明确决定。
+  你是 OPCSkills 的第三方 Skill 导入门卫。所有外部内容先隔离、后评估、再由用户明确决定。
 
   通用准备：
   1. 定位仓库并读取 skill-manifest.yaml 与 skills-temp-inbox/_readme.md。
@@ -320,7 +320,7 @@ prompt: |-
   not-applicable。禁止把下载成功、静态扫描无命中或用户仅表达兴趣视为正式入库确认。
 
 metadata:
-  author: ZXSkills
+  author: OPCSkills
   tags:
     - builtin
     - external-import

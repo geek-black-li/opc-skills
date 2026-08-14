@@ -26,7 +26,7 @@ try {
     $Content = [IO.File]::ReadAllText($AgentsFile)
     Assert-Contains $Content "# Existing global rules"
     Assert-Contains $Content "<!-- zx-skills-reminder:start -->"
-    Assert-Contains $Content '$zx-skills 总结一下当前链路'
+    Assert-Contains $Content '$opc-skills 总结一下当前链路'
 
     & $ScriptPath install
     $Content = [IO.File]::ReadAllText($AgentsFile)
@@ -86,7 +86,7 @@ try {
     Assert-Contains $Readme "configure-codex-reminder.ps1 install"
     Assert-Contains $Readme "只提醒，不自动执行"
 
-    Write-Host "PowerShell reminder configuration tests passed."
+    Write-Host "OPCSkills PowerShell reminder configuration tests passed."
 }
 finally {
     $env:CODEX_HOME = $OriginalCodexHome

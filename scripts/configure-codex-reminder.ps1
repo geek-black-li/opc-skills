@@ -48,7 +48,7 @@ function Assert-ValidMarkers {
     $StartCount = Get-MarkerCount $Content $StartMarker
     $EndCount = Get-MarkerCount $Content $EndMarker
     if ($StartCount -ne $EndCount -or $StartCount -gt 1) {
-        throw "Malformed ZXSkills reminder markers in $Path; fix them manually before retrying."
+        throw "Malformed OPCSkills reminder markers in $Path; fix them manually before retrying."
     }
 }
 
@@ -131,26 +131,26 @@ switch ($Action) {
         Remove-ManagedBlock $ActiveFile
         Add-ReminderTemplate $ActiveFile
 
-        Write-Host "ZXSkills completion reminder configured."
+        Write-Host "OPCSkills completion reminder configured."
         Write-Host "Global Codex instructions: $ActiveFile"
-        Write-Host "Mode: remind only; ZXSkills will not run or modify files automatically."
+        Write-Host "Mode: remind only; OPCSkills will not run or modify files automatically."
         Write-Host "Start a new Codex task to load the updated global instructions."
     }
 
     "status" {
         if (Test-ManagedBlock $ActiveFile) {
-            Write-Host "ZXSkills completion reminder is configured."
+            Write-Host "OPCSkills completion reminder is configured."
             Write-Host "Global Codex instructions: $ActiveFile"
             exit 0
         }
 
         $InactiveFile = if ($ActiveFile -eq $OverrideFile) { $AgentsFile } else { $OverrideFile }
         if (Test-ManagedBlock $InactiveFile) {
-            Write-Error "ZXSkills reminder exists in an inactive global instructions file: $InactiveFile. Run this script with install to move it to $ActiveFile."
+            Write-Error "OPCSkills reminder exists in an inactive global instructions file: $InactiveFile. Run this script with install to move it to $ActiveFile."
             exit 1
         }
 
-        Write-Error "ZXSkills completion reminder is not configured. Expected global Codex instructions: $ActiveFile"
+        Write-Error "OPCSkills completion reminder is not configured. Expected global Codex instructions: $ActiveFile"
         exit 1
     }
 
@@ -166,11 +166,11 @@ switch ($Action) {
         }
 
         if ($Removed) {
-            Write-Host "ZXSkills completion reminder removed."
+            Write-Host "OPCSkills completion reminder removed."
             Write-Host "Other global Codex instructions were preserved."
         }
         else {
-            Write-Host "ZXSkills completion reminder is not configured; nothing changed."
+            Write-Host "OPCSkills completion reminder is not configured; nothing changed."
         }
     }
 }

@@ -1,8 +1,8 @@
 schema_version: "1.0"
 id: skill-selfimprove
 name: "Skill 自我提炼分析"
-version: "4.0.0"
-description: "在功能、需求、方案、测试或发布节点完成后，比较本次过程与 ZXSkills 现有能力，先说明哪些内容值得提炼及原因，再输出等待用户确认的创建或优化提案。"
+version: "4.0.1"
+description: "在功能、需求、方案、测试或发布节点完成后，比较本次过程与 OPCSkills 现有能力，先说明哪些内容值得提炼及原因，再输出等待用户确认的创建或优化提案。"
 category: system
 origin: builtin
 status: active
@@ -25,7 +25,7 @@ input_schema:
   properties:
     repository_root:
       type: string
-      description: "ZXSkills 仓库根目录；未提供时从已知配置或当前路径定位。"
+      description: "OPCSkills 仓库根目录；未提供时从已知配置或当前路径定位。"
     project_context:
       type: string
       description: "刚完成的项目节点、目标、约束和结果。"
@@ -355,7 +355,7 @@ constraints:
   - "自动触发和用户说‘总结并优化’都不构成写入确认。"
 
 prompt: |-
-  你是 ZXSkills 的 Self-Improve 分析器。你的职责是把刚完成的项目过程与正式 Skill 仓库比较，
+  你是 OPCSkills 的 Self-Improve 分析器。你的职责是把刚完成的项目过程与正式 Skill 仓库比较，
   先向用户解释“哪些可以提炼、为什么值得提炼”，再给出一份可确认的沉淀提案。你永远只分析，
   不修改任何文件，也不在当前轮触发写入。
 
@@ -395,7 +395,7 @@ prompt: |-
      `scripts/compute-proposal-id.py --prefix zxsi-` 计算。哈希对象是 canonical JSON 的原始 UTF-8 字节，
      末尾没有换行；不得把 shell 管道或文件结尾附加的换行计入哈希。参数变化必须得到新的 proposal_id。
   8. create-skill/update-skill 固定返回 result=awaiting-confirmation，并给出两条可复制指令：
-     `$zx-skills 确认提炼 <proposal_id>` 和 `$zx-skills 放弃提炼 <proposal_id>`。
+     `$opc-skills 确认提炼 <proposal_id>` 和 `$opc-skills 放弃提炼 <proposal_id>`。
      即使用户本轮说了“总结并沉淀”“总结并优化”或 auto_triggered=true，同一轮不得调用 creator/editor，
      不得写入仓库。只有用户后续发送与 proposal_id 匹配的明确确认，入口适配器才能继续。
   9. no-action 返回 result=no-action，说明不提炼的原因与可复用边界，不生成虚假的提案 ID。
@@ -406,7 +406,7 @@ prompt: |-
   只能出现在排除说明或证据中，不能被硬编码为通用 Skill 规则。
 
 metadata:
-  author: ZXSkills
+  author: OPCSkills
   tags:
     - builtin
     - self-improve

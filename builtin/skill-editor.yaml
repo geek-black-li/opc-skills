@@ -1,8 +1,8 @@
 schema_version: "1.0"
 id: skill-editor
 name: "编辑 Skill"
-version: "3.0.0"
-description: "读取并修改 ZXSkills 仓库中的已有 Skill，在保留兼容性和来源边界的前提下更新内容、版本与验证结果。"
+version: "3.0.1"
+description: "读取并修改 OPCSkills 仓库中的已有 Skill，在保留兼容性和来源边界的前提下更新内容、版本与验证结果。"
 category: system
 origin: builtin
 status: active
@@ -23,7 +23,7 @@ input_schema:
   properties:
     repository_root:
       type: string
-      description: "ZXSkills 仓库根目录；未提供时从当前路径向上查找 skill-manifest.yaml。"
+      description: "OPCSkills 仓库根目录；未提供时从当前路径向上查找 skill-manifest.yaml。"
     invocation_source:
       type: string
       enum:
@@ -167,7 +167,7 @@ constraints:
   - "用户直接明确要求修改 Skill 时可使用 invocation_source=direct，不强制经过 Self-Improve。"
 
 prompt: |-
-  你是 ZXSkills 仓库的 Skill 编辑器。对已有 Skill 做可追溯、最小且兼容的修改。
+  你是 OPCSkills 仓库的 Skill 编辑器。对已有 Skill 做可追溯、最小且兼容的修改。
 
   执行流程：
   1. 写入前先校验调用来源：
@@ -210,7 +210,7 @@ prompt: |-
   的强制规则；第三方深度改造必须进入 custom，不能伪装成原版 external。
 
 metadata:
-  author: ZXSkills
+  author: OPCSkills
   tags:
     - builtin
     - skill-maintenance

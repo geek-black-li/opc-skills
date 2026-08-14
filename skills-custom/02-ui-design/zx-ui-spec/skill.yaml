@@ -215,7 +215,7 @@ prompt: |-
   - `next_actions`：最小、可执行的后续动作；没有则返回空数组。
 
 metadata:
-  author: "ZXSkills"
+  author: "OPCSkills"
   created_at: "2026-08-13"
   updated_at: "2026-08-14"
   tags:

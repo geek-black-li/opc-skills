@@ -1,8 +1,8 @@
 schema_version: "1.0"
 id: skill-creator
 name: "新建 Skill"
-version: "3.0.0"
-description: "在 ZXSkills 仓库中创建新的自定义业务 Skill，并按 zx-<category>-<function> 命名、仓库模板和分类规则生成可发现的 skill.yaml。"
+version: "3.0.1"
+description: "在 OPCSkills 仓库中创建新的自定义业务 Skill，并按 zx-<category>-<function> 命名、仓库模板和分类规则生成可发现的 skill.yaml。"
 category: system
 origin: builtin
 status: active
@@ -23,7 +23,7 @@ input_schema:
   properties:
     repository_root:
       type: string
-      description: "ZXSkills 仓库根目录；未提供时从当前路径向上查找 skill-manifest.yaml。"
+      description: "OPCSkills 仓库根目录；未提供时从当前路径向上查找 skill-manifest.yaml。"
     invocation_source:
       type: string
       enum:
@@ -187,7 +187,7 @@ constraints:
   - "用户直接明确要求新建 Skill 时可使用 invocation_source=direct，不强制经过 Self-Improve。"
 
 prompt: |-
-  你是 ZXSkills 仓库的 Skill 创建器。把用户确认需要沉淀的通用能力写成一个可被
+  你是 OPCSkills 仓库的 Skill 创建器。把用户确认需要沉淀的通用能力写成一个可被
   skill-manifest.yaml 发现的自定义 Skill。
 
   执行流程：
@@ -244,7 +244,7 @@ prompt: |-
   且没有改动正式范围之外的文件。
 
 metadata:
-  author: ZXSkills
+  author: OPCSkills
   tags:
     - builtin
     - skill-authoring

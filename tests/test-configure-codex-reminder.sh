@@ -25,7 +25,7 @@ printf '# Existing global rules\n\n- Keep this line.\n' > "$CODEX_HOME/AGENTS.md
 "$script_path" install
 assert_contains "$CODEX_HOME/AGENTS.md" '# Existing global rules'
 assert_contains "$CODEX_HOME/AGENTS.md" '<!-- zx-skills-reminder:start -->'
-assert_contains "$CODEX_HOME/AGENTS.md" '$zx-skills 总结一下当前链路'
+assert_contains "$CODEX_HOME/AGENTS.md" '$opc-skills 总结一下当前链路'
 
 "$script_path" install
 start_count="$(grep -Fxc '<!-- zx-skills-reminder:start -->' "$CODEX_HOME/AGENTS.md")"
@@ -67,4 +67,4 @@ fi
 assert_contains "$repository_root/README.md" 'configure-codex-reminder.sh install'
 assert_contains "$repository_root/README.md" '只提醒，不自动执行'
 
-echo "POSIX reminder configuration tests passed."
+echo "OPCSkills POSIX reminder configuration tests passed."

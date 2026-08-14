@@ -40,7 +40,7 @@ validate_markers() {
   start_count="$(marker_count "$file_path" "$start_marker")"
   end_count="$(marker_count "$file_path" "$end_marker")"
   if [[ "$start_count" != "$end_count" || "$start_count" -gt 1 ]]; then
-    echo "Error: malformed ZXSkills reminder markers in $file_path; fix them manually before retrying." >&2
+    echo "Error: malformed OPCSkills reminder markers in $file_path; fix them manually before retrying." >&2
     exit 1
   fi
 }
@@ -101,15 +101,15 @@ case "$action" in
     remove_managed_block "$active_file"
     append_template "$active_file"
 
-    echo "ZXSkills completion reminder configured."
+    echo "OPCSkills completion reminder configured."
     echo "Global Codex instructions: $active_file"
-    echo "Mode: remind only; ZXSkills will not run or modify files automatically."
+    echo "Mode: remind only; OPCSkills will not run or modify files automatically."
     echo "Start a new Codex task to load the updated global instructions."
     ;;
 
   status)
     if has_managed_block "$active_file"; then
-      echo "ZXSkills completion reminder is configured."
+      echo "OPCSkills completion reminder is configured."
       echo "Global Codex instructions: $active_file"
       exit 0
     fi
@@ -119,12 +119,12 @@ case "$action" in
       inactive_file="$agents_file"
     fi
     if has_managed_block "$inactive_file"; then
-      echo "ZXSkills reminder exists in an inactive global instructions file: $inactive_file" >&2
+      echo "OPCSkills reminder exists in an inactive global instructions file: $inactive_file" >&2
       echo "Run '$0 install' to move it to: $active_file" >&2
       exit 1
     fi
 
-    echo "ZXSkills completion reminder is not configured."
+    echo "OPCSkills completion reminder is not configured."
     echo "Expected global Codex instructions: $active_file"
     exit 1
     ;;
@@ -141,10 +141,10 @@ case "$action" in
     fi
 
     if [[ "$removed" == "true" ]]; then
-      echo "ZXSkills completion reminder removed."
+      echo "OPCSkills completion reminder removed."
       echo "Other global Codex instructions were preserved."
     else
-      echo "ZXSkills completion reminder is not configured; nothing changed."
+      echo "OPCSkills completion reminder is not configured; nothing changed."
     fi
     ;;
 esac

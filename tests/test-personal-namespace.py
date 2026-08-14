@@ -162,4 +162,4 @@ for skill_path in sorted((ROOT / "skills-external").glob("*/**/skill.y*ml")):
     if skill["id"].startswith("zx-"):
         fail(f"external adapter id uses reserved zx- prefix: {skill_path.relative_to(ROOT)}")
 
-print("ZXSkills personal namespace tests passed.")
+print("OPCSkills personal namespace tests passed.")

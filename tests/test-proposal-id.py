@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Cross-tool test vectors for deterministic ZXSkills proposal IDs."""
+"""Cross-tool test vectors for deterministic OPCSkills proposal IDs."""
 
 from pathlib import Path
 import json
@@ -49,7 +49,7 @@ def main() -> None:
     invalid_json = run("--prefix", "zpo-", stdin="not-json\n")
     assert invalid_json.returncode != 0
 
-    print("ZXSkills proposal ID test vectors: ok")
+    print("OPCSkills proposal ID test vectors: ok")
 
 
 if __name__ == "__main__":

@@ -171,4 +171,4 @@ for expected in (
     if expected not in readme:
         fail(f"README is missing dynamic category guidance: {expected}")
 
-print("ZXSkills dynamic category tests passed.")
+print("OPCSkills dynamic category tests passed.")

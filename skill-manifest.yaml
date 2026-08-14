@@ -1,9 +1,9 @@
-# ZXSkills 统一发现入口。此文件只描述可加载 Skill 的扫描规则，不逐条登记 Skill。
+# OPCSkills 统一发现入口。此文件只描述可加载 Skill 的扫描规则，不逐条登记 Skill。
 manifest_version: "1.3"
 
 repository:
-  id: zxskills
-  name: "全栈 OPC 本地 Skills 仓库"
+  id: opc-skills
+  name: "OPCSkills"
   description: "覆盖产品、设计、研发、测试、发布和项目管理完整交付链路的本地 Skill 集合。"
   default_language: zh-CN
 

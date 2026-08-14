@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Compute deterministic ZXSkills proposal IDs from a JSON value."""
+"""Compute deterministic OPCSkills proposal IDs from a JSON value."""
 
 import argparse
 import hashlib

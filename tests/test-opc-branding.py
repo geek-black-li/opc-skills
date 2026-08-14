@@ -13,10 +13,27 @@ def read(path: str) -> str:
     return (ROOT / path).read_text(encoding="utf-8")
 
 
+ACTIVE_BRAND_FILES = [
+    "skill-manifest.yaml",
+    "builtin/skill-creator.yaml",
+    "builtin/skill-editor.yaml",
+    "builtin/skill-import-external.yaml",
+    "builtin/skill-selfimprove.yaml",
+    "templates/codex-agents-reminder.md",
+    "scripts/install-codex.sh",
+    "scripts/install-codex.ps1",
+    "scripts/configure-codex-reminder.sh",
+    "scripts/configure-codex-reminder.ps1",
+]
+for path in ACTIVE_BRAND_FILES:
+    assert "ZXSkills" not in read(path), path
+
 manifest = yaml.safe_load(read("skill-manifest.yaml"))
 assert manifest["repository"]["id"] == "opc-skills"
 assert manifest["repository"]["name"] == "OPCSkills"
 assert "skills-temp-inbox/**" in manifest["discovery"]["global_exclude"]
+assert manifest["validation"]["custom_skill_id_pattern"].startswith("^zx-")
+assert manifest["validation"]["external_forbidden_id_prefixes"] == ["zx-"]
 
 primary = read("adapters/codex/opc-skills/SKILL.md")
 compat = read("adapters/codex/zx-skills/SKILL.md")
@@ -41,6 +58,7 @@ for primary_heading in (
 
 reminder = read("templates/codex-agents-reminder.md")
 assert "<!-- zx-skills-reminder:start -->" in reminder
+assert "<!-- zx-skills-reminder:end -->" in reminder
 assert "$opc-skills 总结一下当前链路" in reminder
 
 assert manifest["validation"]["custom_skill_id_format"] == "zx-<category>-<function>"
