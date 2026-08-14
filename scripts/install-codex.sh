@@ -13,96 +13,146 @@ esac
 
 script_dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd -P)
 repository_root=$(CDPATH= cd -- "$script_dir/.." && pwd -P)
-source_dir="$repository_root/adapters/codex/zx-skills"
-target_parent="$HOME/.agents/skills"
-target_dir="$target_parent/zx-skills"
+target_parent="${OPCSKILLS_SKILLS_HOME:-$HOME/.agents/skills}"
 
-if [ ! -f "$source_dir/SKILL.md" ]; then
-  echo "Error: Codex entrypoint not found: $source_dir/SKILL.md" >&2
-  exit 1
-fi
+opc_source="$repository_root/adapters/codex/opc-skills"
+zx_source="$repository_root/adapters/codex/zx-skills"
+opc_target="$target_parent/opc-skills"
+zx_target="$target_parent/zx-skills"
 
-resolve_existing_target() {
+for source_dir in "$opc_source" "$zx_source"; do
+  if [ ! -f "$source_dir/SKILL.md" ]; then
+    echo "Error: Codex entrypoint not found: $source_dir/SKILL.md" >&2
+    exit 1
+  fi
+done
+
+classify_target() {
+  source_dir=$1
+  target_dir=$2
+
+  if [ ! -e "$target_dir" ] && [ ! -L "$target_dir" ]; then
+    echo absent
+    return
+  fi
+
   if [ ! -L "$target_dir" ]; then
-    return 1
+    echo conflict
+    return
   fi
 
   link_value=$(readlink "$target_dir")
   case "$link_value" in
     /*) candidate="$link_value" ;;
-    *) candidate="$target_parent/$link_value" ;;
+    *) candidate="$(dirname -- "$target_dir")/$link_value" ;;
   esac
 
-  if [ ! -d "$candidate" ]; then
-    return 1
+  if [ -d "$candidate" ] &&
+     [ "$(CDPATH= cd -- "$candidate" && pwd -P)" = "$source_dir" ]; then
+    echo current
+  else
+    echo conflict
   fi
-
-  (CDPATH= cd -- "$candidate" && pwd -P)
 }
 
-is_current_install() {
-  [ -L "$target_dir" ] || return 1
-  installed_source=$(resolve_existing_target) || return 1
-  [ "$installed_source" = "$source_dir" ]
+preflight() {
+  opc_state=$(classify_target "$opc_source" "$opc_target")
+  zx_state=$(classify_target "$zx_source" "$zx_target")
+}
+
+refuse_conflicts() {
+  found_conflict=0
+  if [ "$opc_state" = conflict ]; then
+    echo "Error: refusing to modify existing path: $opc_target" >&2
+    found_conflict=1
+  fi
+  if [ "$zx_state" = conflict ]; then
+    echo "Error: refusing to modify existing path: $zx_target" >&2
+    found_conflict=1
+  fi
+  [ "$found_conflict" -eq 0 ]
+}
+
+print_status() {
+  entry_name=$1
+  state=$2
+  target_dir=$3
+  echo "$entry_name: $state ($target_dir)"
+}
+
+rollback_created() {
+  if [ "$created_zx" -eq 1 ] &&
+     [ "$(classify_target "$zx_source" "$zx_target")" = current ]; then
+    rm -- "$zx_target"
+  fi
+  if [ "$created_opc" -eq 1 ] &&
+     [ "$(classify_target "$opc_source" "$opc_target")" = current ]; then
+    rm -- "$opc_target"
+  fi
 }
 
 case "$action" in
   install)
-    mkdir -p "$target_parent"
-
-    if is_current_install; then
-      echo "ZXSkills is already installed."
-      echo "Codex entrypoint: $target_dir"
-      echo "Repository: $repository_root"
-      exit 0
-    fi
-
-    if [ -e "$target_dir" ] || [ -L "$target_dir" ]; then
-      echo "Error: refusing to overwrite existing path: $target_dir" >&2
-      echo "Move or remove that path manually, then run this installer again." >&2
+    preflight
+    if ! refuse_conflicts; then
+      echo "No entrypoints were changed." >&2
       exit 1
     fi
 
-    ln -s "$source_dir" "$target_dir"
-    echo "ZXSkills installed successfully."
-    echo "Codex entrypoint: $target_dir"
+    mkdir -p "$target_parent"
+    created_opc=0
+    created_zx=0
+
+    if [ "$opc_state" = absent ]; then
+      if ! ln -s "$opc_source" "$opc_target"; then
+        rollback_created
+        echo "Error: installation failed; newly created entrypoints were rolled back." >&2
+        exit 1
+      fi
+      created_opc=1
+    fi
+
+    if [ "$zx_state" = absent ]; then
+      if ! ln -s "$zx_source" "$zx_target"; then
+        rollback_created
+        echo "Error: installation failed; newly created entrypoints were rolled back." >&2
+        exit 1
+      fi
+      created_zx=1
+    fi
+
+    echo "OPCSkills installed successfully."
+    print_status opc-skills current "$opc_target"
+    print_status zx-skills current "$zx_target"
     echo "Repository: $repository_root"
-    echo 'Restart Codex if needed, then run: $zx-skills 查看仓库状态'
+    echo 'Restart Codex if needed, then run: $opc-skills 查看仓库状态'
     echo 'Optional completion reminder: bash scripts/configure-codex-reminder.sh install'
     ;;
 
   status)
-    if is_current_install; then
-      echo "ZXSkills is installed."
-      echo "Codex entrypoint: $target_dir"
-      echo "Repository: $repository_root"
+    preflight
+    print_status opc-skills "$opc_state" "$opc_target"
+    print_status zx-skills "$zx_state" "$zx_target"
+    if [ "$opc_state" = current ] && [ "$zx_state" = current ]; then
       exit 0
     fi
-
-    if [ -e "$target_dir" ] || [ -L "$target_dir" ]; then
-      echo "ZXSkills is not installed from this repository."
-      echo "Another path already exists at: $target_dir"
-      exit 1
-    fi
-
-    echo "ZXSkills is not installed."
-    echo "Expected entrypoint: $target_dir"
     exit 1
     ;;
 
   uninstall)
-    if is_current_install; then
-      rm "$target_dir"
-      echo "ZXSkills Codex entrypoint removed."
-      echo "Repository preserved: $repository_root"
-      exit 0
-    fi
-
-    if [ -e "$target_dir" ] || [ -L "$target_dir" ]; then
-      echo "Error: refusing to remove a path not installed from this repository: $target_dir" >&2
+    preflight
+    if ! refuse_conflicts; then
+      echo "No entrypoints were changed." >&2
       exit 1
     fi
 
-    echo "ZXSkills is not installed; nothing changed."
+    if [ "$opc_state" = current ]; then
+      rm -- "$opc_target"
+    fi
+    if [ "$zx_state" = current ]; then
+      rm -- "$zx_target"
+    fi
+    echo "OPCSkills Codex entrypoints removed."
+    echo "Repository preserved: $repository_root"
     ;;
 esac

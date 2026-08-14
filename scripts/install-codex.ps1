@@ -6,23 +6,42 @@ param(
 $ErrorActionPreference = "Stop"
 
 $RepositoryRoot = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
-$SourceDir = Join-Path $RepositoryRoot "adapters\codex\zx-skills"
-$SourceSkill = Join-Path $SourceDir "SKILL.md"
-$TargetParent = Join-Path $HOME ".agents\skills"
-$TargetDir = Join-Path $TargetParent "zx-skills"
-
-if (-not (Test-Path -LiteralPath $SourceSkill -PathType Leaf)) {
-    throw "Codex entrypoint not found: $SourceSkill"
+$TargetParent = if ([string]::IsNullOrWhiteSpace($env:OPCSKILLS_SKILLS_HOME)) {
+    Join-Path $HOME ".agents\skills"
+}
+else {
+    $env:OPCSKILLS_SKILLS_HOME
 }
 
-function Test-CurrentInstall {
-    $Item = Get-Item -LiteralPath $TargetDir -Force -ErrorAction SilentlyContinue
-    if ($null -eq $Item) {
-        return $false
+$Entries = @(
+    [pscustomobject]@{
+        Name = "opc-skills"
+        Source = Join-Path $RepositoryRoot "adapters\codex\opc-skills"
+        Target = Join-Path $TargetParent "opc-skills"
+    },
+    [pscustomobject]@{
+        Name = "zx-skills"
+        Source = Join-Path $RepositoryRoot "adapters\codex\zx-skills"
+        Target = Join-Path $TargetParent "zx-skills"
     }
+)
 
+foreach ($Entry in $Entries) {
+    $SourceSkill = Join-Path $Entry.Source "SKILL.md"
+    if (-not (Test-Path -LiteralPath $SourceSkill -PathType Leaf)) {
+        throw "Codex entrypoint not found: $SourceSkill"
+    }
+}
+
+function Get-TargetState {
+    param([pscustomobject]$Entry)
+
+    $Item = Get-Item -LiteralPath $Entry.Target -Force -ErrorAction SilentlyContinue
+    if ($null -eq $Item) {
+        return "absent"
+    }
     if (-not ($Item.Attributes -band [IO.FileAttributes]::ReparsePoint)) {
-        return $false
+        return "conflict"
     }
 
     try {
@@ -30,80 +49,106 @@ function Test-CurrentInstall {
         if ($LinkTarget -is [array]) {
             $LinkTarget = $LinkTarget[0]
         }
+        if ([string]::IsNullOrWhiteSpace($LinkTarget)) {
+            return "conflict"
+        }
         if (-not [IO.Path]::IsPathRooted($LinkTarget)) {
-            $LinkTarget = Join-Path $TargetParent $LinkTarget
+            $LinkTarget = Join-Path (Split-Path -Parent $Entry.Target) $LinkTarget
         }
         $ResolvedTarget = (Resolve-Path -LiteralPath $LinkTarget).Path.TrimEnd("\", "/")
-        $ResolvedSource = (Resolve-Path -LiteralPath $SourceDir).Path.TrimEnd("\", "/")
-        return $ResolvedTarget -eq $ResolvedSource
+        $ResolvedSource = (Resolve-Path -LiteralPath $Entry.Source).Path.TrimEnd("\", "/")
+        if ($ResolvedTarget -eq $ResolvedSource) {
+            return "current"
+        }
     }
     catch {
-        return $false
+        return "conflict"
+    }
+    return "conflict"
+}
+
+function Get-PreflightStates {
+    return @($Entries | ForEach-Object {
+        [pscustomobject]@{
+            Entry = $_
+            State = Get-TargetState $_
+        }
+    })
+}
+
+function Assert-NoConflicts {
+    param([object[]]$States)
+
+    $Conflicts = @($States | Where-Object { $_.State -eq "conflict" })
+    if ($Conflicts.Count -gt 0) {
+        foreach ($Conflict in $Conflicts) {
+            Write-Error "Refusing to modify existing path: $($Conflict.Entry.Target)" -ErrorAction Continue
+        }
+        throw "No entrypoints were changed."
     }
 }
 
-function Test-TargetExists {
-    return $null -ne (Get-Item -LiteralPath $TargetDir -Force -ErrorAction SilentlyContinue)
+function Write-EntryStates {
+    param([object[]]$States)
+    foreach ($State in $States) {
+        Write-Host "$($State.Entry.Name): $($State.State) ($($State.Entry.Target))"
+    }
 }
 
 switch ($Action) {
     "install" {
+        $States = Get-PreflightStates
+        Assert-NoConflicts $States
+
         New-Item -ItemType Directory -Path $TargetParent -Force | Out-Null
-
-        if (Test-CurrentInstall) {
-            Write-Host "ZXSkills is already installed."
-            Write-Host "Codex entrypoint: $TargetDir"
-            Write-Host "Repository: $RepositoryRoot"
-            exit 0
+        $Created = [Collections.Generic.List[object]]::new()
+        try {
+            foreach ($State in $States) {
+                if ($State.State -ne "absent") {
+                    continue
+                }
+                $LinkType = if ($env:OS -eq "Windows_NT") { "Junction" } else { "SymbolicLink" }
+                New-Item -ItemType $LinkType -Path $State.Entry.Target -Target $State.Entry.Source | Out-Null
+                $Created.Add($State.Entry)
+            }
+        }
+        catch {
+            for ($Index = $Created.Count - 1; $Index -ge 0; $Index--) {
+                $CreatedEntry = $Created[$Index]
+                if ((Get-TargetState $CreatedEntry) -eq "current") {
+                    Remove-Item -LiteralPath $CreatedEntry.Target -Force
+                }
+            }
+            throw "Installation failed; newly created entrypoints were rolled back. $($_.Exception.Message)"
         }
 
-        if (Test-TargetExists) {
-            throw "Refusing to overwrite existing path: $TargetDir"
-        }
-
-        if ($env:OS -eq "Windows_NT") {
-            $LinkType = "Junction"
-        }
-        else {
-            $LinkType = "SymbolicLink"
-        }
-        New-Item -ItemType $LinkType -Path $TargetDir -Target $SourceDir | Out-Null
-        Write-Host "ZXSkills installed successfully."
-        Write-Host "Codex entrypoint: $TargetDir"
+        Write-Host "OPCSkills installed successfully."
+        Write-EntryStates @($Entries | ForEach-Object {
+            [pscustomobject]@{ Entry = $_; State = "current" }
+        })
         Write-Host "Repository: $RepositoryRoot"
-        Write-Host 'Restart Codex if needed, then run: $zx-skills 查看仓库状态'
+        Write-Host 'Restart Codex if needed, then run: $opc-skills 查看仓库状态'
         Write-Host 'Optional completion reminder: powershell -ExecutionPolicy Bypass -File .\scripts\configure-codex-reminder.ps1 install'
     }
 
     "status" {
-        if (Test-CurrentInstall) {
-            Write-Host "ZXSkills is installed."
-            Write-Host "Codex entrypoint: $TargetDir"
-            Write-Host "Repository: $RepositoryRoot"
+        $States = Get-PreflightStates
+        Write-EntryStates $States
+        if (@($States | Where-Object { $_.State -ne "current" }).Count -eq 0) {
             exit 0
         }
-
-        if (Test-TargetExists) {
-            Write-Error "ZXSkills is not installed from this repository. Another path exists at: $TargetDir"
-            exit 1
-        }
-
-        Write-Error "ZXSkills is not installed. Expected entrypoint: $TargetDir"
         exit 1
     }
 
     "uninstall" {
-        if (Test-CurrentInstall) {
-            Remove-Item -LiteralPath $TargetDir -Force
-            Write-Host "ZXSkills Codex entrypoint removed."
-            Write-Host "Repository preserved: $RepositoryRoot"
-            exit 0
+        $States = Get-PreflightStates
+        Assert-NoConflicts $States
+        foreach ($State in $States) {
+            if ($State.State -eq "current") {
+                Remove-Item -LiteralPath $State.Entry.Target -Force
+            }
         }
-
-        if (Test-TargetExists) {
-            throw "Refusing to remove a path not installed from this repository: $TargetDir"
-        }
-
-        Write-Host "ZXSkills is not installed; nothing changed."
+        Write-Host "OPCSkills Codex entrypoints removed."
+        Write-Host "Repository preserved: $RepositoryRoot"
     }
 }
