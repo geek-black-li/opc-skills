@@ -6,7 +6,6 @@ script_dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd -P)
 repository_root=$(CDPATH= cd -- "$script_dir/.." && pwd -P)
 script_path="$repository_root/scripts/install-codex.sh"
 opc_source="$repository_root/adapters/codex/opc-skills"
-zx_source="$repository_root/adapters/codex/zx-skills"
 original_home=$HOME
 suite_root=$(mktemp -d)
 real_ln=$(command -v ln)
@@ -27,11 +26,6 @@ new_case() {
   case_home="$case_root/home"
   skills_home="$case_root/skills"
   mkdir -p "$case_home"
-}
-
-run_installer() {
-  HOME="$case_home" OPCSKILLS_SKILLS_HOME="$skills_home" \
-    "$script_path" "$1"
 }
 
 run_installer_quiet() {
@@ -76,12 +70,6 @@ assert_status_line() {
     fail "status did not report $entry_name as $expected_state"
 }
 
-assert_two_status_lines() {
-  output_file=$1
-  [ "$(wc -l < "$output_file" | tr -d ' ')" -eq 2 ] ||
-    fail "status should print exactly one line per entry"
-}
-
 relative_path() {
   python3 - "$1" "$2" <<'PY'
 import os
@@ -93,14 +81,13 @@ PY
 
 create_current_link() {
   target=$1
-  source=$2
-  mode=${3:-absolute}
+  mode=${2:-absolute}
   mkdir -p "$(dirname -- "$target")"
   if [ "$mode" = relative ]; then
     physical_parent=$(CDPATH= cd -- "$(dirname -- "$target")" && pwd -P)
-    link_value=$(relative_path "$physical_parent" "$source")
+    link_value=$(relative_path "$physical_parent" "$opc_source")
   else
-    link_value=$source
+    link_value=$opc_source
   fi
   "$real_ln" -s "$link_value" "$target"
 }
@@ -109,52 +96,47 @@ run_fresh_lifecycle_case() {
   new_case fresh
   assert_success run_installer_quiet install "$case_root/install.out"
   assert_current_link_at "$skills_home/opc-skills" "$opc_source"
-  assert_current_link_at "$skills_home/zx-skills" "$zx_source"
+  assert_absent "$skills_home/zx-skills"
 
   assert_success run_installer_quiet status "$case_root/status.out"
-  assert_two_status_lines "$case_root/status.out"
   assert_status_line "$case_root/status.out" opc-skills current
-  assert_status_line "$case_root/status.out" zx-skills current
+  [ "$(wc -l < "$case_root/status.out" | tr -d ' ')" -eq 1 ] ||
+    fail "status should print exactly one line"
 
   opc_raw=$(readlink "$skills_home/opc-skills")
-  zx_raw=$(readlink "$skills_home/zx-skills")
   assert_success run_installer_quiet install "$case_root/reinstall.out"
   [ "$(readlink "$skills_home/opc-skills")" = "$opc_raw" ] || fail "reinstall replaced opc-skills"
-  [ "$(readlink "$skills_home/zx-skills")" = "$zx_raw" ] || fail "reinstall replaced zx-skills"
 
   assert_success run_installer_quiet uninstall "$case_root/uninstall.out"
   assert_absent "$skills_home/opc-skills"
   assert_absent "$skills_home/zx-skills"
+  grep -qx 'OPCSkills Codex entrypoint removed\.' "$case_root/uninstall.out" ||
+    fail "uninstall did not use the singular removal message"
 }
 
-run_legacy_upgrade_case() {
-  new_case legacy
-  create_current_link "$skills_home/zx-skills" "$zx_source"
-  legacy_raw=$(readlink "$skills_home/zx-skills")
-
+run_ignored_legacy_name_case() {
+  new_case ignored-legacy-name
+  mkdir -p "$skills_home"
+  printf 'foreign\n' > "$skills_home/zx-skills"
   assert_success run_installer_quiet install "$case_root/install.out"
   assert_current_link_at "$skills_home/opc-skills" "$opc_source"
-  assert_current_link_at "$skills_home/zx-skills" "$zx_source"
-  [ "$(readlink "$skills_home/zx-skills")" = "$legacy_raw" ] || fail "legacy alias was replaced"
+  [ "$(cat "$skills_home/zx-skills")" = foreign ] || fail "installer modified unrelated zx-skills path"
 }
 
 run_status_matrix() {
   new_case status-absent
   assert_failure run_installer_quiet status "$case_root/status.out"
-  assert_two_status_lines "$case_root/status.out"
   assert_status_line "$case_root/status.out" opc-skills absent
-  assert_status_line "$case_root/status.out" zx-skills absent
+  [ "$(wc -l < "$case_root/status.out" | tr -d ' ')" -eq 1 ] ||
+    fail "absent status should print exactly one line"
   [ ! -e "$skills_home" ] || fail "absent status created the target parent"
 
-  new_case status-partial
-  create_current_link "$skills_home/opc-skills" "$opc_source" relative
-  partial_raw=$(readlink "$skills_home/opc-skills")
-  assert_failure run_installer_quiet status "$case_root/status.out"
-  assert_two_status_lines "$case_root/status.out"
+  new_case status-current
+  create_current_link "$skills_home/opc-skills" relative
+  opc_raw=$(readlink "$skills_home/opc-skills")
+  assert_success run_installer_quiet status "$case_root/status.out"
   assert_status_line "$case_root/status.out" opc-skills current
-  assert_status_line "$case_root/status.out" zx-skills absent
-  [ "$(readlink "$skills_home/opc-skills")" = "$partial_raw" ] || fail "partial status replaced opc-skills"
-  assert_absent "$skills_home/zx-skills"
+  [ "$(readlink "$skills_home/opc-skills")" = "$opc_raw" ] || fail "status replaced opc-skills"
 }
 
 run_fallback_case() {
@@ -162,30 +144,27 @@ run_fallback_case() {
   fallback_skills="$case_home/.agents/skills"
   assert_success run_fallback_installer install >"$case_root/install.out" 2>&1
   assert_current_link_at "$fallback_skills/opc-skills" "$opc_source"
-  assert_current_link_at "$fallback_skills/zx-skills" "$zx_source"
+  assert_absent "$fallback_skills/zx-skills"
   [ "$HOME" = "$original_home" ] || fail "test changed parent HOME"
   assert_success run_fallback_installer uninstall >"$case_root/uninstall.out" 2>&1
   assert_absent "$fallback_skills/opc-skills"
-  assert_absent "$fallback_skills/zx-skills"
 }
 
 run_relative_idempotency_case() {
   new_case relative-idempotency
-  create_current_link "$skills_home/opc-skills" "$opc_source" relative
-  create_current_link "$skills_home/zx-skills" "$zx_source" relative
+  create_current_link "$skills_home/opc-skills" relative
   opc_raw=$(readlink "$skills_home/opc-skills")
-  zx_raw=$(readlink "$skills_home/zx-skills")
 
   assert_success run_installer_quiet install "$case_root/install-1.out"
   assert_success run_installer_quiet install "$case_root/install-2.out"
   [ "$(readlink "$skills_home/opc-skills")" = "$opc_raw" ] || fail "relative opc-skills was replaced"
-  [ "$(readlink "$skills_home/zx-skills")" = "$zx_raw" ] || fail "relative zx-skills was replaced"
 }
 
 create_conflict() {
   conflict_kind=$1
-  conflict_path=$2
+  conflict_path="$skills_home/opc-skills"
   conflict_fixture="$case_root/conflict-fixture"
+  mkdir -p "$skills_home"
 
   case "$conflict_kind" in
     foreign-link)
@@ -195,7 +174,7 @@ create_conflict() {
       "$real_ln" -s "$conflict_expected" "$conflict_path"
       ;;
     broken-link)
-      conflict_expected="missing-target-$conflict_entry"
+      conflict_expected='missing-target'
       "$real_ln" -s "$conflict_expected" "$conflict_path"
       ;;
     ordinary-directory)
@@ -219,7 +198,7 @@ create_conflict() {
 
 assert_conflict_intact() {
   conflict_kind=$1
-  conflict_path=$2
+  conflict_path="$skills_home/opc-skills"
   case "$conflict_kind" in
     foreign-link|broken-link)
       [ -L "$conflict_path" ] || fail "$conflict_kind link was removed"
@@ -242,37 +221,20 @@ assert_conflict_intact() {
 
 run_conflict_matrix() {
   for conflict_kind in foreign-link broken-link ordinary-directory repository-directory business-skill-directory; do
-    for conflict_entry in opc-skills zx-skills; do
-      new_case "conflict-$conflict_kind-$conflict_entry"
-      mkdir -p "$skills_home"
-      conflict_path="$skills_home/$conflict_entry"
-      if [ "$conflict_entry" = opc-skills ]; then
-        other_entry=zx-skills
-        other_source=$zx_source
-      else
-        other_entry=opc-skills
-        other_source=$opc_source
-      fi
-      other_path="$skills_home/$other_entry"
-      create_conflict "$conflict_kind" "$conflict_path"
+    new_case "conflict-$conflict_kind"
+    create_conflict "$conflict_kind"
 
-      assert_failure run_installer_quiet status "$case_root/status.out"
-      assert_two_status_lines "$case_root/status.out"
-      assert_status_line "$case_root/status.out" "$conflict_entry" conflict
-      assert_conflict_intact "$conflict_kind" "$conflict_path"
-      assert_absent "$other_path"
+    assert_failure run_installer_quiet status "$case_root/status.out"
+    assert_status_line "$case_root/status.out" opc-skills conflict
+    [ "$(wc -l < "$case_root/status.out" | tr -d ' ')" -eq 1 ] ||
+      fail "conflict status should print exactly one line"
+    assert_conflict_intact "$conflict_kind"
 
-      assert_failure run_installer_quiet install "$case_root/install.out"
-      assert_conflict_intact "$conflict_kind" "$conflict_path"
-      assert_absent "$other_path"
+    assert_failure run_installer_quiet install "$case_root/install.out"
+    assert_conflict_intact "$conflict_kind"
 
-      create_current_link "$other_path" "$other_source" relative
-      other_raw=$(readlink "$other_path")
-      assert_failure run_installer_quiet uninstall "$case_root/uninstall.out"
-      assert_conflict_intact "$conflict_kind" "$conflict_path"
-      assert_current_link_at "$other_path" "$other_source"
-      [ "$(readlink "$other_path")" = "$other_raw" ] || fail "uninstall replaced $other_entry beside conflict"
-    done
+    assert_failure run_installer_quiet uninstall "$case_root/uninstall.out"
+    assert_conflict_intact "$conflict_kind"
   done
 }
 
@@ -282,54 +244,36 @@ write_fault_ln() {
   printf '%s\n' \
     '#!/usr/bin/env bash' \
     'set -eu' \
-    'count=0' \
-    'if [ -f "$OPCSKILLS_LN_FAULT_COUNT" ]; then read -r count < "$OPCSKILLS_LN_FAULT_COUNT"; fi' \
-    'count=$((count + 1))' \
-    'printf "%s\n" "$count" > "$OPCSKILLS_LN_FAULT_COUNT"' \
-    'if [ "$count" -eq "$OPCSKILLS_LN_FAIL_AT" ]; then echo "injected link failure" >&2; exit 23; fi' \
-    'exec "$OPCSKILLS_REAL_LN" "$@"' > "$fault_bin/ln"
+    '"$OPCSKILLS_REAL_LN" "$@"' \
+    'echo "injected link failure" >&2' \
+    'exit 23' > "$fault_bin/ln"
   chmod +x "$fault_bin/ln"
 }
 
 run_fault_installer() {
-  fail_at=$1
-  output_file=$2
+  output_file=$1
   HOME="$case_home" \
     OPCSKILLS_SKILLS_HOME="$skills_home" \
-    OPCSKILLS_LN_FAULT_COUNT="$case_root/ln-count" \
-    OPCSKILLS_LN_FAIL_AT="$fail_at" \
     OPCSKILLS_REAL_LN="$real_ln" \
     PATH="$fault_bin:$PATH" \
     "$script_path" install >"$output_file" 2>&1
 }
 
-run_rollback_cases() {
-  new_case rollback-second
+run_rollback_case() {
+  new_case rollback-opc
   write_fault_ln
-  assert_failure run_fault_installer 2 "$case_root/install.out"
-  [ "$(cat "$case_root/ln-count")" -eq 2 ] || fail "second-link failure was not injected"
+  assert_failure run_fault_installer "$case_root/install.out"
   grep -q 'newly created entrypoints were rolled back' "$case_root/install.out" || fail "rollback message missing"
   assert_absent "$skills_home/opc-skills"
-  assert_absent "$skills_home/zx-skills"
-
-  new_case rollback-preserve-current
-  create_current_link "$skills_home/opc-skills" "$opc_source" relative
-  opc_raw=$(readlink "$skills_home/opc-skills")
-  write_fault_ln
-  assert_failure run_fault_installer 1 "$case_root/install.out"
-  [ "$(cat "$case_root/ln-count")" -eq 1 ] || fail "missing-link failure was not injected"
-  assert_current_link_at "$skills_home/opc-skills" "$opc_source"
-  [ "$(readlink "$skills_home/opc-skills")" = "$opc_raw" ] || fail "rollback replaced pre-existing opc-skills"
-  assert_absent "$skills_home/zx-skills"
 }
 
 run_fresh_lifecycle_case
-run_legacy_upgrade_case
+run_ignored_legacy_name_case
 run_status_matrix
 run_fallback_case
 run_relative_idempotency_case
 run_conflict_matrix
-run_rollback_cases
+run_rollback_case
 
 [ "$HOME" = "$original_home" ] || fail "test changed parent HOME"
-echo "PASS: POSIX Codex installer covers dual-entry lifecycle, status, conflicts, fallback, idempotency, and rollback"
+echo "PASS: POSIX Codex installer covers one owned entrypoint, conflicts, fallback, idempotency, and rollback"
