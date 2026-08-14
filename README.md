@@ -153,6 +153,132 @@ $zx-skills 列出我的测试类 Skills
 推断/未知事实及来源、推荐结构、完整文件内容、迁移映射、是否初始化 Git 和 `zpo-*` 提案 ID。
 确认前不会创建目录、写 README、移动文件或运行 `git init`。
 
+#### 引导创建一个全新项目
+
+不需要先整理一大段参数，直接说：
+
+```text
+$zx-skills 使用 zx-project-organizer，引导我创建一个全新项目
+```
+
+Skill 会逐步帮助用户补齐整个创建流程，一次只问一个会影响后续设计的问题：
+
+1. 项目要解决什么问题、服务哪些用户。
+2. 项目阶段、中文名称和英文项目标识。
+3. 采用完整、自适应还是自定义结构，以及需要哪些文档边界。
+4. 是否有前端；分别有哪些终端应用。
+5. 是否有后端；是单体还是多个独立应用，各自职责是什么。
+6. 每个应用是否生成可运行代码骨架。
+7. 仅对选择生成的应用继续确认框架、版本、包管理器或模块名、启动命令和测试方式。
+8. 是否需要已明确的数据库、缓存、消息队列、定时任务和 Git 初始化。
+9. 汇总完整目录、文件、代码骨架、命令和风险，等待提案确认。
+
+每个关键问题都会给出一个推荐选项、推荐理由、其他选项的影响和自定义入口。推荐只是建议，状态仍为
+`proposed`；只有用户明确接受或修改后才成为确认事实。接受一个推荐不会自动接受后续推荐。
+
+例如：
+
+```text
+问题：微信小程序应用使用哪个目录名？
+推荐：ai-huoke-wx-mini
+推荐原因：包含项目标识和终端类型，同时保持简短。
+选项：接受推荐 / 修改名称 / 不创建该应用 / 自定义
+```
+
+#### 引导整理一个存量项目
+
+```text
+$zx-skills 使用 zx-project-organizer，引导我整理现有项目
+```
+
+Skill 会先只读扫描目录、源码、运行入口、构建配置、Git 状态、正式文档、部署配置和路径引用，区分
+`confirmed`、`inferred`、`unknown` 和 `proposed`，再逐项询问哪些内容保留、移动、改名、新增或丢弃。
+
+存量项目默认推荐沿用已有可运行技术栈和稳定约定。已有应用不会被重新生成或覆盖；只有用户明确新增的
+应用才会询问是否生成代码骨架。目录移动前必须展示迁移映射、引用影响、执行顺序、验证方法和回滚方式，
+用户确认对应 `zpo-*` 提案前不会移动任何文件。
+
+#### 前后端独立应用结构
+
+不论当前只有一个还是多个应用，都保留稳定的 `apps` 层：
+
+```text
+development/
+├── frontend/
+│   └── apps/
+│       ├── ai-huoke-web-admin/
+│       ├── ai-huoke-h5/
+│       ├── ai-huoke-wx-mini/
+│       ├── ai-huoke-uniapp/
+│       ├── ai-huoke-ios/
+│       └── ai-huoke-android/
+├── backend/
+│   └── apps/
+│       ├── ai-huoke/
+│       ├── ai-huoke-worker/
+│       └── ai-huoke-scheduler/
+└── experiments/
+```
+
+目录命名规则：
+
+| 类型 | 规则 | 示例 |
+| --- | --- | --- |
+| 项目标识 | 小写、横杠分隔，推荐后必须由用户确认 | `ai-huoke` |
+| 前端应用 | `<project-slug>-<terminal>` | `ai-huoke-web-admin`、`ai-huoke-wx-mini`、`ai-huoke-uniapp` |
+| 单体后端 | `<project-slug>` 或 `<project-slug>-api` | `ai-huoke`、`ai-huoke-api` |
+| 多后端应用 | `<project-slug>-<responsibility>` | `ai-huoke-worker`、`ai-huoke-data-sync-job` |
+
+Go、Python、Node.js 可以同时位于 `backend/apps`，但技术栈不写入目录名。每个应用独立维护依赖、测试、
+构建和交付配置，不创建 `services`、`packages`、`libs` 或 `shared-code`，也不通过相对路径引用其他应用源码。
+
+HTTP API、RPC 和消息规范跟随提供方后端应用，只创建实际使用的规范目录：
+
+```text
+development/backend/apps/ai-huoke/specifications/http-api/
+development/backend/apps/ai-huoke-worker/specifications/messages/
+```
+
+不会创建中央 `development/backend/specifications`，消费方也不维护另一份权威规范。
+
+代码骨架按应用分别选择，例如可以只为 `ai-huoke-web-admin` 和 Go 单体后端 `ai-huoke` 生成可运行骨架，
+而 `ai-huoke-wx-mini`、`ai-huoke-uniapp` 只创建目录。技术栈或版本未确认时只提供推荐并继续询问，不生成
+占位代码。
+
+初始化有三种结构策略，不再由 AI 隐式选择：
+
+| 策略 | 适合场景 | 行为 |
+| --- | --- | --- |
+| `zx-full-delivery` | 希望项目一开始就建立完整 OPC 交付边界 | 严格采用 ZX 版本化完整结构，预建产品、设计、测试、项目管理、前后端/实验和调研资产目录 |
+| `adaptive` | 技术与交付边界尚不稳定，希望保持最小结构 | 只根据已确认事实和现有框架生成目录，推断不落盘 |
+| `custom` | 已经有明确目录树或团队规范 | 用户目录树是权威结构，不允许静默改名、搬移、增加或遗漏 |
+
+推荐的个人完整结构用法：
+
+```text
+$zx-skills 使用 zx-project-organizer，按 ZX 完整结构初始化当前项目，不初始化 Git
+```
+
+完整结构固定包含：
+
+```text
+docs/project/{01-项目计划,02-里程碑,03-风险与阻塞,04-会议记录,05-决策记录}
+docs/product/{00-项目背景,01-调研分析,02-用户研究,03-竞品分析,04-需求池,05-业务流程,06-PRD,07-版本规划,08-需求评审,09-验收标准}
+docs/design/{01-信息架构,02-用户流程,03-低保真原型,04-视觉设计,05-设计规范,06-设计评审}
+docs/testing/{01-测试计划,02-测试用例,03-测试报告,04-验收记录}
+development/{frontend/apps,backend/apps,experiments}
+research/{sources,assets}
+```
+
+该契约保存在
+[`zx-full-delivery-structure.yaml`](skills-custom/06-project-manage/zx-project-organizer/references/zx-full-delivery-structure.yaml)，
+以后调整完整结构只需要版本化修改这一份参考文件。
+
+只说“初始化项目”但没有说明策略时，Skill 会先询问选择完整、自适应还是自定义，不再默认输出轻量
+`src/` 结构。用户对上一轮事实清单只修改部分内容时，未提及事项继续保持“待确认”，不会被自动当作
+全部确认。custom/完整结构提案还会逐项输出 requested、planned、missing、additional 和 renamed/moved
+路径差异，只有完全一致才允许进入确认阶段。
+
 确认提案：
 
 ```text
@@ -303,7 +429,9 @@ ZXSkills/
     ├── 05-ops-release/_readme.md
     └── 06-project-manage/
         ├── _readme.md
-        └── zx-project-organizer/skill.yaml
+        └── zx-project-organizer/
+            ├── skill.yaml
+            └── references/zx-full-delivery-structure.yaml
 ```
 
 仓库框架不批量预置业务 Skill；当前仅包含已在真实项目中提炼并回归验证的

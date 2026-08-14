@@ -1,8 +1,8 @@
 schema_version: "1.0"
 id: zx-project-organizer
 name: "ZX 项目结构整理"
-version: "3.0.0"
-description: "当需要初始化项目工作区、审计或重构现有目录、归类文件、梳理权威文档，或治理 AI 上下文和历史资料时使用。先生成可核对提案，只有匹配提案的明确确认才能写入。"
+version: "5.0.0"
+description: "当需要引导创建全新项目、生成独立前后端应用骨架、审计或重构存量项目时使用。支持逐问逐答和推荐选项，但推荐不等于确认；完整提案匹配确认后才写入。"
 category: 06-project-manage
 origin: custom
 status: active
@@ -10,6 +10,8 @@ status: active
 triggers:
   intents:
     - "规划或创建新项目目录结构"
+    - "引导用户完善全新项目创建流程"
+    - "按应用生成可运行的前端、Go、Python 或 Node.js 项目骨架"
     - "审计现有项目的文件与目录"
     - "重新归类并重构老项目目录"
     - "判断需求、设计、Demo、调研或测试资料应放在哪里"
@@ -24,6 +26,13 @@ triggers:
     - 权威文档
     - 上下文治理
     - OPC独立开发
+    - ZX完整结构
+    - 完整交付目录
+    - 自定义目录树
+    - 引导创建项目
+    - 可运行代码骨架
+    - 前后端应用
+    - 存量项目整理
 
 input_schema:
   type: object
@@ -35,6 +44,14 @@ input_schema:
         - audit
         - reorganize
       description: "initialize 初始化新项目；audit 只读审计；reorganize 重构现有项目。"
+    workflow_mode:
+      type: string
+      enum:
+        - auto
+        - new-project
+        - existing-project
+      default: auto
+      description: "引导工作流。auto 根据用户明确说明和只读工作区证据判断；有歧义时必须询问。"
     action:
       type: string
       enum:
@@ -48,6 +65,125 @@ input_schema:
     context:
       type: string
       description: "项目阶段、协作方式、代码组织、目标与已知约束。"
+    project_facts:
+      type: object
+      description: "引导过程中已收集的项目基础事实；缺失字段由 guided_question 逐项询问。"
+      properties:
+        purpose:
+          type: string
+        target_users:
+          type: array
+          items:
+            type: string
+        stage:
+          type: string
+          enum:
+            - research
+            - prototype
+            - mvp
+            - development
+            - maintenance
+        display_name:
+          type: string
+        project_slug:
+          type: string
+          pattern: "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+        has_frontend:
+          type: boolean
+        has_backend:
+          type: boolean
+      additionalProperties: false
+    applications:
+      type: array
+      description: "逐个登记的前后端独立应用；字段未知时留空并由引导问题补齐。"
+      items:
+        type: object
+        properties:
+          id:
+            type: string
+            pattern: "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+          side:
+            type: string
+            enum:
+              - frontend
+              - backend
+          name:
+            type: string
+            pattern: "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+          role:
+            type: string
+          terminal:
+            type: string
+          runtime:
+            type: string
+          framework:
+            type: string
+          existing:
+            type: boolean
+          scaffold_decision:
+            type: string
+            enum:
+              - generate
+              - skip
+              - undecided
+          specifications:
+            type: array
+            items:
+              type: string
+              enum:
+                - http-api
+                - rpc
+                - messages
+        required:
+          - id
+          - side
+        additionalProperties: false
+    recommendation_updates:
+      type: array
+      description: "用户对当前引导推荐的逐项决定；未列出的推荐继续保持 proposed。"
+      items:
+        type: object
+        properties:
+          question_id:
+            type: string
+            pattern: "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+          decision:
+            type: string
+            enum:
+              - accept
+              - reject
+              - revise
+          selected_option_id:
+            type: string
+          revised_answer:
+            type: string
+          source:
+            type: string
+        required:
+          - question_id
+          - decision
+          - source
+        additionalProperties: false
+        allOf:
+          - if:
+              properties:
+                decision:
+                  const: revise
+              required:
+                - decision
+            then:
+              required:
+                - revised_answer
+    structure_profile:
+      type: string
+      enum:
+        - zx-full-delivery
+        - adaptive
+        - custom
+      description: "initialize 的结构策略：ZX 完整交付结构、自适应最小结构或用户自定义结构；没有默认值。"
+    requested_structure:
+      type: string
+      description: "structure_profile=custom 时必填的完整目标目录树或逐行路径清单；视为权威结构。"
     artifacts:
       type: array
       description: "用户点名的文件、目录或需要判断归属的产物。"
@@ -73,6 +209,60 @@ input_schema:
           - fact
           - source
         additionalProperties: false
+    pending_fact_proposals:
+      type: array
+      description: "上一轮由 AI 提出但尚未被用户逐项确认的事实；每项必须有稳定 id。"
+      items:
+        type: object
+        properties:
+          id:
+            type: string
+            pattern: "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+          fact:
+            type: string
+          source:
+            type: string
+        required:
+          - id
+          - fact
+          - source
+        additionalProperties: false
+    fact_updates:
+      type: array
+      description: "用户对 pending_fact_proposals 的逐项决定；未列出的事实继续保持 proposed。"
+      items:
+        type: object
+        properties:
+          fact_id:
+            type: string
+            pattern: "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+          decision:
+            type: string
+            enum:
+              - confirm
+              - reject
+              - revise
+          revised_fact:
+            type: string
+            description: "decision=revise 时的新事实。"
+          source:
+            type: string
+            description: "用户本轮明确表达或其他可验证来源。"
+        required:
+          - fact_id
+          - decision
+          - source
+        additionalProperties: false
+        allOf:
+          - if:
+              properties:
+                decision:
+                  const: revise
+              required:
+                - decision
+            then:
+              required:
+                - revised_fact
     approved_migration_map:
       type: array
       description: "reorganize apply 时用户确认的原路径到新路径映射，必须与提案完全一致。"
@@ -152,6 +342,175 @@ output_schema:
     summary:
       type: string
       description: "当前模式、动作、结论与是否发生文件变更。"
+    workflow_mode:
+      type: string
+      enum:
+        - new-project
+        - existing-project
+      description: "本轮实际采用的引导工作流。"
+    guided_question:
+      description: "当前唯一需要用户回答的问题；可以成案或无需再问时为 null。"
+      oneOf:
+        - type: object
+          properties:
+            id:
+              type: string
+            question:
+              type: string
+            why_asked:
+              type: string
+            recommended_option_id:
+              type: string
+            recommendation_reason:
+              type: string
+            options:
+              type: array
+              minItems: 2
+              maxItems: 4
+              items:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  label:
+                    type: string
+                  impact:
+                    type: string
+                required:
+                  - id
+                  - label
+                  - impact
+                additionalProperties: false
+            custom_allowed:
+              type: boolean
+          required:
+            - id
+            - question
+            - why_asked
+            - recommended_option_id
+            - recommendation_reason
+            - options
+            - custom_allowed
+          additionalProperties: false
+        - type: "null"
+    recommendation_register:
+      type: object
+      description: "推荐的逐项状态；proposed 不能成为写入依据。"
+      properties:
+        accepted:
+          type: array
+          items:
+            $ref: "#/definitions/recommendation_record"
+        revised:
+          type: array
+          items:
+            $ref: "#/definitions/recommendation_record"
+        rejected:
+          type: array
+          items:
+            $ref: "#/definitions/recommendation_record"
+        proposed:
+          type: array
+          items:
+            $ref: "#/definitions/recommendation_record"
+      required:
+        - accepted
+        - revised
+        - rejected
+        - proposed
+      additionalProperties: false
+    application_plan:
+      type: array
+      description: "已确认或待确认的独立应用边界和路径。"
+      items:
+        type: object
+        properties:
+          id:
+            type: string
+          side:
+            type: string
+            enum:
+              - frontend
+              - backend
+          name:
+            type: string
+          path:
+            type: string
+          role:
+            type: string
+          terminal:
+            type: string
+          runtime:
+            type: string
+          existing:
+            type: boolean
+          specifications:
+            type: array
+            items:
+              type: string
+          source:
+            type: string
+        required:
+          - id
+          - side
+          - name
+          - path
+          - existing
+          - source
+        additionalProperties: false
+    scaffold_plan:
+      type: array
+      description: "逐应用代码骨架决定、生成命令和验证入口；未确认应用不得生成。"
+      items:
+        type: object
+        properties:
+          application_id:
+            type: string
+          generate:
+            oneOf:
+              - type: boolean
+              - type: "null"
+          status:
+            type: string
+            enum:
+              - proposed
+              - confirmed
+              - generated
+              - skipped
+              - blocked
+          runtime:
+            type: string
+          framework:
+            type: string
+          commands:
+            type: array
+            items:
+              type: string
+          start_command:
+            oneOf:
+              - type: string
+              - type: "null"
+          test_command:
+            oneOf:
+              - type: string
+              - type: "null"
+        required:
+          - application_id
+          - generate
+          - status
+          - commands
+          - start_command
+          - test_command
+        additionalProperties: false
+    structure_profile:
+      description: "本次采用的结构策略；audit 或尚未选择时为 null。"
+      oneOf:
+        - type: string
+          enum:
+            - zx-full-delivery
+            - adaptive
+            - custom
+        - type: "null"
     structure_assessment:
       type: array
       description: "合理结构、重复边界、错放内容、过度设计和风险。"
@@ -171,6 +530,23 @@ output_schema:
               source:
                 type: string
             required:
+              - fact
+              - source
+            additionalProperties: false
+        proposed:
+          type: array
+          description: "AI 提出但用户尚未明确确认的候选事实；不能成为创建依据。"
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+              fact:
+                type: string
+              source:
+                type: string
+            required:
+              - id
               - fact
               - source
             additionalProperties: false
@@ -203,12 +579,59 @@ output_schema:
             additionalProperties: false
       required:
         - confirmed
+        - proposed
         - inferred
         - unknown
       additionalProperties: false
     proposed_structure:
       type: string
       description: "适配当前项目的推荐目录树；不需要调整时说明保留现状。"
+    structure_comparison:
+      type: object
+      description: "用户/方案要求与实际提案的逐项路径差异；确认前必须可核对。"
+      properties:
+        requested_paths:
+          type: array
+          items:
+            type: string
+        planned_paths:
+          type: array
+          items:
+            type: string
+        missing_paths:
+          type: array
+          items:
+            type: string
+        additional_paths:
+          type: array
+          items:
+            type: string
+        renamed_or_moved:
+          type: array
+          items:
+            type: object
+            properties:
+              requested:
+                type: string
+              planned:
+                type: string
+              reason:
+                type: string
+            required:
+              - requested
+              - planned
+              - reason
+            additionalProperties: false
+        exact_match:
+          type: boolean
+      required:
+        - requested_paths
+        - planned_paths
+        - missing_paths
+        - additional_paths
+        - renamed_or_moved
+        - exact_match
+      additionalProperties: false
     placement_rules:
       type: array
       description: "常见产物的唯一推荐位置与边界。"
@@ -318,9 +741,16 @@ output_schema:
     - proposal_id
     - proposal_payload
     - summary
+    - workflow_mode
+    - guided_question
+    - recommendation_register
+    - application_plan
+    - scaffold_plan
+    - structure_profile
     - structure_assessment
     - fact_register
     - proposed_structure
+    - structure_comparison
     - placement_rules
     - creation_plan
     - migration_map
@@ -330,6 +760,24 @@ output_schema:
     - validation
     - follow_ups
   additionalProperties: false
+  definitions:
+    recommendation_record:
+      type: object
+      properties:
+        question_id:
+          type: string
+        option:
+          type: string
+        reason:
+          type: string
+        source:
+          type: string
+      required:
+        - question_id
+        - option
+        - reason
+        - source
+      additionalProperties: false
 
 constraints:
   - "仅处理 project_root 及用户明确授权的项目范围，保留范围外文件和外部状态。"
@@ -337,6 +785,16 @@ constraints:
   - "apply 必须携带原始 approved_proposal、confirmed=true，且两个 proposal_id 与原始载荷重新计算值完全一致，否则返回 blocked。"
   - "initialize_git 默认为 false；只有 initialize_git=true 被写入已确认提案时才允许初始化 Git。"
   - "事实登记中的 confirmed、inferred、unknown 每项必须包含 fact 和 source。"
+  - "initialize 未选择 structure_profile 且未提供完整 requested_structure 时必须返回 needs-input，不得默认采用轻量或完整模板。"
+  - "局部确认只更新用户明确提及的事实；未明确提及的候选事实必须保留为 proposed，不得自动转为 confirmed。"
+  - "必须读取 references/guided-project-workflows.yaml；一次只提出一个问题，每个关键问题给出推荐选项、理由和影响。"
+  - "推荐选项只属于 proposed；用户未明确 accept、revise 或自定义时，推荐不等于确认，不能成为写入依据。"
+  - "当前 guided_question 的推荐必须同时登记到 recommendation_register.proposed；事实不足时推荐安全的澄清选项。"
+  - "前后端应用分别位于 development/frontend/apps 和 development/backend/apps；不得创建 services、packages、libs 或 shared-code。"
+  - "每个应用都是独立项目，不直接引用其他应用源码；接口规范跟随提供方应用。"
+  - "逐应用确认是否生成可运行代码骨架；同意一个应用不代表同意其他应用，已有应用不得重新生成代码骨架。"
+  - "structure_profile=custom 时用户目录树是权威结构；禁止静默改名、搬移、增加或遗漏路径。"
+  - "structure_profile=zx-full-delivery 时必须逐项采用 references/zx-full-delivery-structure.yaml，不得改造成 src 或其他轻量结构。"
   - "决定稳定代码边界、文档分类或编号的关键信息未知时返回 needs-input，不套用默认模板。"
   - "空工作区只证明尚未落盘，不证明项目类型、代码边界、文档分类或技术决策尚未确认。"
   - "用户确认的长期职责边界即使当前为空也应进入提案；AI 推断或未来可能需要的模块不能成为创建依据。"
@@ -354,6 +812,9 @@ prompt: |-
   你正在执行“ZX 项目结构整理”。目标是在不破坏用户现有工作的前提下，为 AI 驱动项目建立清晰、
   可扩展且上下文友好的目录与文件规则，并安全处理老项目重构。
 
+  开始前必须读取同目录 `references/guided-project-workflows.yaml`。该文件定义 workflow_mode、逐问逐答、
+  推荐生命周期、应用命名、接口归属和代码骨架门禁；不得只凭本 prompt 中的摘要重新发明这些规则。
+
   这是严格的“提案—确认—执行”协议：
   - action=propose：只读检查并输出完整提案，result 为 needs-input、awaiting-confirmation、audited
     或 migration-proposed；changes 必须为空。同一轮不得继续写入。
@@ -363,8 +824,9 @@ prompt: |-
     changes 为空。
   - audit 只接受 propose；任何 apply 请求都返回 blocked。
 
-  proposal_id 必须绑定提案内容。构造 proposal_payload，字段固定为 mode、解析后的 project_root、
-  fact_register.confirmed、proposed_structure、creation_plan、migration_map、initialize_git；将对象按键名
+  proposal_id 必须绑定提案内容。构造 proposal_payload，字段固定为 mode、workflow_mode、解析后的 project_root、
+  project_facts、recommendation_register、structure_profile、fact_register.confirmed、application_plan、
+  scaffold_plan、proposed_structure、structure_comparison、creation_plan、migration_map、initialize_git；将对象按键名
   递归升序、数组保持展示顺序、UTF-8 且无多余空白序列化为 canonical JSON，计算 SHA-256，取前 16 位
   小写十六进制并添加 zpo- 前缀。propose 必须把这段 canonical JSON 原文返回为 proposal_payload；
   无可执行提案时 proposal_payload 为 null。仓库脚本可用时优先用
@@ -378,9 +840,77 @@ prompt: |-
 
   先建立项目事实登记，再设计目录：
   - confirmed：只收录用户当前明确说明、confirmed_facts、权威文件或工作区可验证事实，每项保留 source。
+  - proposed：收录 AI 在上一轮提出、等待用户逐项决定的候选事实，每项给稳定 id；不能成为创建依据。
   - inferred：记录从名称、惯例或现状做出的推断及依据；只能解释建议，不能成为创建依据。
   - unknown：记录会改变目录方案但缺少的事实，并在 source 说明缺少哪类证据。
   - 用户引用先前任务或决策且当前可读取时先读取；无法读取时请求提供已确认结论，不得用空工作区覆盖历史事实。
+
+  处理用户对事实清单的回复时执行局部确认：
+  - 将本轮表达精确映射到 pending_fact_proposals 的 fact id；只有 fact_updates 明确列出的 id 才能更新。
+  - decision=confirm 才转入 confirmed；decision=reject 从候选中排除；decision=revise 只用 revised_fact 替换该项。
+  - 用户未明确提及的候选事实继续保留在 proposed。局部确认不能被解释为“其余全部确认”，不得用
+    “用户承接上一轮事实清单并仅修正部分内容”作为未提及事项的 confirmed 来源。
+  - “可以创建代码文件夹”只确认需要代码边界，不确认目录名或内部模块。不得把 development 改为 src，
+    也不得自行推出 frontend、backend、experiments；这些路径必须来自所选 profile 或用户完整自定义结构。
+
+  执行引导式工作流：
+  - workflow_mode=auto 时，先依据用户明确说明和只读工作区证据区分 new-project 与 existing-project；证据冲突或
+    不足时返回 needs-input，只询问工作流类型。空目录不能推翻用户对存量项目的明确说明。
+  - 按 `references/guided-project-workflows.yaml` 的阶段顺序定位最早未确认且会影响后续设计的问题；一次只提出一个问题，
+    写入 guided_question。不要在一轮中堆叠项目用途、命名、前后端、技术栈、骨架和 Git 等多个问题。
+  - 每个关键问题必须给 2 至 4 个可理解选项、一个推荐选项、推荐理由和各选项影响，并允许自定义。若信息不足以
+    形成业务或技术推荐，事实不足时推荐安全的澄清选项，例如提供项目背景或授权只读扫描；不得返回无推荐，
+    也不得用猜测填补缺失事实。
+  - 推荐选项只属于 proposed。只有 recommendation_updates 中 decision=accept 的问题进入 accepted；revise 使用用户答案
+    进入 revised；reject 进入 rejected。推荐不等于确认，未明确提及的推荐继续 proposed，不能进入 creation_plan。
+    当前 guided_question 的推荐必须同时登记到 recommendation_register.proposed，question_id、option、reason 和 source
+    与问题内容一致；下一轮处理用户决定后再移动到 accepted、revised 或 rejected。
+  - new-project 依次完善项目用途、目标用户、阶段、显示名称、project_slug、结构策略、文档边界、前端、后端、
+    应用清单、代码骨架、基础设施和 Git。project_slug 可推荐但必须确认，不得未经确认把中文名称自动转为拼音。
+  - existing-project 先只读扫描目录、源码、构建入口、Git 状态、文档、部署配置和路径引用；优先推荐沿用稳定约定或
+    保持现状。随后逐项确认保留、移动、改名、新增和丢弃内容，不将扫描推断直接升级为确认事实。
+
+  建立独立应用计划：
+  - 前端容器固定为 development/frontend/apps，后端容器固定为 development/backend/apps；即使当前只有一个应用也
+    保留 apps 层。不得创建 services、packages、libs 或 shared-code，不得让应用通过相对路径直接引用其他应用源码。
+  - 前端名采用 `<project-slug>-<terminal>`。常用终端短名为 web-admin、h5、wx-mini、uniapp、ios、android；例如
+    ai-huoke-wx-mini 和 ai-huoke-uniapp。运行时或框架名不进入目录名。
+  - 单一后端应用允许 `<project-slug>` 或 `<project-slug>-api`；多个后端应用推荐
+    `<project-slug>-<responsibility>`。现有裸名称不得自动重命名，Go、Python、Node.js 可并存于 backend/apps。
+  - HTTP API、RPC、消息接口规范跟随提供方应用，按需位于其 specifications/http-api、specifications/rpc 或
+    specifications/messages。接口规范跟随提供方应用，不创建 development/backend/specifications 等中央规范目录。
+  - application_plan 必须为每个应用记录来源；名称、终端、职责或边界仍为 proposed/unknown 时不得生成该应用目录。
+
+  逐应用确认是否生成可运行代码骨架：
+  - 每次只询问一个应用的代码骨架决定，按 application_plan 展示顺序处理 scaffold_decision=undecided 或缺失的应用；
+    当前应用未得到明确决定前不得跳到下一个应用，也不得用“哪些应用需要生成”一次批量确认整组。
+  - status=proposed 时 generate 必须为 null，表示尚未决定；明确选择 skip 后才写 generate=false，明确选择
+    generate 后才写 generate=true。不得为了满足布尔字段而把未决定状态伪装成 false。
+  - scaffold_decision 没有隐式默认值。只有用户对某个应用明确选择 generate，且该应用所需的运行时、框架或标准库、
+    关键版本、包管理或模块名、启动命令和测试命令均已确认，才能把生成命令和完整文件写入 scaffold_plan/creation_plan。
+  - 用户对某个应用选择 skip 时只创建已确认的目录和基础文档；同意一个应用生成不代表其他应用也生成。
+  - 已有应用不得重新生成代码骨架，不得覆盖、静默升级或统一其技术栈。existing-project 只有用户明确新增的应用可以
+    进入骨架询问；检测到目标文件已存在时返回 blocked 或改为迁移提案。
+  - 代码骨架必须最小但可运行，生成计划列出完整文件、命令、start_command 和 test_command；apply 后实际运行相称的
+    启动或测试验证。技术栈事实不足时返回 needs-input，不生成占位代码或猜测框架。
+
+  initialize 必须先选择一种结构策略，且没有隐式默认值：
+  - zx-full-delivery：读取同目录 `references/zx-full-delivery-structure.yaml`，把其中版本化的 39 个基础目录、
+    4 个文件和 placement_rules 视为用户选择的完整结构。所有目录都是已确认的长期交付边界，即使为空也
+    进入 creation_plan；只允许在 frontend/apps、backend/apps 下增加已确认应用及其提供方规范路径，不得借此添加
+    其他未确认路径或 forbidden_default_paths。文件内容根据项目事实生成，但路径和必备章节固定。
+  - adaptive：根据 confirmed 事实和现有工程约定生成最小结构；推断与 proposed 不能成为创建依据。
+  - custom：解析 requested_structure 得到权威路径集合；保持大小写、数字前缀、中文名称、父子关系和根目录位置。
+    不得把 `development` 改为 `src`，不得把根 `research` 搬到 `docs/research`，不得合并、补充或删减路径。
+  - 用户没有选择 structure_profile 且没有提供可直接视为 custom 的完整目录树时，返回 needs-input，只问一次：
+    “选择 zx-full-delivery、adaptive，或提供 custom 完整结构？” 不先生成任何可执行 creation_plan。
+
+  结构提案前必须生成 structure_comparison：
+  - requested_paths 来自 zx-full-delivery 参考文件、custom 目录树，或 adaptive 的已确认职责路径。
+  - planned_paths 来自 creation_plan 中全部 directory/file 路径；统一移除展示用尾斜杠后比较。
+  - missing_paths、additional_paths 和 renamed_or_moved 逐项列出差异，不用自然语言概括。
+  - zx-full-delivery/custom 只有 missing_paths、additional_paths、renamed_or_moved 全为空时 exact_match=true，
+    才允许返回 awaiting-confirmation；存在任何差异都返回 validation-failed 或 needs-input，不生成 proposal_id。
 
   目录创建判定：
   - 已确认且长期稳定的职责边界：纳入初始化提案，即使目前为空。
@@ -393,8 +923,12 @@ prompt: |-
   按 mode 处理：
 
   1. initialize
-     - 检查项目目标、代码形态、协作方式、根目录现状和适用约束，先输出 fact_register。
-     - facts 足够时生成 proposed_structure、placement_rules、authority_map、context_policy 和 creation_plan。
+     - 采用 new-project 引导，检查项目目标、用户、阶段、命名、代码形态、协作方式、根目录现状和适用约束，
+       先输出 fact_register、recommendation_register、application_plan 和 scaffold_plan。
+     - 先解析 structure_profile；再判断该策略真正需要的 facts 是否足够。zx-full-delivery 已确认完整职责边界，
+       不得因为技术栈未定而删除 development/frontend、development/backend 或 development/experiments。
+     - facts 足够且当前没有 guided_question 时生成 proposed_structure、structure_comparison、placement_rules、authority_map、context_policy
+       和 creation_plan。
      - creation_plan 必须逐项列出目录和文件；每个 kind=file 项必须展示最终完整文件内容及其 content_sha256，
        不能用摘要、省略号或“稍后生成”代替。只有这样用户确认的才是最终会写入的内容。
      - initialize_git 默认为 false。只有输入明确 initialize_git=true 时才把 kind=git-init 纳入 creation_plan；
@@ -403,6 +937,7 @@ prompt: |-
        不增加“顺手创建”的目录或文件。成功后返回 initialized。
 
   2. audit
+     - 采用 existing-project 引导，只读取现有事实，不询问或执行代码骨架生成。
      - 读取适用的 AGENTS.md、README、版本库状态、目录树、技术栈、构建测试配置和文档索引。
      - 识别运行边界、稳定约定、未提交修改、符号链接、生成物、路径引用和大体积资料。
      - 检查重复分类、编号断层、多份当前文档、历史与现行混放、日志提交、代码与文档错放等问题。
@@ -410,6 +945,7 @@ prompt: |-
      - 返回 audited；proposal_id 和 proposal_payload 为 null、creation_plan 和 changes 为空，不做任何写入。
 
   3. reorganize
+     - 采用 existing-project 引导；已有应用 scaffold_plan 必须为 generate=false、status=skipped。
      - propose 生成完整 migration_map，逐项说明路径、理由、影响和冲突风险，返回 migration-proposed；不移动文件。
      - apply 要求 approved_migration_map 与原始 proposal_payload 中的映射完全一致，并要求匹配 proposal_id。
        先复核版本库状态、目标冲突和未提交修改；任何使原计划不再安全的变化都返回 blocked，要求重新提案确认。
@@ -417,7 +953,8 @@ prompt: |-
        每批后验证，失败即停止扩大影响并返回 validation-failed。
      - 更新受影响的 import、别名、Markdown 链接、脚本、环境示例、容器、CI、部署和测试夹具。
 
-  文件归类顺序：先判定源码/当前正式文档/原始调研/设计交付/测试证据/机器生成物/历史资料；
+  文件归类顺序只适用于 adaptive 或用户未指定归属的新增产物：先判定源码/当前正式文档/原始调研/
+  设计交付/测试证据/机器生成物/历史资料；
   再判断成熟度；最后选择现有位置。原始输入与整理结论分开，验收标准与验收记录分开，自动化测试
   跟随代码，业务测试文档进入文档区。只有形成长期独立职责且现有边界无法承载时才新增目录。
 
@@ -427,12 +964,16 @@ prompt: |-
 
   验证要求：所有结果只报告实际检查证据。apply 成功后核对实际变更与 creation_plan 或 migration_map
   一致；reorganize 至少检查版本库差异、路径引用和文档链接，涉及代码时运行相称的 lint、测试、构建或启动检查。
-  最终严格按 output_schema 返回；propose、audit、blocked 的 changes 必须为空。
+  输出前执行内部一致性检查：摘要中的应用数量必须从 application_plan 实际条目计算，不凭文字记忆手填；
+  summary、fact_register、application_plan、scaffold_plan 和 proposed_structure 对应用名称、数量与状态的表述必须一致。
+  最终严格按 output_schema 返回；每轮最多一个 guided_question；propose、audit、blocked 的 changes 必须为空。
+  所有 recommendation_register.proposed 项都不得进入可执行计划。zx-full-delivery/custom 的
+  完成验证必须明确报告 requested/planned 路径数量以及 missing/additional/renamed_or_moved 均为零。
 
 metadata:
   author: ZX
   created_at: "2026-08-13"
-  updated_at: "2026-08-13"
+  updated_at: "2026-08-14"
   tags:
     - project-structure
     - workspace-organization
@@ -440,6 +981,11 @@ metadata:
     - context-management
     - opc
     - confirmation-gate
+    - full-delivery-profile
+    - exact-custom-structure
+    - guided-project-workflow
+    - independent-applications
+    - per-application-scaffolding
   source:
     type: original
     reference: ""

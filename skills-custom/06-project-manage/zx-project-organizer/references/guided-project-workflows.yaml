@@ -1,0 +1,296 @@
+workflow_id: zx-guided-project-workflows
+version: "1.0.0"
+name: "ZX 引导式项目初始化与存量整理工作流"
+description: "定义逐问逐答、推荐确认、独立应用命名、接口规范归属和代码骨架门禁。"
+
+mode_detection:
+  explicit_user_choice_wins: true
+  modes:
+    new-project:
+      evidence:
+        - "用户明确要求创建或初始化全新项目。"
+        - "工作区为空或只有本次初始化前已确认的占位文件。"
+    existing-project:
+      evidence:
+        - "用户明确要求整理、迁移或重构存量项目。"
+        - "工作区存在源码、构建配置、版本历史、部署配置或正式文档。"
+  ambiguous_result: needs-input
+  rule: "空目录只能作为新项目证据之一；与用户明确说明冲突时以用户说明为准。"
+
+question_policy:
+  one_question_at_a_time: true
+  recommendation_required: true
+  recommendation_is_confirmation: false
+  missing_evidence_policy: recommend-safe-clarification
+  custom_answer_allowed: true
+  option_count:
+    minimum: 2
+    maximum: 4
+  required_fields:
+    - id
+    - question
+    - why_asked
+    - recommended_option_id
+    - recommendation_reason
+    - options
+    - custom_allowed
+  option_required_fields:
+    - id
+    - label
+    - impact
+  rules:
+    - "只提出当前最早未解决且会影响后续选择的问题。"
+    - "推荐必须依据已确认事实或只读扫描证据，并说明理由和影响。"
+    - "信息不足以形成业务或技术推荐时，推荐安全的澄清选项，不得返回无推荐，也不得虚构推荐依据。"
+    - "当前 guided_question 的推荐必须同步登记到 recommendation_register.proposed。"
+    - "推荐进入 proposed；只有用户明确 accept 后才进入 accepted 和 confirmed。"
+    - "用户接受一个推荐不代表接受其他推荐，未提及问题继续保持 proposed。"
+    - "允许用户 reject、revise 或提供 custom 答案。"
+
+recommendation_lifecycle:
+  states:
+    - proposed
+    - accepted
+    - revised
+    - rejected
+  decisions:
+    accept: accepted
+    revise: revised
+    reject: rejected
+  execution_eligible_states:
+    - accepted
+    - revised
+  unmentioned_state: proposed
+
+new_project_stages:
+  - id: project-purpose
+    collects:
+      - purpose
+    question: "这个项目主要解决什么问题，核心用途是什么？"
+    recommendation_rule: "根据用户已描述的业务目标整理一条简短项目定位；没有业务描述时先让用户说明，不猜测。"
+  - id: target-users
+    collects:
+      - target_users
+    question: "这个项目主要服务哪些用户或业务角色？"
+    recommendation_rule: "从已确认用途中提取最直接的目标角色，并允许用户修订。"
+  - id: project-stage
+    collects:
+      - stage
+    question: "项目当前准备进入哪个阶段？"
+    options:
+      - research
+      - prototype
+      - mvp
+      - development
+      - maintenance
+  - id: project-name
+    collects:
+      - display_name
+      - project_slug
+    question: "项目名称和英文项目标识使用什么？"
+    recommendation_rule: "推荐简短、语义清晰的小写横杠标识；中文名称转写结果必须由用户确认。"
+  - id: structure-profile
+    collects:
+      - structure_profile
+    question: "项目采用 ZX 完整交付、自适应还是自定义结构？"
+  - id: document-boundaries
+    collects:
+      - document_boundaries
+    question: "需要哪些产品、设计、测试、项目管理和调研文档边界？"
+  - id: frontend-presence
+    collects:
+      - has_frontend
+    question: "项目是否包含前端应用？"
+  - id: frontend-applications
+    condition: has_frontend=true
+    collects:
+      - frontend_applications
+    question: "前端分别有哪些独立应用和终端？"
+  - id: backend-presence
+    collects:
+      - has_backend
+    question: "项目是否包含后端应用？"
+  - id: backend-applications
+    condition: has_backend=true
+    collects:
+      - backend_applications
+    question: "后端是单体还是多个独立应用，各自承担什么职责？"
+  - id: application-scaffold
+    condition: applications-confirmed
+    repeat_for: each-application-with-undecided-scaffold
+    collects:
+      - scaffold_decision
+    question: "是否为当前应用生成可运行代码骨架？"
+  - id: scaffold-details
+    condition: any-scaffold-generate
+    collects:
+      - scaffold_details
+    question: "请确认该应用的运行时、框架、版本、包管理或模块名、启动命令和测试方式。"
+  - id: infrastructure
+    collects:
+      - infrastructure
+    question: "项目是否已确认需要数据库、缓存、消息队列或定时任务？"
+  - id: initialize-git
+    collects:
+      - initialize_git
+    question: "是否把 Git 初始化纳入本次提案？"
+  - id: final-review
+    condition: all-required-facts-confirmed
+    collects:
+      - proposal_confirmation
+    question: "是否确认执行当前完整项目提案？"
+
+existing_project:
+  stages:
+    - id: readonly-audit
+      action: "只读扫描目录、源码、构建配置、运行入口、Git 状态、文档、部署配置和路径引用。"
+    - id: audit-facts
+      action: "输出 confirmed、inferred、unknown 和 proposed 事实及来源，逐项等待确认。"
+    - id: application-boundaries
+      action: "确认现有前后端应用、职责、运行时、入口和必须保留的工程约定。"
+    - id: target-structure
+      action: "确认保留、移动、改名、新增和丢弃边界；不把推荐当作授权。"
+    - id: new-applications
+      action: "只有用户明确新增的应用才进入代码骨架询问。"
+    - id: migration-review
+      action: "展示迁移映射、引用影响、执行顺序、验证方法和回滚方式。"
+    - id: final-review
+      action: "确认 proposal_id 后才执行逐项匹配的迁移。"
+  recommendation_priority:
+    - "优先沿用现有可运行技术栈和稳定目录约定。"
+    - "优先选择不移动、不覆盖和可分批验证的低风险方案。"
+    - "现有结构边界清楚且维护成本可接受时，推荐保持现状。"
+
+application_policy:
+  frontend_root: development/frontend/apps
+  backend_root: development/backend/apps
+  stable_apps_layer: true
+  independent_projects: true
+  source_sharing: forbidden
+  communication:
+    - http-api
+    - rpc
+    - messages
+  forbidden_container_names:
+    - services
+    - packages
+    - libs
+    - shared-code
+  rules:
+    - "每个应用独立维护依赖、测试、构建、启动和交付配置。"
+    - "Go、Python、Node.js 和前端技术栈可以并存，但运行时不进入目录名。"
+    - "不得让一个应用通过相对路径直接引用另一个应用的源码。"
+
+naming:
+  project_slug:
+    pattern: "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+    user_confirmation_required: true
+    transliteration_requires_confirmation: true
+  frontend:
+    pattern: "<project-slug>-<terminal>"
+    terminal_aliases:
+      web-pc-admin: web-admin
+      h5: h5
+      wechat-mini-program: wx-mini
+      uni-app: uniapp
+      ios: ios
+      android: android
+    examples:
+      - ai-huoke-web-admin
+      - ai-huoke-h5
+      - ai-huoke-wx-mini
+      - ai-huoke-uniapp
+      - ai-huoke-ios
+      - ai-huoke-android
+  backend:
+    single_application_allowed_patterns:
+      - "<project-slug>"
+      - "<project-slug>-api"
+    multiple_application_pattern: "<project-slug>-<responsibility>"
+    examples:
+      - ai-huoke
+      - ai-huoke-api
+      - ai-huoke-worker
+      - ai-huoke-scheduler
+      - ai-huoke-data-sync-job
+    existing_bare_name_policy: "preserve-unless-explicitly-renamed"
+
+specification_ownership:
+  owner: provider-application
+  root: specifications
+  allowed_subdirectories:
+    - http-api
+    - rpc
+    - messages
+  create_only_when_confirmed: true
+  central_directory_forbidden: true
+  rules:
+    - "规范的权威版本只放在提供方应用内。"
+    - "消费方可以在自身项目生成客户端代码，但不得复制并维护另一份权威规范。"
+
+scaffolding:
+  decision_scope: per-application
+  question_granularity: one-application-at-a-time
+  implicit_default: forbidden
+  undecided_representation: null
+  existing_application_policy: never-regenerate
+  overwrite_existing_files: forbidden
+  supported_runtime_families:
+    - frontend
+    - go
+    - python
+    - nodejs
+  common_required_facts:
+    - runtime
+    - framework_or_standard_library
+    - runtime_or_framework_version
+    - start_command
+    - test_command
+  runtime_required_facts:
+    frontend:
+      - language
+      - framework
+      - package_manager
+    go:
+      - module_path
+      - http_framework_or_standard_library
+    python:
+      - project_kind
+      - framework
+      - dependency_manager
+    nodejs:
+      - project_kind
+      - framework
+      - language
+      - package_manager
+  rules:
+    - "只为 scaffold_decision=generate 且所需事实已确认的应用生成。"
+    - "同意一个应用生成不代表其他应用也生成。"
+    - "技术栈未知时只提问或推荐，不生成占位代码。"
+    - "生成命令、完整文件内容、内容哈希、启动命令和测试命令全部进入确认提案。"
+
+proposal_binding:
+  fields:
+    - workflow_mode
+    - project_facts
+    - recommendation_register
+    - fact_register.confirmed
+    - structure_profile
+    - application_plan
+    - scaffold_plan
+    - proposed_structure
+    - structure_comparison
+    - creation_plan
+    - migration_map
+    - initialize_git
+  unstable_values_forbidden:
+    - current_time
+    - random_id
+    - machine_specific_temporary_path
+
+execution_gate:
+  propose_is_read_only: true
+  exact_confirmation_required: true
+  apply_must_use_approved_payload: true
+  regenerate_on_apply: false
+  block_on_workspace_drift: true

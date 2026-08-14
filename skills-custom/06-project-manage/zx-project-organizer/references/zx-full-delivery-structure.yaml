@@ -1,0 +1,146 @@
+profile_id: zx-full-delivery
+version: "2.0.0"
+name: "ZX 全栈 OPC 完整交付结构"
+description: "用于需要从项目开始即建立产品、设计、开发、测试、项目管理与调研资产完整边界的项目。"
+
+policy:
+  exact_structure: true
+  allow_additional_paths: false
+  initialize_git_default: false
+  directory_count: 39
+  file_count: 4
+  empty_directories_are_intentional: true
+  allow_confirmed_application_extensions: true
+  application_extension_roots:
+    - development/frontend/apps
+    - development/backend/apps
+
+directories:
+  - path: docs
+    scope: "项目当前正式文档总入口。"
+  - path: docs/project
+    scope: "项目管理资料。"
+  - path: docs/project/01-项目计划
+    scope: "范围、排期、资源和交付计划。"
+  - path: docs/project/02-里程碑
+    scope: "阶段目标、达成条件和里程碑记录。"
+  - path: docs/project/03-风险与阻塞
+    scope: "风险、阻塞、责任人与处理状态。"
+  - path: docs/project/04-会议记录
+    scope: "需要长期保留的正式会议记录。"
+  - path: docs/project/05-决策记录
+    scope: "跨阶段有效的产品、技术和交付决策。"
+  - path: docs/product
+    scope: "产品全生命周期资料。"
+  - path: docs/product/00-项目背景
+    scope: "项目背景、目标、范围和约束。"
+  - path: docs/product/01-调研分析
+    scope: "整理后的市场、业务和渠道调研结论。"
+  - path: docs/product/02-用户研究
+    scope: "目标用户、访谈、画像和核心问题。"
+  - path: docs/product/03-竞品分析
+    scope: "竞品范围、对比维度和结论。"
+  - path: docs/product/04-需求池
+    scope: "需求收集、优先级、状态和来源。"
+  - path: docs/product/05-业务流程
+    scope: "当前业务流程、角色和业务规则。"
+  - path: docs/product/06-PRD
+    scope: "当前有效的产品需求文档。"
+  - path: docs/product/07-版本规划
+    scope: "版本范围、节奏和演进计划。"
+  - path: docs/product/08-需求评审
+    scope: "需求评审材料、结论和待办。"
+  - path: docs/product/09-验收标准
+    scope: "产品验收条件和完成定义。"
+  - path: docs/design
+    scope: "设计全流程资料。"
+  - path: docs/design/01-信息架构
+    scope: "导航、页面层级和信息组织。"
+  - path: docs/design/02-用户流程
+    scope: "用户任务路径、状态和异常分支。"
+  - path: docs/design/03-低保真原型
+    scope: "低保真原型和结构验证材料。"
+  - path: docs/design/04-视觉设计
+    scope: "高保真视觉稿和视觉交付。"
+  - path: docs/design/05-设计规范
+    scope: "设计令牌、组件和交互规范。"
+  - path: docs/design/06-设计评审
+    scope: "设计评审材料、问题和结论。"
+  - path: docs/testing
+    scope: "业务测试与验收证据。"
+  - path: docs/testing/01-测试计划
+    scope: "测试范围、策略、资源和退出标准。"
+  - path: docs/testing/02-测试用例
+    scope: "业务测试场景、步骤和预期结果。"
+  - path: docs/testing/03-测试报告
+    scope: "测试执行结果、缺陷和质量结论。"
+  - path: docs/testing/04-验收记录
+    scope: "产品验收过程、证据和签收结论。"
+  - path: development
+    scope: "产品代码与可运行实验总入口。"
+  - path: development/frontend
+    scope: "前端产品代码边界。"
+  - path: development/frontend/apps
+    scope: "独立前端应用；每个应用自行维护依赖、测试、构建和交付配置。"
+  - path: development/backend
+    scope: "后端产品代码边界。"
+  - path: development/backend/apps
+    scope: "独立后端应用；Go、Python、Node.js 可并存且不得直接共享源码。"
+  - path: development/experiments
+    scope: "与正式代码隔离的验证性实验。"
+  - path: research
+    scope: "外部调研原始输入和素材资产。"
+  - path: research/sources
+    scope: "可追溯的网页、访谈、报告和其他原始来源。"
+  - path: research/assets
+    scope: "调研与设计过程中取得的图片、附件和素材。"
+
+files:
+  - path: AGENTS.md
+    purpose: "保存短小、长期有效的 AI 协作、上下文和交付规则。"
+    required_sections:
+      - 常驻上下文
+      - 权威资料
+      - 文件归类
+      - 交付约束
+  - path: README.md
+    purpose: "项目总入口，记录定位、状态、目录导航和启动说明。"
+    required_sections:
+      - 项目定位
+      - 当前状态
+      - 项目导航
+      - 开始工作
+  - path: .gitignore
+    purpose: "排除密钥、本地配置、依赖、构建产物、缓存和日志。"
+    required_sections:
+      - 操作系统与编辑器
+      - 密钥与本地配置
+      - 依赖与虚拟环境
+      - 构建测试与缓存输出
+      - 日志
+  - path: docs/README.md
+    purpose: "正式文档索引，登记每个主题的当前权威入口和状态。"
+    required_sections:
+      - 文档地图
+      - 权威入口
+      - 状态规则
+      - 历史与冲突处理
+
+forbidden_default_paths:
+  - src
+  - docs/architecture
+  - docs/operations
+  - docs/archive
+  - docs/research
+  - docs/research/inputs
+
+placement_rules:
+  - "自动化测试跟随 development 中对应代码模块；业务测试计划、用例、报告和验收证据进入 docs/testing。"
+  - "整理后的调研结论进入 docs/product 的相应分类；原始来源进入 research/sources，素材进入 research/assets。"
+  - "技术架构文档按主题进入 docs/project/05-决策记录 或随代码模块维护；除非用户另行确认，不新增 docs/architecture。"
+  - "环境、发布和运行说明在真实需要出现时随代码或后续自定义扩展；除非用户另行确认，不新增 docs/operations。"
+  - "该结构不预建归档目录；资料被替代后再由用户选择归档策略。"
+  - "前端应用统一进入 development/frontend/apps，后端应用统一进入 development/backend/apps；即使只有一个应用也保留 apps 层。"
+  - "不得创建 services、packages、libs 或 shared-code 作为应用共享容器；应用之间只通过 HTTP API、RPC 或消息协议协作。"
+  - "接口规范跟随提供方应用，按需放入 specifications/http-api、specifications/rpc 或 specifications/messages。"
+  - "完整结构只允许在两个 apps 根目录下增加用户已确认的应用及其提供方规范路径，其他新增路径仍须切换 adaptive/custom 或单独确认。"

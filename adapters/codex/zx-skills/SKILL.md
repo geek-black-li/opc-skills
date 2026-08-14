@@ -1,6 +1,6 @@
 ---
 name: zx-skills
-description: Use when the user explicitly invokes ZXSkills to import or install a third-party skill, summarize the current delivery workflow, extract reusable experience, create or update a personal skill, list repository skills, or check repository status.
+description: Use when the user explicitly invokes ZXSkills to execute a formal local skill, import or install a third-party skill, summarize the current delivery workflow, extract reusable experience, create or update a personal skill, list repository skills, or check repository status.
 ---
 
 # ZXSkills
@@ -47,6 +47,9 @@ description: Use when the user explicitly invokes ZXSkills to import or install 
 | “新建一个 Skill…” | 以 `invocation_source=direct` 读取 `builtin/skill-creator.yaml` |
 | “修改/优化某个 Skill…” | 以 `invocation_source=direct` 读取 `builtin/skill-editor.yaml` |
 | “使用/调用 `<skill-id>` …” | 扫描正式 Skill，按唯一 id 加载并执行该 Skill |
+| “按 ZX 完整结构初始化项目” | 调用 `zx-project-organizer`，设置 `structure_profile=zx-full-delivery` |
+| “按项目实际情况初始化” | 调用 `zx-project-organizer`，设置 `structure_profile=adaptive` |
+| “按以下目录初始化…” | 调用 `zx-project-organizer`，设置 `structure_profile=custom` 并原样传入目录树 |
 | “确认执行项目结构提案 `<zpo-id>`” | 找到原提案，以 `action=apply` 和匹配 confirmation 再次执行原 Skill |
 | “放弃项目结构提案 `<zpo-id>`” | 结束该提案，不修改目标项目 |
 | “有哪些 Skill/仓库状态” | 按 manifest 扫描正式 Skill 并简要列出 |
@@ -115,6 +118,46 @@ description: Use when the user explicitly invokes ZXSkills to import or install 
 原载荷不可读取、哈希不一致或目标状态已变化时返回 `blocked`，不得猜测或沿用不安全的旧计划。
 `放弃项目结构提案` 不执行 apply，也不删除任何已有内容。
 
+## 引导式项目创建与整理
+
+用户可以直接说：
+
+- `$zx-skills 使用 zx-project-organizer，引导我创建一个全新项目`
+- `$zx-skills 使用 zx-project-organizer，引导我整理现有项目`
+
+全新项目传 `mode=initialize、workflow_mode=new-project`；存量项目整理传
+`mode=reorganize、workflow_mode=existing-project`；只要求查看问题时传
+`mode=audit、workflow_mode=existing-project`。用户没有明确说明时传 `workflow_mode=auto`，让 Skill 根据
+用户说明和只读工作区证据判断。有歧义时先询问，不因空工作区自动否定用户提到的历史项目。
+
+引导过程必须遵守：
+
+1. 一次只问当前最早、会影响后续设计的一个问题。
+2. 每个问题都必须提供推荐选项和推荐理由，同时说明其他选项的影响并允许自定义。
+3. 推荐不等于确认；只有用户明确接受、修改或自定义的当前问题才能更新，未提及推荐继续保持 proposed。
+4. 依次补齐项目用途、目标用户、阶段、项目名称和英文标识、结构策略、文档边界、前后端应用、代码骨架、
+   基础设施和 Git 选择。
+5. 项目英文标识可以推荐，但用户确认前不得自动把中文名称转换为拼音并落盘。
+
+应用结构统一为 `development/frontend/apps` 和 `development/backend/apps`。前端使用项目标识加终端短名，
+例如 `ai-huoke-web-admin`、`ai-huoke-wx-mini`、`ai-huoke-uniapp`；单体后端允许 `ai-huoke` 或
+`ai-huoke-api`，多后端应用使用职责后缀。不得创建 `services`、`packages`、`libs` 或 `shared-code`，
+应用之间只能通过 API、RPC 或消息协议协作；接口规范跟随提供方应用。
+
+逐应用确认代码骨架：用户可以只为部分应用生成可运行的前端、Go、Python 或 Node.js 骨架。一个应用被确认
+生成不代表其他应用也生成；已有应用一律不得重新生成或覆盖。技术栈信息不足时继续提问，不猜测框架。
+
+初始化时必须明确结构策略：
+
+- `zx-full-delivery`：使用 ZX 个人完整交付结构，预建产品、设计、测试、项目管理、
+  `development/frontend/apps|backend/apps|experiments` 和根目录 `research/sources|assets`。
+- `adaptive`：只按当前项目已确认事实生成最小结构。
+- `custom`：用户提供完整目录树，路径、编号、中文名称和层级均按原文执行。
+
+用户只说“初始化项目”且当前上下文没有已确认策略时，先用一句话让用户选择，不能默认套用轻量结构。
+用户回复只修正某些事实时，只更新被明确提及的事实；不得把整组未提及候选项视为确认。custom 或
+zx-full-delivery 提案必须展示 `structure_comparison`，确认 missing、additional、renamed_or_moved 均为空。
+
 ## 输出和变更
 
 - 优先直接执行用户明确授权的只读或可恢复操作，不让用户整理内部参数。
@@ -132,6 +175,10 @@ $zx-skills 总结当前链路并沉淀成 Skill
 $zx-skills 确认提炼 zxsi-0123456789abcdef
 $zx-skills 放弃提炼 zxsi-0123456789abcdef
 $zx-skills 使用 zx-project-organizer，帮我审计当前项目结构
+$zx-skills 使用 zx-project-organizer，引导我创建一个全新项目
+$zx-skills 使用 zx-project-organizer，引导我整理现有项目
+$zx-skills 使用 zx-project-organizer，按 ZX 完整结构初始化当前项目
+$zx-skills 使用 zx-project-organizer，按项目实际情况自适应初始化
 $zx-skills 确认执行项目结构提案 zpo-0123456789abcdef
 $zx-skills 放弃项目结构提案 zpo-0123456789abcdef
 $zx-skills 优化 zx-testing-api-regression-planning，补充异步消息失败场景

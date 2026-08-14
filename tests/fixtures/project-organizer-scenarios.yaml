@@ -30,3 +30,103 @@ scenarios:
     description: "老项目没有确认迁移映射时只输出迁移提案。"
     expected_result: migration-proposed
     expected_changes: []
+
+  - id: unspecified-structure-profile
+    description: "初始化时既未选择结构方案也未提供完整自定义树，不得默认套用轻量或完整模板。"
+    expected_result: needs-input
+    expected_changes: []
+    expected_question: "选择 zx-full-delivery、adaptive 或提供 custom 结构"
+
+  - id: zx-full-delivery-profile
+    description: "选择 ZX 完整交付结构后，必须精确采用受版本管理的完整目录契约。"
+    structure_profile: zx-full-delivery
+    expected_result: awaiting-confirmation
+    expected_directory_count: 37
+    expected_file_count: 4
+    forbidden_paths:
+      - src/
+      - docs/architecture/
+      - docs/operations/
+      - docs/archive/
+
+  - id: partial-fact-confirmation
+    description: "用户只确认代码目录、归档和 Git 时，不得把同一提问中的产品形态、阶段和其他目录一并确认。"
+    fact_updates:
+      - fact_id: code-directory
+        decision: revise
+      - fact_id: archive-directory
+        decision: confirm
+      - fact_id: initialize-git
+        decision: reject
+    expected_unmentioned_status: proposed
+    expected_result: needs-input
+
+  - id: exact-custom-structure
+    description: "用户提供的完整目录树是权威结构，禁止静默重命名、搬移、添加或遗漏路径。"
+    structure_profile: custom
+    expected_result: awaiting-confirmation
+    required_paths:
+      - development/frontend/
+      - development/backend/
+      - development/experiments/
+      - research/sources/
+      - research/assets/
+    forbidden_paths:
+      - src/
+      - docs/research/inputs/
+
+  - id: guided-new-project
+    description: "新工作区只提供‘帮我创建项目’时，应从项目用途开始逐问，并提供推荐但不写入。"
+    workflow_mode: new-project
+    expected_result: needs-input
+    expected_next_question: project-purpose
+    expected_changes: []
+
+  - id: recommendation-is-not-confirmation
+    description: "Skill 给出项目标识或技术方案推荐后，用户尚未接受时不得进入 confirmed 或执行提案。"
+    workflow_mode: new-project
+    expected_recommendation_status: proposed
+    expected_result: needs-input
+    expected_changes: []
+
+  - id: independent-multi-runtime-apps
+    description: "前后端应用均完全独立，Go、Python、Node.js 可以并存，但不得创建共享源码容器。"
+    workflow_mode: new-project
+    required_paths:
+      - development/frontend/apps/ai-huoke-web-admin/
+      - development/frontend/apps/ai-huoke-wx-mini/
+      - development/frontend/apps/ai-huoke-uniapp/
+      - development/backend/apps/ai-huoke/
+      - development/backend/apps/ai-huoke-worker/
+    forbidden_paths:
+      - development/backend/services/
+      - development/backend/packages/
+      - development/backend/libs/
+      - development/backend/shared-code/
+
+  - id: selective-runnable-scaffolds
+    description: "代码骨架逐应用确认，只生成用户选择的 Web 管理端和 Go 单体后端。"
+    workflow_mode: new-project
+    expected_generated_applications:
+      - ai-huoke-web-admin
+      - ai-huoke
+    expected_skipped_applications:
+      - ai-huoke-wx-mini
+      - ai-huoke-uniapp
+
+  - id: provider-owned-specifications
+    description: "HTTP API、RPC 和消息规范跟随提供方后端应用，不创建中央规范目录。"
+    required_paths:
+      - development/backend/apps/ai-huoke/specifications/http-api/
+      - development/backend/apps/ai-huoke-worker/specifications/messages/
+    forbidden_paths:
+      - development/specifications/
+      - development/backend/specifications/
+
+  - id: existing-project-no-regeneration
+    description: "存量应用只允许审计和确认后的迁移，不得重新生成或覆盖代码骨架。"
+    workflow_mode: existing-project
+    existing_application: development/backend/apps/ai-huoke/
+    expected_scaffold_status: skipped
+    expected_result: migration-proposed
+    expected_changes: []
