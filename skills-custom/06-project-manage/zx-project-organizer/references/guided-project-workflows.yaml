@@ -1,5 +1,5 @@
 workflow_id: zx-guided-project-workflows
-version: "1.0.0"
+version: "2.0.0"
 name: "ZX 引导式项目初始化与存量整理工作流"
 description: "定义逐问逐答、推荐确认、独立应用命名、接口规范归属和代码骨架门禁。"
 
@@ -23,23 +23,38 @@ question_policy:
   recommendation_is_confirmation: false
   missing_evidence_policy: recommend-safe-clarification
   custom_answer_allowed: true
-  option_count:
+  numeric_selection: true
+  sequence_starts_at: 1
+  single_option_count:
     minimum: 2
     maximum: 4
+  multi_option_count:
+    minimum: 2
+    maximum: 8
+  numeric_reply_scope: latest-unresolved-question
+  enforcement_mode: prompt-contract
+  forward_test_required: true
   required_fields:
     - id
+    - sequence
     - question
     - why_asked
+    - selection_mode
     - recommended_option_id
     - recommendation_reason
     - options
+    - answer_hint
     - custom_allowed
   option_required_fields:
     - id
+    - number
     - label
     - impact
   rules:
     - "只提出当前最早未解决且会影响后续选择的问题。"
+    - "同一 guided_question 的 option number 必须唯一并按 1..N 连续。"
+    - "sequence 从 1 开始，并在同一任务的后续轮次严格递增。"
+    - "数字答复只映射最新且唯一未解决问题；无法唯一定位时返回 needs-input。"
     - "推荐必须依据已确认事实或只读扫描证据，并说明理由和影响。"
     - "信息不足以形成业务或技术推荐时，推荐安全的澄清选项，不得返回无推荐，也不得虚构推荐依据。"
     - "当前 guided_question 的推荐必须同步登记到 recommendation_register.proposed。"
@@ -63,82 +78,42 @@ recommendation_lifecycle:
   unmentioned_state: proposed
 
 new_project_stages:
-  - id: project-purpose
-    collects:
-      - purpose
-    question: "这个项目主要解决什么问题，核心用途是什么？"
-    recommendation_rule: "根据用户已描述的业务目标整理一条简短项目定位；没有业务描述时先让用户说明，不猜测。"
-  - id: target-users
-    collects:
-      - target_users
-    question: "这个项目主要服务哪些用户或业务角色？"
-    recommendation_rule: "从已确认用途中提取最直接的目标角色，并允许用户修订。"
-  - id: project-stage
-    collects:
-      - stage
-    question: "项目当前准备进入哪个阶段？"
-    options:
-      - research
-      - prototype
-      - mvp
-      - development
-      - maintenance
-  - id: project-name
-    collects:
-      - display_name
-      - project_slug
-    question: "项目名称和英文项目标识使用什么？"
-    recommendation_rule: "推荐简短、语义清晰的小写横杠标识；中文名称转写结果必须由用户确认。"
+  - id: project-location
+    collects: [project_root, display_name, project_slug]
+    question: "项目目录位置、名称和英文标识使用哪组？"
   - id: structure-profile
-    collects:
-      - structure_profile
+    collects: [structure_profile]
     question: "项目采用 ZX 完整交付、自适应还是自定义结构？"
-  - id: document-boundaries
-    collects:
-      - document_boundaries
-    question: "需要哪些产品、设计、测试、项目管理和调研文档边界？"
-  - id: frontend-presence
-    collects:
-      - has_frontend
-    question: "项目是否包含前端应用？"
-  - id: frontend-applications
-    condition: has_frontend=true
-    collects:
-      - frontend_applications
-    question: "前端分别有哪些独立应用和终端？"
-  - id: backend-presence
-    collects:
-      - has_backend
-    question: "项目是否包含后端应用？"
-  - id: backend-applications
-    condition: has_backend=true
-    collects:
-      - backend_applications
-    question: "后端是单体还是多个独立应用，各自承担什么职责？"
-  - id: application-scaffold
+  - id: applications
+    collects: [applications]
+    selection_mode: multiple
+    question: "本次创建哪些前端和后端应用目录？"
+  - id: scaffold-strategy
     condition: applications-confirmed
-    repeat_for: each-application-with-undecided-scaffold
-    collects:
-      - scaffold_decision
-    question: "是否为当前应用生成可运行代码骨架？"
+    collects: [scaffold_strategy, scaffold_application_ids]
+    question: "这些应用如何处理代码骨架？"
   - id: scaffold-details
     condition: any-scaffold-generate
-    collects:
-      - scaffold_details
-    question: "请确认该应用的运行时、框架、版本、包管理或模块名、启动命令和测试方式。"
+    collects: [scaffold_details]
+    question: "请确认选择生成的应用所需技术栈和运行命令。"
   - id: infrastructure
-    collects:
-      - infrastructure
-    question: "项目是否已确认需要数据库、缓存、消息队列或定时任务？"
+    collects: [infrastructure-decision]
+    question: "本次是否创建已确认的基础设施配置？"
+    recommended_option_id: defer-infrastructure
   - id: initialize-git
-    collects:
-      - initialize_git
+    collects: [initialize_git]
     question: "是否把 Git 初始化纳入本次提案？"
-  - id: final-review
-    condition: all-required-facts-confirmed
-    collects:
-      - proposal_confirmation
-    question: "是否确认执行当前完整项目提案？"
+
+optional_background:
+  non_blocking_fields: [purpose, target_users, stage]
+  missing_policy: omit-or-record-unknown
+  inference_forbidden: true
+
+infrastructure:
+  default_recommendation: defer-infrastructure
+  infer_from_project_stage: false
+  infer_from_project_purpose: false
+  deferred_creates_nothing: true
 
 existing_project:
   stages:
@@ -181,6 +156,69 @@ application_policy:
     - "Go、Python、Node.js 和前端技术栈可以并存，但运行时不进入目录名。"
     - "不得让一个应用通过相对路径直接引用另一个应用的源码。"
 
+application_semantics:
+  backend:
+    - id: backend-monolith
+      label: "单体后端"
+      canonical_role: "单体后端"
+      description: "一个承载业务能力的单体后端应用，不是 API Gateway 或 BFF；单体是部署和业务边界，不是语言。"
+      path_patterns:
+        - "development/backend/apps/<project-slug>"
+        - "development/backend/apps/<project-slug>-api"
+    - id: backend-application
+      label: "独立后端应用"
+      canonical_role: "独立后端应用"
+      parameter_field: responsibility
+      parameter_required: true
+      description: "通用独立后端服务边界，可承载一个服务或微服务职责；canonical_role 保持“独立后端应用”，具体职责必须单独放在非空 responsibility，不得塞入 role。"
+      path_patterns:
+        - "development/backend/apps/<project-slug>-<responsibility>"
+    - id: api-gateway
+      label: "API Gateway"
+      canonical_role: "API 网关"
+      description: "网关边界，负责入口路由与跨服务策略，不等同业务单体。"
+      path_patterns:
+        - "development/backend/apps/<project-slug>-gateway"
+    - id: bff
+      label: "BFF"
+      canonical_role: "BFF"
+      parameter_field: terminal
+      parameter_required: true
+      description: "面向特定前端的聚合层，canonical_role 保持“BFF”，服务终端必须单独放在非空 terminal，不得塞入 role；不等同业务单体。"
+      path_patterns:
+        - "development/backend/apps/<project-slug>-<terminal>-bff"
+    - id: background-worker
+      label: "后台任务"
+      canonical_role: "后台任务"
+      description: "持续或按事件消费异步任务的独立后台应用，不承担定时调度语义。"
+      path_patterns:
+        - "development/backend/apps/<project-slug>-worker"
+    - id: scheduled-job
+      label: "定时任务"
+      canonical_role: "定时任务"
+      description: "由计划时间触发批处理或维护工作的独立应用，不等同常驻后台任务。"
+      path_patterns:
+        - "development/backend/apps/<project-slug>-scheduler"
+    - id: data-sync
+      label: "数据同步"
+      canonical_role: "数据同步"
+      description: "在系统或数据源之间同步、导入或导出数据的独立应用。"
+      path_patterns:
+        - "development/backend/apps/<project-slug>-data-sync"
+        - "development/backend/apps/<project-slug>-data-sync-job"
+  catalog_selection:
+    maximum_question_options: 8
+    select_relevant_for_context: true
+    show_entire_catalog: false
+  rules:
+    - "applications 问题涉及后端时必须使用上述稳定 ID、canonical_role 和不歧义路径语义；backend-application 承接未被专用类型覆盖的一般独立服务或微服务。"
+    - "每轮 applications 问题根据当前已确认上下文选择相关选项，最多 8 个；无需一次展示整个 catalog。"
+    - "禁止使用“单一后端 API”代表单体。"
+    - "选择 backend-monolith 后，application_plan 记录 application_type=backend-monolith、role=单体后端。"
+    - "backend-application 在 applications 和 application_plan 中都必须有非空 responsibility，role 仍精确等于独立后端应用；目录名使用 <project-slug>-<responsibility>。"
+    - "bff 在 applications 和 application_plan 中都必须有非空 terminal，role 仍精确等于 BFF；目录名使用 <project-slug>-<terminal>-bff。"
+    - "技术栈未知且 scaffold_strategy=all-skip 时，不得询问或推断 Go、Python、Node.js。"
+
 naming:
   project_slug:
     pattern: "^[a-z0-9]+(?:-[a-z0-9]+)*$"
@@ -207,6 +245,9 @@ naming:
       - "<project-slug>"
       - "<project-slug>-api"
     multiple_application_pattern: "<project-slug>-<responsibility>"
+    data_sync_allowed_patterns:
+      - "<project-slug>-data-sync"
+      - "<project-slug>-data-sync-job"
     examples:
       - ai-huoke
       - ai-huoke-api
@@ -229,10 +270,10 @@ specification_ownership:
     - "消费方可以在自身项目生成客户端代码，但不得复制并维护另一份权威规范。"
 
 scaffolding:
-  decision_scope: per-application
-  question_granularity: one-application-at-a-time
-  implicit_default: forbidden
-  undecided_representation: null
+  decision_scope: batch-first
+  default_recommendation: all-skip
+  strategies: [all-skip, all-generate, selective]
+  selective_follow_up: numeric-application-multiselect
   existing_application_policy: never-regenerate
   overwrite_existing_files: forbidden
   supported_runtime_families:
@@ -269,13 +310,44 @@ scaffolding:
     - "技术栈未知时只提问或推荐，不生成占位代码。"
     - "生成命令、完整文件内容、内容哈希、启动命令和测试命令全部进入确认提案。"
 
+rendering:
+  complete_tree_required: true
+  results: [awaiting-confirmation, migration-proposed]
+  tree_source: proposed_structure
+  tree_code_fence: text
+  abridgement_forbidden: true
+  numeric_proposal_actions:
+    1: confirm-current-proposal
+    2: revise-current-proposal
+    3: abandon-current-proposal
+  user_facing_sequence:
+    - complete-proposed-structure
+    - complete-migration-or-creation-map
+    - complete-planned-file-contents-and-commands
+    - risks-and-validation
+    - concrete-proposal-id
+    - proposal-actions
+  proposal_actions_contract:
+    output_field: proposal_actions
+    render_position: last
+    forbidden_in_earlier_fields: true
+    earlier_fields_include: [summary, follow_ups]
+    object_key_order_is_not_render_order: true
+  numeric_reply_ambiguity:
+    requires_exactly_one_current_proposal: true
+    multiple_identifiable_proposals_result: needs-input
+    select_proposal_on_ambiguity: false
+    writes_on_ambiguity: forbidden
+
 proposal_binding:
   fields:
+    - mode
     - workflow_mode
+    - project_root
     - project_facts
     - recommendation_register
-    - fact_register.confirmed
     - structure_profile
+    - fact_register.confirmed
     - application_plan
     - scaffold_plan
     - proposed_structure
@@ -283,6 +355,8 @@ proposal_binding:
     - creation_plan
     - migration_map
     - initialize_git
+  field_semantics:
+    project_root: resolved-authorized-project-root
   unstable_values_forbidden:
     - current_time
     - random_id

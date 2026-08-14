@@ -34,7 +34,7 @@ def main() -> None:
     scenarios = load_yaml(SCENARIOS_PATH)["scenarios"]
     adapter = ADAPTER_PATH.read_text(encoding="utf-8")
 
-    assert skill["version"] == "5.0.0"
+    assert skill["version"] == "6.0.0"
 
     inputs = skill["input_schema"]["properties"]
     assert inputs["workflow_mode"]["enum"] == [
@@ -68,6 +68,17 @@ def main() -> None:
         "reject",
         "revise",
     ]
+    selected_option_numbers = recommendation_update["properties"]["selected_option_numbers"]
+    assert selected_option_numbers["uniqueItems"] is True
+    assert selected_option_numbers["minItems"] == 1
+    assert selected_option_numbers["items"] == {"type": "integer", "minimum": 1}
+    assert inputs["scaffold_strategy"]["enum"] == [
+        "all-skip",
+        "all-generate",
+        "selective",
+    ]
+    assert inputs["scaffold_application_ids"]["type"] == "array"
+    assert "project_root" not in skill["input_schema"]["required"]
     assert inputs["structure_profile"]["enum"] == [
         "zx-full-delivery",
         "adaptive",
@@ -121,16 +132,21 @@ def main() -> None:
     guided_question = outputs["guided_question"]["oneOf"][0]
     assert set(guided_question["required"]) == {
         "id",
+        "sequence",
         "question",
         "why_asked",
+        "selection_mode",
         "recommended_option_id",
         "recommendation_reason",
         "options",
+        "answer_hint",
         "custom_allowed",
     }
     option_item = guided_question["properties"]["options"]["items"]
-    assert set(option_item["required"]) == {"id", "label", "impact"}
+    assert set(option_item["required"]) == {"id", "number", "label", "impact"}
     assert guided_question["properties"]["recommended_option_id"]["type"] == "string"
+    assert guided_question["properties"]["sequence"]["type"] == "integer"
+    assert guided_question["properties"]["selection_mode"]["enum"] == ["single", "multiple"]
 
     recommendation_register = outputs["recommendation_register"]["properties"]
     assert set(recommendation_register) == {
@@ -201,7 +217,7 @@ def main() -> None:
         "structure_comparison",
         "references/zx-full-delivery-structure.yaml",
         "references/guided-project-workflows.yaml",
-        "一次只提出一个问题",
+        "问题顺序从项目位置与标识开始",
         "推荐选项只属于 proposed",
         "development/frontend/apps",
         "development/backend/apps",
@@ -209,7 +225,7 @@ def main() -> None:
         "uniapp",
         "不得创建 services、packages、libs 或 shared-code",
         "接口规范跟随提供方应用",
-        "逐应用确认是否生成可运行代码骨架",
+        "代码骨架先询问批量策略",
         "已有应用不得重新生成代码骨架",
         "workflow_mode",
         "recommendation_register",
@@ -217,8 +233,9 @@ def main() -> None:
         "scaffold_plan",
         "当前 guided_question 的推荐必须同时登记到 recommendation_register.proposed",
         "事实不足时推荐安全的澄清选项",
-        "每次只询问一个应用的代码骨架决定",
-        "status=proposed 时 generate 必须为 null",
+        "全部只创建目录时一次把所有新应用记为 generate=false、status=skipped",
+        "基础设施推荐暂不确认基础设施",
+        "数量统计不能替代完整目录树",
         "摘要中的应用数量必须从 application_plan 实际条目计算",
     ]
     for phrase in required_prompt_phrases:
@@ -241,6 +258,14 @@ def main() -> None:
         "selective-runnable-scaffolds",
         "provider-owned-specifications",
         "existing-project-no-regeneration",
+        "directory-first-new-project",
+        "numeric-question-selection",
+        "batch-skip-scaffolds",
+        "deferred-infrastructure-default",
+        "complete-tree-before-confirmation",
+        "complete-tree-before-migration",
+        "strict-proposal-render-order",
+        "multiple-proposal-ambiguity",
     }
     assert scenario_by_id["unknown-empty-project"]["expected_changes"] == []
     assert scenario_by_id["mismatched-proposal-confirmation"]["expected_result"] == "blocked"
@@ -248,7 +273,8 @@ def main() -> None:
         "forbidden_operations"
     ]
     assert scenario_by_id["partial-fact-confirmation"]["expected_unmentioned_status"] == "proposed"
-    assert scenario_by_id["guided-new-project"]["expected_next_question"] == "project-purpose"
+    assert scenario_by_id["guided-new-project"]["expected_next_question"] == "project-location"
+    assert "用途" not in scenario_by_id["guided-new-project"]["description"]
     assert scenario_by_id["recommendation-is-not-confirmation"][
         "expected_recommendation_status"
     ] == "proposed"
@@ -271,8 +297,10 @@ def main() -> None:
 
     guided_workflows = load_yaml(GUIDED_WORKFLOWS_PATH)
     assert guided_workflows["workflow_id"] == "zx-guided-project-workflows"
-    assert guided_workflows["version"] == "1.0.0"
+    assert guided_workflows["version"] == "2.0.0"
     assert guided_workflows["question_policy"]["one_question_at_a_time"] is True
+    assert guided_workflows["question_policy"]["numeric_selection"] is True
+    assert guided_workflows["question_policy"]["sequence_starts_at"] == 1
     assert guided_workflows["question_policy"]["recommendation_is_confirmation"] is False
     assert guided_workflows["question_policy"]["missing_evidence_policy"] == "recommend-safe-clarification"
     assert guided_workflows["application_policy"]["source_sharing"] == "forbidden"
@@ -285,9 +313,37 @@ def main() -> None:
     assert guided_workflows["naming"]["frontend"]["terminal_aliases"]["wechat-mini-program"] == "wx-mini"
     assert guided_workflows["naming"]["frontend"]["terminal_aliases"]["uni-app"] == "uniapp"
     assert guided_workflows["specification_ownership"]["owner"] == "provider-application"
-    assert guided_workflows["scaffolding"]["decision_scope"] == "per-application"
-    assert guided_workflows["scaffolding"]["question_granularity"] == "one-application-at-a-time"
+    assert guided_workflows["scaffolding"]["decision_scope"] == "batch-first"
+    assert guided_workflows["scaffolding"]["default_recommendation"] == "all-skip"
     assert guided_workflows["scaffolding"]["existing_application_policy"] == "never-regenerate"
+    expected_proposal_binding_fields = [
+        "mode",
+        "workflow_mode",
+        "project_root",
+        "project_facts",
+        "recommendation_register",
+        "structure_profile",
+        "fact_register.confirmed",
+        "application_plan",
+        "scaffold_plan",
+        "proposed_structure",
+        "structure_comparison",
+        "creation_plan",
+        "migration_map",
+        "initialize_git",
+    ]
+    assert skill["proposal_binding"]["fields"] == expected_proposal_binding_fields
+    assert guided_workflows["proposal_binding"]["fields"] == expected_proposal_binding_fields
+    assert (
+        skill["proposal_binding"]["fields"]
+        == guided_workflows["proposal_binding"]["fields"]
+    )
+    assert skill["proposal_binding"]["field_semantics"]["project_root"] == (
+        "resolved-authorized-project-root"
+    )
+    assert guided_workflows["proposal_binding"]["field_semantics"]["project_root"] == (
+        "resolved-authorized-project-root"
+    )
 
     full_profile = load_yaml(FULL_PROFILE_PATH)
     assert full_profile["profile_id"] == "zx-full-delivery"
@@ -341,6 +397,7 @@ def main() -> None:
     }
     assert directory_paths == expected_directories
     assert file_paths == {"AGENTS.md", "README.md", ".gitignore", "docs/README.md"}
+    assert scenario_by_id["zx-full-delivery-profile"]["expected_directory_count"] == 39
     assert not {
         "src",
         "development/frontend/packages",
@@ -369,13 +426,17 @@ def main() -> None:
         "引导我整理现有项目",
         "每个问题都必须提供推荐选项和推荐理由",
         "推荐不等于确认",
-        "逐应用确认代码骨架",
+        "代码骨架采用批量优先",
+        "全部只创建目录",
         "ai-huoke-wx-mini",
         "ai-huoke-uniapp",
         "mode=initialize、workflow_mode=new-project",
         "mode=reorganize、workflow_mode=existing-project",
     ):
         assert phrase in adapter, f"missing organizer adapter flow: {phrase}"
+    assert "逐应用确认代码骨架" not in adapter, (
+        "adapter must not retain the retired mandatory per-application scaffold flow"
+    )
 
     print("zx-project-organizer proposal/apply contract: ok")
 

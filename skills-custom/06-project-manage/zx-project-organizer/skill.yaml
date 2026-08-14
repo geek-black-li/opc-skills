@@ -1,11 +1,30 @@
 schema_version: "1.0"
 id: zx-project-organizer
 name: "ZX 项目结构整理"
-version: "5.0.0"
+version: "6.0.0"
 description: "当需要引导创建全新项目、生成独立前后端应用骨架、审计或重构存量项目时使用。支持逐问逐答和推荐选项，但推荐不等于确认；完整提案匹配确认后才写入。"
 category: 06-project-manage
 origin: custom
 status: active
+
+proposal_binding:
+  fields:
+    - mode
+    - workflow_mode
+    - project_root
+    - project_facts
+    - recommendation_register
+    - structure_profile
+    - fact_register.confirmed
+    - application_plan
+    - scaffold_plan
+    - proposed_structure
+    - structure_comparison
+    - creation_plan
+    - migration_map
+    - initialize_git
+  field_semantics:
+    project_root: resolved-authorized-project-root
 
 triggers:
   intents:
@@ -112,8 +131,22 @@ input_schema:
             pattern: "^[a-z0-9]+(?:-[a-z0-9]+)*$"
           role:
             type: string
+          application_type:
+            type: string
+            enum:
+              - backend-monolith
+              - backend-application
+              - api-gateway
+              - bff
+              - background-worker
+              - scheduled-job
+              - data-sync
+          responsibility:
+            type: string
+            minLength: 1
           terminal:
             type: string
+            minLength: 1
           runtime:
             type: string
           framework:
@@ -137,7 +170,122 @@ input_schema:
         required:
           - id
           - side
+        allOf:
+          - if:
+              properties:
+                side:
+                  const: backend
+              required:
+                - side
+            then:
+              required:
+                - application_type
+                - role
+          - if:
+              properties:
+                side:
+                  const: frontend
+              required:
+                - side
+            then:
+              not:
+                required:
+                  - application_type
+          - if:
+              properties:
+                application_type:
+                  const: backend-monolith
+              required: [application_type]
+            then:
+              properties:
+                role:
+                  const: "单体后端"
+          - if:
+              properties:
+                application_type:
+                  const: backend-application
+              required: [application_type]
+            then:
+              required:
+                - responsibility
+              properties:
+                role:
+                  const: "独立后端应用"
+          - if:
+              properties:
+                application_type:
+                  const: api-gateway
+              required: [application_type]
+            then:
+              properties:
+                role:
+                  const: "API 网关"
+          - if:
+              properties:
+                application_type:
+                  const: bff
+              required: [application_type]
+            then:
+              required:
+                - terminal
+              properties:
+                role:
+                  const: "BFF"
+          - if:
+              properties:
+                application_type:
+                  const: background-worker
+              required: [application_type]
+            then:
+              properties:
+                role:
+                  const: "后台任务"
+          - if:
+              properties:
+                application_type:
+                  const: scheduled-job
+              required: [application_type]
+            then:
+              properties:
+                role:
+                  const: "定时任务"
+          - if:
+              properties:
+                application_type:
+                  const: data-sync
+              required: [application_type]
+            then:
+              properties:
+                role:
+                  const: "数据同步"
+          - if:
+              properties:
+                application_type:
+                  const: data-sync
+                existing:
+                  const: false
+              required: [application_type, existing]
+            then:
+              required: [name]
+              properties:
+                name:
+                  pattern: "^[a-z0-9]+(?:-[a-z0-9]+)*-data-sync(?:-job)?$"
         additionalProperties: false
+    scaffold_strategy:
+      type: string
+      enum:
+        - all-skip
+        - all-generate
+        - selective
+      description: "新应用的批量代码骨架策略；selective 时必须指定应用 ID。"
+    scaffold_application_ids:
+      type: array
+      description: "scaffold_strategy=selective 时选择生成代码骨架的应用 ID。"
+      minItems: 1
+      items:
+        type: string
+        pattern: "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+      uniqueItems: true
     recommendation_updates:
       type: array
       description: "用户对当前引导推荐的逐项决定；未列出的推荐继续保持 proposed。"
@@ -155,6 +303,13 @@ input_schema:
               - revise
           selected_option_id:
             type: string
+          selected_option_numbers:
+            type: array
+            minItems: 1
+            uniqueItems: true
+            items:
+              type: integer
+              minimum: 1
           revised_answer:
             type: string
           source:
@@ -310,8 +465,17 @@ input_schema:
       additionalProperties: false
   required:
     - mode
-    - project_root
     - context
+  allOf:
+    - if:
+        properties:
+          scaffold_strategy:
+            const: selective
+        required:
+          - scaffold_strategy
+      then:
+        required:
+          - scaffold_application_ids
   additionalProperties: false
 
 output_schema:
@@ -355,10 +519,18 @@ output_schema:
           properties:
             id:
               type: string
+            sequence:
+              type: integer
+              minimum: 1
             question:
               type: string
             why_asked:
               type: string
+            selection_mode:
+              type: string
+              enum:
+                - single
+                - multiple
             recommended_option_id:
               type: string
             recommendation_reason:
@@ -366,31 +538,61 @@ output_schema:
             options:
               type: array
               minItems: 2
-              maxItems: 4
+              maxItems: 8
               items:
                 type: object
                 properties:
                   id:
                     type: string
+                  number:
+                    type: integer
+                    minimum: 1
                   label:
                     type: string
                   impact:
                     type: string
                 required:
                   - id
+                  - number
                   - label
                   - impact
                 additionalProperties: false
+            answer_hint:
+              type: string
             custom_allowed:
               type: boolean
           required:
             - id
+            - sequence
             - question
             - why_asked
+            - selection_mode
             - recommended_option_id
             - recommendation_reason
             - options
+            - answer_hint
             - custom_allowed
+          allOf:
+            - if:
+                properties:
+                  selection_mode:
+                    const: single
+                required:
+                  - selection_mode
+              then:
+                properties:
+                  options:
+                    maxItems: 4
+            - if:
+                properties:
+                  selection_mode:
+                    const: multiple
+                required:
+                  - selection_mode
+              then:
+                properties:
+                  options:
+                    maxItems: 8
           additionalProperties: false
         - type: "null"
     recommendation_register:
@@ -438,8 +640,22 @@ output_schema:
             type: string
           role:
             type: string
+          application_type:
+            type: string
+            enum:
+              - backend-monolith
+              - backend-application
+              - api-gateway
+              - bff
+              - background-worker
+              - scheduled-job
+              - data-sync
+          responsibility:
+            type: string
+            minLength: 1
           terminal:
             type: string
+            minLength: 1
           runtime:
             type: string
           existing:
@@ -457,6 +673,107 @@ output_schema:
           - path
           - existing
           - source
+        allOf:
+          - if:
+              properties:
+                side:
+                  const: backend
+              required:
+                - side
+            then:
+              required:
+                - application_type
+                - role
+          - if:
+              properties:
+                side:
+                  const: frontend
+              required:
+                - side
+            then:
+              not:
+                required:
+                  - application_type
+          - if:
+              properties:
+                application_type:
+                  const: backend-monolith
+              required: [application_type]
+            then:
+              properties:
+                role:
+                  const: "单体后端"
+          - if:
+              properties:
+                application_type:
+                  const: backend-application
+              required: [application_type]
+            then:
+              required:
+                - responsibility
+              properties:
+                role:
+                  const: "独立后端应用"
+          - if:
+              properties:
+                application_type:
+                  const: api-gateway
+              required: [application_type]
+            then:
+              properties:
+                role:
+                  const: "API 网关"
+          - if:
+              properties:
+                application_type:
+                  const: bff
+              required: [application_type]
+            then:
+              required:
+                - terminal
+              properties:
+                role:
+                  const: "BFF"
+          - if:
+              properties:
+                application_type:
+                  const: background-worker
+              required: [application_type]
+            then:
+              properties:
+                role:
+                  const: "后台任务"
+          - if:
+              properties:
+                application_type:
+                  const: scheduled-job
+              required: [application_type]
+            then:
+              properties:
+                role:
+                  const: "定时任务"
+          - if:
+              properties:
+                application_type:
+                  const: data-sync
+              required: [application_type]
+            then:
+              properties:
+                role:
+                  const: "数据同步"
+          - if:
+              properties:
+                application_type:
+                  const: data-sync
+                existing:
+                  const: false
+              required: [application_type, existing]
+            then:
+              properties:
+                name:
+                  pattern: "^[a-z0-9]+(?:-[a-z0-9]+)*-data-sync(?:-job)?$"
+                path:
+                  pattern: "^development/backend/apps/[a-z0-9]+(?:-[a-z0-9]+)*-data-sync(?:-job)?$"
         additionalProperties: false
     scaffold_plan:
       type: array
@@ -733,9 +1050,77 @@ output_schema:
         type: string
     follow_ups:
       type: array
-      description: "仍需用户确认、无法可靠归类或受阻的事项。"
+      description: "仍需用户确认、无法可靠归类或受阻的事项；不得包含提案操作文案、确认指令或 1/2/3 动作。"
       items:
         type: string
+    proposal_actions:
+      type: array
+      description: "提案数字操作的唯一输出字段；只在 awaiting-confirmation 或 migration-proposed 时包含完整 1/2/3，其他结果为空数组。用户可见渲染必须将本字段作为最后一段，不得依赖对象键顺序。"
+      maxItems: 3
+      uniqueItems: true
+      prefixItems:
+        - type: object
+          properties:
+            number:
+              const: 1
+            action:
+              const: confirm-current-proposal
+            label:
+              const: "确认当前 proposal_id"
+          required: [number, action, label]
+          additionalProperties: false
+        - type: object
+          properties:
+            number:
+              const: 2
+            action:
+              const: revise-current-proposal
+            label:
+              const: "返回修改"
+          required: [number, action, label]
+          additionalProperties: false
+        - type: object
+          properties:
+            number:
+              const: 3
+            action:
+              const: abandon-current-proposal
+            label:
+              const: "放弃"
+          required: [number, action, label]
+          additionalProperties: false
+      items:
+        oneOf:
+          - type: object
+            properties:
+              number:
+                const: 1
+              action:
+                const: confirm-current-proposal
+              label:
+                const: "确认当前 proposal_id"
+            required: [number, action, label]
+            additionalProperties: false
+          - type: object
+            properties:
+              number:
+                const: 2
+              action:
+                const: revise-current-proposal
+              label:
+                const: "返回修改"
+            required: [number, action, label]
+            additionalProperties: false
+          - type: object
+            properties:
+              number:
+                const: 3
+              action:
+                const: abandon-current-proposal
+              label:
+                const: "放弃"
+            required: [number, action, label]
+            additionalProperties: false
   required:
     - result
     - proposal_id
@@ -759,6 +1144,32 @@ output_schema:
     - changes
     - validation
     - follow_ups
+    - proposal_actions
+  allOf:
+    - if:
+        properties:
+          result:
+            enum:
+              - awaiting-confirmation
+              - migration-proposed
+        required: [result]
+      then:
+        properties:
+          proposal_actions:
+            minItems: 3
+            maxItems: 3
+    - if:
+        properties:
+          result:
+            not:
+              enum:
+                - awaiting-confirmation
+                - migration-proposed
+        required: [result]
+      then:
+        properties:
+          proposal_actions:
+            maxItems: 0
   additionalProperties: false
   definitions:
     recommendation_record:
@@ -792,7 +1203,9 @@ constraints:
   - "当前 guided_question 的推荐必须同时登记到 recommendation_register.proposed；事实不足时推荐安全的澄清选项。"
   - "前后端应用分别位于 development/frontend/apps 和 development/backend/apps；不得创建 services、packages、libs 或 shared-code。"
   - "每个应用都是独立项目，不直接引用其他应用源码；接口规范跟随提供方应用。"
-  - "逐应用确认是否生成可运行代码骨架；同意一个应用不代表同意其他应用，已有应用不得重新生成代码骨架。"
+  - "后端应用语义必须区分 backend-monolith、API Gateway 和 BFF；禁止使用“单一后端 API”代表单体。backend-application 必须另行记录非空 responsibility，BFF 必须另行记录非空 terminal，两者都不得塞入 canonical role。"
+  - "代码骨架先询问批量策略；已有应用不得重新生成代码骨架。"
+  - "同一 guided_question 的 option number 必须唯一并按 1..N 连续；sequence 从 1 开始，并在同一任务的后续轮次严格递增；数字答复只映射最新且唯一未解决问题，无法唯一定位时返回 needs-input。同时存在多个仍可识别的提案时，纯数字 1 不得选择任一提案或写入。"
   - "structure_profile=custom 时用户目录树是权威结构；禁止静默改名、搬移、增加或遗漏路径。"
   - "structure_profile=zx-full-delivery 时必须逐项采用 references/zx-full-delivery-structure.yaml，不得改造成 src 或其他轻量结构。"
   - "决定稳定代码边界、文档分类或编号的关键信息未知时返回 needs-input，不套用默认模板。"
@@ -823,6 +1236,7 @@ prompt: |-
     approved_proposal.proposal_id 与重新计算值全部一致时才能继续。缺少确认或确认不匹配立即返回 blocked，
     changes 为空。
   - audit 只接受 propose；任何 apply 请求都返回 blocked。
+  - project_root 可在引导开始时缺失，但在生成任何可执行提案或执行 apply 前必须询问并确认用户授权的项目根目录。
 
   proposal_id 必须绑定提案内容。构造 proposal_payload，字段固定为 mode、workflow_mode、解析后的 project_root、
   project_facts、recommendation_register、structure_profile、fact_register.confirmed、application_plan、
@@ -856,17 +1270,29 @@ prompt: |-
   执行引导式工作流：
   - workflow_mode=auto 时，先依据用户明确说明和只读工作区证据区分 new-project 与 existing-project；证据冲突或
     不足时返回 needs-input，只询问工作流类型。空目录不能推翻用户对存量项目的明确说明。
-  - 按 `references/guided-project-workflows.yaml` 的阶段顺序定位最早未确认且会影响后续设计的问题；一次只提出一个问题，
-    写入 guided_question。不要在一轮中堆叠项目用途、命名、前后端、技术栈、骨架和 Git 等多个问题。
-  - 每个关键问题必须给 2 至 4 个可理解选项、一个推荐选项、推荐理由和各选项影响，并允许自定义。若信息不足以
+  - 项目用途、目标用户和阶段不阻塞目录提案；用户未主动提供时不得询问或猜测。
+  - 问题顺序从项目位置与标识开始，只询问会改变路径、文件、代码生成、基础设施配置或 Git 状态的决定。
+  - 每个 guided_question 显示“问题 <sequence>”，每个选项显示 number；单选可回复一个数字，多选可回复逗号分隔数字。
+    单选 answer_hint 写为“回复数字即可，例如：1”。
+  - 同一 guided_question 的 option number 必须唯一并按 1..N 连续；sequence 从 1 开始，并在同一任务的后续轮次严格递增。
+    数字答复只映射最新且唯一未解决问题；无法唯一定位时返回 needs-input。
+    本 Skill 是声明式 prompt-contract；上述跨轮规则必须由调用模型执行，并在新上下文中进行前向行为测试。
+  - 每个关键问题必须给 2 至 4 个可理解选项；selection_mode=multiple 时可给 2 至 8 个选项，并提供一个推荐选项、
+    推荐理由和各选项影响，且允许自定义。若信息不足以
     形成业务或技术推荐，事实不足时推荐安全的澄清选项，例如提供项目背景或授权只读扫描；不得返回无推荐，
     也不得用猜测填补缺失事实。
   - 推荐选项只属于 proposed。只有 recommendation_updates 中 decision=accept 的问题进入 accepted；revise 使用用户答案
     进入 revised；reject 进入 rejected。推荐不等于确认，未明确提及的推荐继续 proposed，不能进入 creation_plan。
     当前 guided_question 的推荐必须同时登记到 recommendation_register.proposed，question_id、option、reason 和 source
     与问题内容一致；下一轮处理用户决定后再移动到 accepted、revised 或 rejected。
-  - new-project 依次完善项目用途、目标用户、阶段、显示名称、project_slug、结构策略、文档边界、前端、后端、
-    应用清单、代码骨架、基础设施和 Git。project_slug 可推荐但必须确认，不得未经确认把中文名称自动转为拼音。
+  - 应用目录一次收集前端和后端清单，不拆成前端存在性、前端列表、后端存在性和后端列表四个固定问题。
+    项目位置、display_name、project_slug 与结构策略必须确认；project_slug 可推荐但必须确认，不得未经确认把中文名称
+    自动转为拼音。
+  - applications 问题涉及后端时，必须以 backend-monolith（单体后端）、API Gateway（网关边界）和 BFF（面向特定
+    前端的聚合层）的不歧义语义展示选择；Gateway/BFF 不等同业务单体。禁止使用“单一后端 API”代表单体。
+    稳定类型还包括 backend-application（一般独立服务或微服务）、background-worker、scheduled-job 和 data-sync；
+    每类 application_type 必须写入 reference 声明的唯一 canonical role 和路径语义。applications 问题按已确认
+    上下文每轮最多 8 个相关选项，无需展示整个 catalog。任何后端 application_type 都不得用于推断技术语言。
   - existing-project 先只读扫描目录、源码、构建入口、Git 状态、文档、部署配置和路径引用；优先推荐沿用稳定约定或
     保持现状。随后逐项确认保留、移动、改名、新增和丢弃内容，不将扫描推断直接升级为确认事实。
 
@@ -877,22 +1303,41 @@ prompt: |-
     ai-huoke-wx-mini 和 ai-huoke-uniapp。运行时或框架名不进入目录名。
   - 单一后端应用允许 `<project-slug>` 或 `<project-slug>-api`；多个后端应用推荐
     `<project-slug>-<responsibility>`。现有裸名称不得自动重命名，Go、Python、Node.js 可并存于 backend/apps。
+  - 用户选择 monolith 后，application_plan 必须明确记录 application_type=backend-monolith、role=单体后端；不能仅靠
+    后端目录数量推断。单体是部署和业务边界，不是语言。技术栈未知且 scaffold_strategy=all-skip 时，
+    不得询问或推断 Go、Python、Node.js，也不得把 monolith 自动绑定到任何运行时。
   - HTTP API、RPC、消息接口规范跟随提供方应用，按需位于其 specifications/http-api、specifications/rpc 或
     specifications/messages。接口规范跟随提供方应用，不创建 development/backend/specifications 等中央规范目录。
+  - backend-application 的 role 必须始终是 canonical role“独立后端应用”，具体业务职责单独放在非空 responsibility，并用于
+    `<project-slug>-<responsibility>` 路径。BFF 的 role 必须始终是 canonical role“BFF”，服务终端单独放在非空 terminal，
+    并用于 `<project-slug>-<terminal>-bff` 路径。不得把 responsibility 或 terminal 改写进 role。
+  - data-sync 允许 `<project-slug>-data-sync` 和 `<project-slug>-data-sync-job` 两种清晰形式；两者都保持
+    application_type=data-sync、role=数据同步，例如 `ai-huoke-data-sync-job`；不得据名称推断技术语言。
   - application_plan 必须为每个应用记录来源；名称、终端、职责或边界仍为 proposed/unknown 时不得生成该应用目录。
 
-  逐应用确认是否生成可运行代码骨架：
-  - 每次只询问一个应用的代码骨架决定，按 application_plan 展示顺序处理 scaffold_decision=undecided 或缺失的应用；
-    当前应用未得到明确决定前不得跳到下一个应用，也不得用“哪些应用需要生成”一次批量确认整组。
-  - status=proposed 时 generate 必须为 null，表示尚未决定；明确选择 skip 后才写 generate=false，明确选择
-    generate 后才写 generate=true。不得为了满足布尔字段而把未决定状态伪装成 false。
-  - scaffold_decision 没有隐式默认值。只有用户对某个应用明确选择 generate，且该应用所需的运行时、框架或标准库、
-    关键版本、包管理或模块名、启动命令和测试命令均已确认，才能把生成命令和完整文件写入 scaffold_plan/creation_plan。
-  - 用户对某个应用选择 skip 时只创建已确认的目录和基础文档；同意一个应用生成不代表其他应用也生成。
+  代码骨架批量策略与安全门禁：
+  - 代码骨架先询问批量策略；全部只创建目录时一次把所有新应用记为 generate=false、status=skipped。
+  - all-generate 或 selective 仅使所选新应用进入代码骨架细节确认；只有用户对选中的应用明确选择 generate，且该应用
+    所需的运行时、框架或标准库、关键版本、包管理或模块名、启动命令和测试命令均已确认，才能把生成命令和完整文件
+    写入 scaffold_plan/creation_plan。
+  - 对尚未决定的所选应用，status=proposed 时 generate 必须为 null；不得为了满足布尔字段把未决定状态伪装成 false。
+  - selective 使用数字多选应用；未选应用只创建已确认的目录和基础文档，不生成代码。
   - 已有应用不得重新生成代码骨架，不得覆盖、静默升级或统一其技术栈。existing-project 只有用户明确新增的应用可以
     进入骨架询问；检测到目标文件已存在时返回 blocked 或改为迁移提案。
   - 代码骨架必须最小但可运行，生成计划列出完整文件、命令、start_command 和 test_command；apply 后实际运行相称的
     启动或测试验证。技术栈事实不足时返回 needs-input，不生成占位代码或猜测框架。
+
+  基础设施与确认呈现：
+  - 基础设施推荐暂不确认基础设施；不得根据 MVP、AI、用途或目标用户推荐数据库、缓存、消息队列或定时任务。
+    用户未确认基础设施时不创建配置或目录。
+  - awaiting-confirmation 或 migration-proposed 的用户答复必须直接展示 proposed_structure 的完整目录树；数量统计不能替代完整目录树。
+    目录树使用 text 代码块，不得用“其余目录同模板”、省略号或摘要替代。
+  - 面向用户的呈现顺序是独立渲染合同：完整目录树 → 完整 migration/creation map → 完整 planned file contents/commands →
+    风险与校验 → 具体 proposal_id → proposal_actions 作为最后一段。完整 map 对 reorganize 渲染 migration_map，对 initialize
+    渲染 creation_plan；文件项必须呈现完整 content，骨架项必须呈现完整 commands。这个顺序不得依赖 JSON/YAML object 的键顺序。
+  - 提案动作文案只能出现在专用 proposal_actions 字段对应的最后一段；summary、follow_ups 和任何更早字段都不得提前包含。
+    follow_ups 不得包含提案操作文案、确认指令或 1/2/3 动作。
+  - 同时存在多个仍可识别的提案时，纯数字 `1` 必须返回 needs-input，proposal_actions 为空，不得选择任一提案，changes 为空且不得写入。
 
   initialize 必须先选择一种结构策略，且没有隐式默认值：
   - zx-full-delivery：读取同目录 `references/zx-full-delivery-structure.yaml`，把其中版本化的 39 个基础目录、
@@ -923,8 +1368,9 @@ prompt: |-
   按 mode 处理：
 
   1. initialize
-     - 采用 new-project 引导，检查项目目标、用户、阶段、命名、代码形态、协作方式、根目录现状和适用约束，
-       先输出 fact_register、recommendation_register、application_plan 和 scaffold_plan。
+     - 采用 new-project 引导，用户主动提供的项目用途、目标用户和阶段作为可选背景保留；缺失时不得询问。
+       只检查会影响提案的命名、代码形态、协作方式、根目录现状和适用约束，先输出 fact_register、
+       recommendation_register、application_plan 和 scaffold_plan。
      - 先解析 structure_profile；再判断该策略真正需要的 facts 是否足够。zx-full-delivery 已确认完整职责边界，
        不得因为技术栈未定而删除 development/frontend、development/backend 或 development/experiments。
      - facts 足够且当前没有 guided_question 时生成 proposed_structure、structure_comparison、placement_rules、authority_map、context_policy

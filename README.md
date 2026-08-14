@@ -163,29 +163,35 @@ $zx-skills 列出我的测试类 Skills
 $zx-skills 使用 zx-project-organizer，引导我创建一个全新项目
 ```
 
-Skill 会逐步帮助用户补齐整个创建流程，一次只问一个会影响后续设计的问题：
+Skill 按目录优先的顺序一次只问一个会影响提案的问题。六类决策是：
 
-1. 项目要解决什么问题、服务哪些用户。
-2. 项目阶段、中文名称和英文项目标识。
-3. 采用完整、自适应还是自定义结构，以及需要哪些文档边界。
-4. 是否有前端；分别有哪些终端应用。
-5. 是否有后端；是单体还是多个独立应用，各自职责是什么。
-6. 每个应用是否生成可运行代码骨架。
-7. 仅对选择生成的应用继续确认框架、版本、包管理器或模块名、启动命令和测试方式。
-8. 是否需要已明确的数据库、缓存、消息队列、定时任务和 Git 初始化。
-9. 汇总完整目录、文件、代码骨架、命令和风险，等待提案确认。
+1. 项目目录位置、名称和英文标识。
+2. 采用 `zx-full-delivery`、`adaptive` 还是 `custom` 结构。
+3. 本次创建哪些前端和后端应用目录。
+4. 对全部新应用采用哪种批量代码骨架策略。
+5. 是否纳入已确认的基础设施配置。
+6. 是否把 Git 初始化纳入本次提案。
 
-每个关键问题都会给出一个推荐选项、推荐理由、其他选项的影响和自定义入口。推荐只是建议，状态仍为
-`proposed`；只有用户明确接受或修改后才成为确认事实。接受一个推荐不会自动接受后续推荐。
+项目用途、目标用户和阶段不是创建目录的前置条件；只有确实影响当前目录或用户主动要求时才作为可选补充
+问题。批量骨架选择后，也只有选择生成骨架的应用需要继续确认框架、版本、包管理器、启动命令和测试方式。
 
-例如：
+每个问题都会给出推荐选项、推荐理由、其他选项的影响和自定义入口。推荐只是建议，状态仍为 `proposed`；
+只有用户明确接受或修改后才成为确认事实。接受一个推荐不会自动接受后续推荐。
+
+第一个问题例如：
 
 ```text
-问题：微信小程序应用使用哪个目录名？
-推荐：ai-huoke-wx-mini
-推荐原因：包含项目标识和终端类型，同时保持简短。
-选项：接受推荐 / 修改名称 / 不创建该应用 / 自定义
+问题 1：项目目录位置、名称和英文标识使用哪组？
+1. 使用推荐位置和标识（推荐）
+2. 使用当前目录
+3. 自定义
+回复数字即可，例如：1
 ```
+
+数字只会映射到当前任务中最新且唯一的未解决问题。仅在该上下文中，先 trim 整体及逗号两侧的 ASCII 空白：
+` 1 ` 视为 `1`，`1, 3,1` 归一化为有序去重的 `[1,3]`。单选数字会转换为当前问题的
+`selected_option_numbers=[n]`；多选可回复逗号数字。空 token、非数字、越界数字、问题已经解决、上下文缺失
+或有多个未解决问题时，Skill 返回 `needs-input`，不会猜测。
 
 #### 引导整理一个存量项目
 
@@ -228,11 +234,26 @@ development/
 | --- | --- | --- |
 | 项目标识 | 小写、横杠分隔，推荐后必须由用户确认 | `ai-huoke` |
 | 前端应用 | `<project-slug>-<terminal>` | `ai-huoke-web-admin`、`ai-huoke-wx-mini`、`ai-huoke-uniapp` |
-| 单体后端 | `<project-slug>` 或 `<project-slug>-api` | `ai-huoke`、`ai-huoke-api` |
+| 单体后端（`application_type=backend-monolith`、`role=单体后端`） | `<project-slug>` 或 `<project-slug>-api` | `ai-huoke`、`ai-huoke-api` |
 | 多后端应用 | `<project-slug>-<responsibility>` | `ai-huoke-worker`、`ai-huoke-data-sync-job` |
+| 数据同步（`application_type=data-sync`） | `<project-slug>-data-sync` 或 `<project-slug>-data-sync-job` 两种清晰形式 | `ai-huoke-data-sync`、`ai-huoke-data-sync-job` |
 
 Go、Python、Node.js 可以同时位于 `backend/apps`，但技术栈不写入目录名。每个应用独立维护依赖、测试、
 构建和交付配置，不创建 `services`、`packages`、`libs` 或 `shared-code`，也不通过相对路径引用其他应用源码。
+
+applications 问题涉及后端时明确提供 `backend-monolith`（承载业务能力的单体后端）、API Gateway（网关边界）
+和 BFF（面向特定前端的聚合层）；Gateway/BFF 不等同业务单体，禁止使用“单一后端 API”代表单体。选择 monolith
+后，`application_plan` 明确记录 `application_type=backend-monolith`、`role=单体后端`。
+单体是部署和业务边界，不是语言；技术栈未知且 `scaffold_strategy=all-skip` 时，不得询问或推断 Go、Python、Node.js。
+
+稳定类型还包括 `backend-application`（一般独立服务或微服务，canonical role 为“独立后端应用”）、
+`background-worker`、`scheduled-job` 和 `data-sync`；每类都有唯一的 canonical role 与路径语义。应用问题根据
+当前已确认上下文每轮最多 8 个相关选项，不要求一次展示整个 catalog。任何后端 application_type 都不得用于推断技术语言。
+
+`backend-application` 还必须单独填写非空 `responsibility`，例如 `orders`；它参与
+`<project-slug>-<responsibility>` 命名，但 `role` 仍精确为“独立后端应用”。BFF 必须单独填写非空
+`terminal`，例如 `web`；它参与 `<project-slug>-<terminal>-bff` 命名，但 `role` 仍精确为“BFF”。
+`responsibility` 和 `terminal` 都不得塞入 canonical `role`。
 
 HTTP API、RPC 和消息规范跟随提供方后端应用，只创建实际使用的规范目录：
 
@@ -243,9 +264,13 @@ development/backend/apps/ai-huoke-worker/specifications/messages/
 
 不会创建中央 `development/backend/specifications`，消费方也不维护另一份权威规范。
 
-代码骨架按应用分别选择，例如可以只为 `ai-huoke-web-admin` 和 Go 单体后端 `ai-huoke` 生成可运行骨架，
-而 `ai-huoke-wx-mini`、`ai-huoke-uniapp` 只创建目录。技术栈或版本未确认时只提供推荐并继续询问，不生成
+代码骨架按批次选择，默认推荐 `全部只创建目录`；也可选择全部生成，或选择部分应用生成。选择部分应用时再
+用多选数字指定应用，例如只为 `ai-huoke-web-admin` 和单体后端 `ai-huoke` 生成可运行骨架，而
+`ai-huoke-wx-mini`、`ai-huoke-uniapp` 只创建目录。技术栈或版本未确认时只提供推荐并继续询问，不生成
 占位代码。
+
+基础设施默认推荐 `暂不确认基础设施`：未知时不生成推测性的数据库、缓存、消息队列或定时任务配置；Git
+初始化同样只在本次提案中明确选择后才执行。
 
 初始化有三种结构策略，不再由 AI 隐式选择：
 
@@ -261,15 +286,152 @@ development/backend/apps/ai-huoke-worker/specifications/messages/
 $zx-skills 使用 zx-project-organizer，按 ZX 完整结构初始化当前项目，不初始化 Git
 ```
 
-完整结构固定包含：
+#### 完整提案确认示例
+
+提案摘要：AI 获客项目采用 `zx-full-delivery`，创建前端管理端和单体 API 目录；全部只创建目录，
+暂不确认基础设施，且不初始化 Git。
+
+完整目录树：
 
 ```text
-docs/project/{01-项目计划,02-里程碑,03-风险与阻塞,04-会议记录,05-决策记录}
-docs/product/{00-项目背景,01-调研分析,02-用户研究,03-竞品分析,04-需求池,05-业务流程,06-PRD,07-版本规划,08-需求评审,09-验收标准}
-docs/design/{01-信息架构,02-用户流程,03-低保真原型,04-视觉设计,05-设计规范,06-设计评审}
-docs/testing/{01-测试计划,02-测试用例,03-测试报告,04-验收记录}
-development/{frontend/apps,backend/apps,experiments}
-research/{sources,assets}
+ai-huoke/
+├── .gitignore
+├── AGENTS.md
+├── README.md
+├── docs/
+│   ├── README.md
+│   ├── project/
+│   │   ├── 01-项目计划/
+│   │   ├── 02-里程碑/
+│   │   ├── 03-风险与阻塞/
+│   │   ├── 04-会议记录/
+│   │   └── 05-决策记录/
+│   ├── product/
+│   │   ├── 00-项目背景/
+│   │   ├── 01-调研分析/
+│   │   ├── 02-用户研究/
+│   │   ├── 03-竞品分析/
+│   │   ├── 04-需求池/
+│   │   ├── 05-业务流程/
+│   │   ├── 06-PRD/
+│   │   ├── 07-版本规划/
+│   │   ├── 08-需求评审/
+│   │   └── 09-验收标准/
+│   ├── design/
+│   │   ├── 01-信息架构/
+│   │   ├── 02-用户流程/
+│   │   ├── 03-低保真原型/
+│   │   ├── 04-视觉设计/
+│   │   ├── 05-设计规范/
+│   │   └── 06-设计评审/
+│   └── testing/
+│       ├── 01-测试计划/
+│       ├── 02-测试用例/
+│       ├── 03-测试报告/
+│       └── 04-验收记录/
+├── development/
+│   ├── frontend/
+│   │   └── apps/
+│   │       └── ai-huoke-web-admin/
+│   ├── backend/
+│   │   └── apps/
+│   │       └── ai-huoke/
+│   └── experiments/
+└── research/
+    ├── sources/
+    └── assets/
+```
+
+完整迁移/创建映射：
+
+```text
+create directory: docs
+create directory: docs/project
+create directory: docs/project/01-项目计划
+create directory: docs/project/02-里程碑
+create directory: docs/project/03-风险与阻塞
+create directory: docs/project/04-会议记录
+create directory: docs/project/05-决策记录
+create directory: docs/product
+create directory: docs/product/00-项目背景
+create directory: docs/product/01-调研分析
+create directory: docs/product/02-用户研究
+create directory: docs/product/03-竞品分析
+create directory: docs/product/04-需求池
+create directory: docs/product/05-业务流程
+create directory: docs/product/06-PRD
+create directory: docs/product/07-版本规划
+create directory: docs/product/08-需求评审
+create directory: docs/product/09-验收标准
+create directory: docs/design
+create directory: docs/design/01-信息架构
+create directory: docs/design/02-用户流程
+create directory: docs/design/03-低保真原型
+create directory: docs/design/04-视觉设计
+create directory: docs/design/05-设计规范
+create directory: docs/design/06-设计评审
+create directory: docs/testing
+create directory: docs/testing/01-测试计划
+create directory: docs/testing/02-测试用例
+create directory: docs/testing/03-测试报告
+create directory: docs/testing/04-验收记录
+create directory: development
+create directory: development/frontend
+create directory: development/frontend/apps
+create directory: development/frontend/apps/ai-huoke-web-admin
+create directory: development/backend
+create directory: development/backend/apps
+create directory: development/backend/apps/ai-huoke
+create directory: development/experiments
+create directory: research
+create directory: research/sources
+create directory: research/assets
+create file: .gitignore
+create file: AGENTS.md
+create file: README.md
+create file: docs/README.md
+migration_map: []
+```
+
+完整文件内容与命令（如有）：
+
+```text
+.gitignore
+.DS_Store
+
+AGENTS.md
+# 项目约定
+本提案只创建已展示的目录，不生成代码骨架。
+
+README.md
+# AI 获客
+本项目的目录和创建边界以本提案为准。
+
+docs/README.md
+# 文档地图
+项目正式文档位于 docs 目录。
+
+## 权威入口
+每个主题只维护一个当前权威文件。
+
+## 状态规则
+未确认内容不作为执行依据。
+
+## 历史与冲突处理
+冲突内容先记录并等待确认，不覆盖当前权威入口。
+```
+
+代码骨架命令：无；迁移命令：无；本提案全部只创建目录，没有迁移，且 `initialize_git=false`。
+
+风险与校验：确认前核对目录树、文件内容和提案哈希；执行后核对实际路径与提案一致，检查 Git 状态和
+已列出的文件内容。
+
+proposal_id: zpo-0123456789abcdef
+
+```text
+1=确认当前 proposal_id
+2=返回修改
+3=放弃
 ```
 
 该契约保存在
@@ -281,21 +443,26 @@ research/{sources,assets}
 全部确认。custom/完整结构提案还会逐项输出 requested、planned、missing、additional 和 renamed/moved
 路径差异，只有完全一致才允许进入确认阶段。
 
-确认提案：
+完整提案门槛：最终操作前必须依序展示完整目录树、完整 migration/creation map、完整 planned file contents/commands、
+风险与校验、具体 proposal_id，然后才把 `proposal_actions` 作为最后一段显示 1/2/3。数量摘要不能替代这些内容，
+目录树也不能用省略或模板说明代替。这是明确的用户可见渲染合同，不依赖 JSON/YAML object 的键顺序；
+`summary`、`follow_ups` 和其他早于 `proposal_actions` 的字段不得包含提案操作文案。
+
+也可使用显式指令：
 
 ```text
 $zx-skills 确认执行项目结构提案 <zpo-proposal_id>
-```
-
-放弃提案：
-
-```text
 $zx-skills 放弃项目结构提案 <zpo-proposal_id>
 ```
 
-确认时会使用第一次展示的原始提案载荷重新计算 ID，并重新检查工作区是否仍适合执行；不会让 AI
-临时重新发挥生成另一套目录或文件。ID 不匹配、载荷丢失、目标冲突或项目状态变化时返回 `blocked`，
-先给出新提案再等待确认。`initialize_git` 默认是 `false`，只有提案中明确为 `true` 才可能执行。
+数字 `1` 只在已完整展示且当前任务可唯一定位的 `proposal_id` 上确认；确认时使用第一次展示的原始提案
+载荷重新计算 ID，并重新检查工作区是否仍适合执行，不会让 AI 临时重新生成另一套目录或文件。没有可唯一
+定位的 `proposal_id`、哈希不匹配、载荷丢失、目标冲突或项目状态变化时，数字 `1` 不构成执行授权，返回
+`blocked` 或 `needs-input` 后重新展示可确认的提案。`initialize_git` 默认是 `false`，只有提案中明确为
+`true` 才可能执行。
+
+如果上下文中同时存在多个仍可识别的提案，用户只回复数字 `1` 时必须返回 `needs-input` 或
+`blocked`；不选择任一提案、不调用 apply，且不对任何项目根目录写入。
 
 ### 第三方 Skill 为什么需要再次确认
 

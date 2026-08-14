@@ -110,10 +110,8 @@ description: Use when the user explicitly invokes ZXSkills to execute a formal l
 
 正式业务 Skill 可以定义自己的提案确认协议。当前 `zx-project-organizer` 在 initialize/reorganize 的
 `action=propose` 阶段只读检查，返回 `result=awaiting-confirmation` 或 `migration-proposed` 以及 `zpo-*`
-`proposal_id`；总入口必须原样展示提案和以下两条指令：
-
-- `$zx-skills 确认执行项目结构提案 <zpo-proposal_id>`
-- `$zx-skills 放弃项目结构提案 <zpo-proposal_id>`
+`proposal_id`；总入口必须原样展示提案，并且只在所有提案材料完整展示后，用最后一段
+`proposal_actions` 呈现确认、修改和放弃操作。
 
 收到确认后，在当前任务上下文中找到原始 mode、project_root、context、`proposal_payload` 和
 `proposal_id`，以 `action=apply`、
@@ -122,6 +120,16 @@ description: Use when the user explicitly invokes ZXSkills to execute a formal l
 已确认提案。Skill 会从 canonical payload 重新计算 ID，并重新检查工作区是否仍适合执行；确认不匹配、
 原载荷不可读取、哈希不一致或目标状态已变化时返回 `blocked`，不得猜测或沿用不安全的旧计划。
 `放弃项目结构提案` 不执行 apply，也不删除任何已有内容。
+
+完整提案门槛：必须依序展示完整目录树、完整 migration/creation map、完整 planned file contents/commands、风险与校验、
+具体 proposal_id，然后才在 `proposal_actions` 最后一段展示 `1=确认当前 proposal_id`、`2=返回修改`、`3=放弃`。数量摘要不能替代这些内容，目录树不得以
+省略或模板说明代替。数字 `1` 仅在当前任务中能唯一定位已显示的 `proposal_id`、保留的原始
+`proposal_payload` 可读取且重新计算的哈希匹配时，才构成执行授权；否则返回 `blocked` 或 `needs-input`，
+不调用 apply。数字确认仍按原 proposal payload 构造 apply 参数，不得用数字重新生成提案。这是用户可见渲染合同，
+不得依赖 JSON/YAML object 的键顺序；`summary`、`follow_ups` 和其他早于 `proposal_actions` 的字段都不得包含提案操作文案。
+
+若同一任务上下文中同时存在多个仍可识别的提案，纯数字 `1` 必须返回 `needs-input` 或 `blocked`，
+不得选择任一提案、不调用 apply，也不得对任何授权根目录写入。
 
 ## 引导式项目创建与整理
 
@@ -140,17 +148,45 @@ description: Use when the user explicitly invokes ZXSkills to execute a formal l
 1. 一次只问当前最早、会影响后续设计的一个问题。
 2. 每个问题都必须提供推荐选项和推荐理由，同时说明其他选项的影响并允许自定义。
 3. 推荐不等于确认；只有用户明确接受、修改或自定义的当前问题才能更新，未提及推荐继续保持 proposed。
-4. 依次补齐项目用途、目标用户、阶段、项目名称和英文标识、结构策略、文档边界、前后端应用、代码骨架、
-   基础设施和 Git 选择。
-5. 项目英文标识可以推荐，但用户确认前不得自动把中文名称转换为拼音并落盘。
+4. 目录优先的六类决策依次是：项目目录位置、名称和英文标识；结构策略；应用目录；批量代码骨架策略；
+   基础设施；Git 初始化。项目用途、目标用户和阶段不阻塞目录提案，只在确实影响当前目录或用户主动要求时
+   作为可选补充问题。
+5. 代码骨架先作一次批量选择：`全部只创建目录`（推荐）、全部生成，或选择部分应用生成；只有选择生成的
+   应用才继续询问技术栈、版本、包管理器或运行测试命令。
+6. 基础设施未知时推荐 `暂不确认基础设施`，不生成推测性数据库、缓存、消息队列或定时任务配置。
+7. 项目英文标识可以推荐，但用户确认前不得自动把中文名称转换为拼音并落盘。
+
+### 数字答复路由
+
+- 用户只回复数字时，只映射当前任务中最新且唯一的 `guided_question`；每个问题的选项数字必须唯一且连续。
+- 仅在上述最新唯一问题上下文中，先 trim 整体及逗号两侧的 ASCII 空白：` 1 ` 视为 `1`，`1, 3,1`
+  归一化为有序去重的 `[1,3]`。单选数字转换为 `selected_option_numbers=[n]`；多选逗号数字转换为有序去重数组。
+- 空 token、非数字、越界数字、问题已经解决、上下文缺失或存在多个未解决问题时返回 `needs-input`，不得猜测。
+- `回复数字即可` 只适用于上述当前问题；最终提案的 `1`、`2`、`3` 按提案确认门禁路由，不能当作普通问题答案。
 
 应用结构统一为 `development/frontend/apps` 和 `development/backend/apps`。前端使用项目标识加终端短名，
 例如 `ai-huoke-web-admin`、`ai-huoke-wx-mini`、`ai-huoke-uniapp`；单体后端允许 `ai-huoke` 或
 `ai-huoke-api`，多后端应用使用职责后缀。不得创建 `services`、`packages`、`libs` 或 `shared-code`，
 应用之间只能通过 API、RPC 或消息协议协作；接口规范跟随提供方应用。
 
-逐应用确认代码骨架：用户可以只为部分应用生成可运行的前端、Go、Python 或 Node.js 骨架。一个应用被确认
-生成不代表其他应用也生成；已有应用一律不得重新生成或覆盖。技术栈信息不足时继续提问，不猜测框架。
+applications 问题涉及后端时必须明确区分 `backend-monolith`（承载业务能力的单体后端）、API Gateway
+（网关边界）和 BFF（面向特定前端的聚合层）；Gateway/BFF 不等同业务单体，禁止使用“单一后端 API”代表单体。
+用户选择 monolith 后，`application_plan` 必须记录 `application_type=backend-monolith`、`role=单体后端`，
+不能靠目录数量推断。单体是部署和业务边界，不是语言；技术栈未知且 `scaffold_strategy=all-skip` 时，
+不得询问或推断 Go、Python、Node.js。
+
+稳定后端类型还包括 `backend-application`（一般独立服务或微服务）、`background-worker`、`scheduled-job` 和
+`data-sync`；每类 `application_type` 必须绑定 reference 中唯一的 canonical role 和路径语义。applications 问题
+按当前已确认上下文每轮最多 8 个相关选项，不要求展示整个 catalog。任何后端 application_type 都不得用于推断技术语言。
+
+`backend-application` 的 `role` 必须精确保持 canonical role“独立后端应用”，具体职责单独记录在非空
+`responsibility`，并用于 `<project-slug>-<responsibility>` 命名。BFF 的 `role` 必须精确保持“BFF”，服务终端
+单独记录在非空 `terminal`，并用于 `<project-slug>-<terminal>-bff` 命名。不得把 `responsibility` 或
+`terminal` 塞入 canonical `role`。
+
+代码骨架采用批量优先：先让用户在“全部只创建目录”、全部生成和选择部分应用生成之间决定；选择部分应用
+时才用多选数字确认应用。一个应用被确认生成不代表其他应用也生成，已有应用一律不得重新生成或覆盖。
+技术栈信息不足时继续提问，不猜测框架。
 
 初始化时必须明确结构策略：
 
@@ -161,7 +197,8 @@ description: Use when the user explicitly invokes ZXSkills to execute a formal l
 
 用户只说“初始化项目”且当前上下文没有已确认策略时，先用一句话让用户选择，不能默认套用轻量结构。
 用户回复只修正某些事实时，只更新被明确提及的事实；不得把整组未提及候选项视为确认。custom 或
-zx-full-delivery 提案必须展示 `structure_comparison`，确认 missing、additional、renamed_or_moved 均为空。
+zx-full-delivery 提案必须展示 `structure_comparison`，确认 missing、additional、renamed_or_moved 均为空。最终
+确认前必须展示完整目录树；数量统计不能替代完整目录树，也不得以“其余目录同模板”或省略号代替。
 
 ## 输出和变更
 

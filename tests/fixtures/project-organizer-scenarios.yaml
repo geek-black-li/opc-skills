@@ -41,7 +41,7 @@ scenarios:
     description: "选择 ZX 完整交付结构后，必须精确采用受版本管理的完整目录契约。"
     structure_profile: zx-full-delivery
     expected_result: awaiting-confirmation
-    expected_directory_count: 37
+    expected_directory_count: 39
     expected_file_count: 4
     forbidden_paths:
       - src/
@@ -76,10 +76,10 @@ scenarios:
       - docs/research/inputs/
 
   - id: guided-new-project
-    description: "新工作区只提供‘帮我创建项目’时，应从项目用途开始逐问，并提供推荐但不写入。"
+    description: "新工作区只提供‘帮我创建项目’时，应先确认项目位置与标识，并提供推荐但不写入。"
     workflow_mode: new-project
     expected_result: needs-input
-    expected_next_question: project-purpose
+    expected_next_question: project-location
     expected_changes: []
 
   - id: recommendation-is-not-confirmation
@@ -130,3 +130,76 @@ scenarios:
     expected_scaffold_status: skipped
     expected_result: migration-proposed
     expected_changes: []
+
+  - id: directory-first-new-project
+    description: "只要求创建工作目录时，先确认目标位置与标识，不询问用途、用户或阶段。"
+    workflow_mode: new-project
+    expected_next_question: project-location
+    forbidden_blocking_questions:
+      - project-purpose
+      - target-users
+      - project-stage
+    expected_changes: []
+
+  - id: numeric-question-selection
+    description: "用户可以只回复当前问题的数字选项。"
+    expected_sequence: 1
+    expected_selection_mode: single
+    expected_answer_hint: "回复数字即可，例如：1"
+
+  - id: batch-skip-scaffolds
+    description: "全部应用只建目录时，只需一次批量决定。"
+    scaffold_strategy: all-skip
+    expected_question_count: 1
+    expected_generate: false
+    expected_status: skipped
+
+  - id: deferred-infrastructure-default
+    description: "未知基础设施不会阻塞目录提案，也不会生成推测性配置。"
+    expected_recommended_option: defer-infrastructure
+    forbidden_components:
+      - database
+      - cache
+      - message-queue
+      - scheduled-jobs
+
+  - id: complete-tree-before-confirmation
+    description: "最终确认前必须展示完整目录树，数量摘要不能替代结构。"
+    expected_result: awaiting-confirmation
+    require_complete_proposed_structure: true
+    forbidden_rendering:
+      - "其余目录同模板"
+      - "..."
+
+  - id: complete-tree-before-migration
+    description: "存量项目迁移提案也必须在数字操作前展示完整目录树。"
+    expected_result: migration-proposed
+    expected_tree_source: proposed_structure
+    expected_code_fence: text
+    abridgement_forbidden: true
+    expected_numeric_actions:
+      1: confirm-current-proposal
+      2: revise-current-proposal
+      3: abandon-current-proposal
+
+  - id: strict-proposal-render-order
+    description: "可执行提案的用户可见素材必须全部出现后，最后才显示 1/2/3。"
+    expected_user_facing_sequence:
+      - complete-proposed-structure
+      - complete-migration-or-creation-map
+      - complete-planned-file-contents-and-commands
+      - risks-and-validation
+      - concrete-proposal-id
+      - proposal-actions
+    proposal_actions_field: proposal_actions
+    forbidden_early_action_fields:
+      - summary
+      - follow_ups
+
+  - id: multiple-proposal-ambiguity
+    description: "同时存在两个仍可识别的提案时，纯数字 1 不得选择任一提案。"
+    numeric_reply: "1"
+    identifiable_proposal_count: 2
+    expected_result: needs-input
+    expected_selected_proposal: null
+    expected_writes: 0
