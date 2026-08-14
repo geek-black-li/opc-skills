@@ -598,31 +598,32 @@ function Test-ConflictMatrix {
 }
 
 function Write-FaultHarness {
-    $HarnessPath = Join-Path $SuiteRoot "invoke-install-with-link-failure.ps1"
+    $HarnessPath = Join-Path $SuiteRoot "invoke-install-with-post-create-failure.ps1"
     $Harness = @'
 param(
     [string]$InstallerPath,
     [string]$SkillsHome,
-    [int]$FailAt
+    [string]$CreationMarker
 )
 
 $ErrorActionPreference = "Stop"
 $env:OPCSKILLS_SKILLS_HOME = $SkillsHome
-$script:LinkCreationCount = 0
 
 function New-Item {
     param([string]$ItemType, [string]$Path, [object]$Target, [switch]$Force)
 
-    if ($ItemType -in @("SymbolicLink", "Junction")) {
-        $script:LinkCreationCount++
-        if ($script:LinkCreationCount -eq $FailAt) {
-            throw "injected link failure at creation $FailAt"
-        }
-    }
     $Arguments = @{ ItemType = $ItemType; Path = $Path }
     if ($PSBoundParameters.ContainsKey("Target")) { $Arguments.Target = $Target }
     if ($Force) { $Arguments.Force = $true }
-    Microsoft.PowerShell.Management\New-Item @Arguments
+    $CreatedItem = Microsoft.PowerShell.Management\New-Item @Arguments
+    if ($ItemType -in @("SymbolicLink", "Junction")) {
+        $Item = Get-Item -LiteralPath $Path -Force -ErrorAction Stop
+        if (-not ($Item.Attributes -band [IO.FileAttributes]::ReparsePoint)) {
+            throw "fault harness did not create a real reparse point: $Path"
+        }
+        [IO.File]::WriteAllText($CreationMarker, "created`n")
+    }
+    return $CreatedItem
 }
 
 function Remove-Item {
@@ -644,7 +645,7 @@ function Remove-Item {
 }
 
 try {
-    & $InstallerPath install
+    & $InstallerPath install -TestFailAfterLinkCreate
     exit 0
 }
 catch {
@@ -657,23 +658,29 @@ catch {
 }
 
 function Invoke-FaultInstaller {
-    param([pscustomobject]$Context, [int]$FailAt, [string]$HarnessPath)
+    param([pscustomobject]$Context, [string]$HarnessPath, [string]$CreationMarker)
     return Invoke-TestProcess @(
         "-NoProfile", "-File", $HarnessPath,
         "-InstallerPath", $ScriptPath,
         "-SkillsHome", $Context.Skills,
-        "-FailAt", [string]$FailAt
+        "-CreationMarker", $CreationMarker
     ) $Context "Override"
 }
 
 function Test-Rollback {
     $HarnessPath = Write-FaultHarness
 
-    $Context = New-CaseContext "rollback-only-entry"
-    $Result = Invoke-FaultInstaller $Context 1 $HarnessPath
-    Assert-Nonzero $Result "single-link fault injection"
-    if ($Result.StdErr -notmatch "rolled back" -or $Result.StdErr -notmatch "injected link failure") {
-        Fail-Test "single-link fault did not exercise installer rollback path: $($Result.StdErr)"
+    $Context = New-CaseContext "rollback-post-create"
+    $CreationMarker = Join-Path $Context.Root "link-created.txt"
+    $Result = Invoke-FaultInstaller $Context $HarnessPath $CreationMarker
+    Assert-Nonzero $Result "post-create fault injection"
+    if (-not [IO.File]::Exists($CreationMarker) -or
+        [IO.File]::ReadAllText($CreationMarker) -ne "created`n") {
+        Fail-Test "post-create fault injection never created the owned link"
+    }
+    if ($Result.StdErr -notmatch "rolled back" -or
+        $Result.StdErr -notmatch "injected post-create failure") {
+        Fail-Test "post-create fault did not exercise installer rollback path: $($Result.StdErr)"
     }
     Assert-Absent (Join-Path $Context.Skills "opc-skills")
 }

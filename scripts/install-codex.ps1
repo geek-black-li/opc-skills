@@ -1,6 +1,9 @@
 param(
     [ValidateSet("install", "status", "uninstall")]
-    [string]$Action = "install"
+    [string]$Action = "install",
+
+    [Parameter(DontShow = $true)]
+    [switch]$TestFailAfterLinkCreate
 )
 
 $ErrorActionPreference = "Stop"
@@ -120,6 +123,9 @@ switch ($Action) {
                 $LinkType = if ($env:OS -eq "Windows_NT") { "Junction" } else { "SymbolicLink" }
                 New-Item -ItemType $LinkType -Path $State.Entry.Target -Target $State.Entry.Source | Out-Null
                 $Created.Add($State.Entry)
+                if ($TestFailAfterLinkCreate) {
+                    throw "injected post-create failure for $($State.Entry.Name)"
+                }
             }
         }
         catch {
