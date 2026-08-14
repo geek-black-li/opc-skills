@@ -2,7 +2,7 @@
 
 日期：2026-08-14
 
-状态：已确认，等待实施
+状态：已实施仓库内迁移，等待远程与本地目录迁移
 
 当前仓库：`ZXSkills` / `https://gitee.com/geek_black_li/zx-skills.git`
 
