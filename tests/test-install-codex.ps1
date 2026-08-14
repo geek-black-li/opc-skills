@@ -4,7 +4,6 @@ $RepositoryRoot = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
 $ScriptPath = Join-Path $RepositoryRoot "scripts/install-codex.ps1"
 $PowerShellPath = (Get-Command pwsh -ErrorAction Stop).Source
 $OpcSource = Join-Path $RepositoryRoot "adapters/codex/opc-skills"
-$ZxSource = Join-Path $RepositoryRoot "adapters/codex/zx-skills"
 $SuiteRoot = Join-Path ([IO.Path]::GetTempPath()) ("opcskills-installer-" + [guid]::NewGuid().ToString("N"))
 $OriginalHomeEnvironment = $env:HOME
 $OriginalPowerShellHome = $HOME
@@ -13,10 +12,6 @@ $RepositorySourceContracts = @(
     [pscustomobject]@{
         Path = Join-Path $OpcSource "SKILL.md"
         Hash = (Get-FileHash -LiteralPath (Join-Path $OpcSource "SKILL.md") -Algorithm SHA256).Hash
-    },
-    [pscustomobject]@{
-        Path = Join-Path $ZxSource "SKILL.md"
-        Hash = (Get-FileHash -LiteralPath (Join-Path $ZxSource "SKILL.md") -Algorithm SHA256).Hash
     }
 )
 
@@ -228,17 +223,15 @@ function Assert-Status {
     param(
         [pscustomobject]$Result,
         [string]$OpcState,
-        [string]$ZxState,
         [int]$ExpectedExit
     )
 
     Assert-ExitCode $Result $ExpectedExit "status"
     $Lines = @($Result.StdOut.TrimEnd() -split "`r?`n")
-    if ($Lines.Count -ne 2) {
-        Fail-Test "status printed $($Lines.Count) lines, expected 2"
+    if ($Lines.Count -ne 1) {
+        Fail-Test "status printed $($Lines.Count) lines, expected 1"
     }
-    if ($Lines[0] -notmatch "^opc-skills: $OpcState " -or
-        $Lines[1] -notmatch "^zx-skills: $ZxState ") {
+    if ($Lines[0] -notmatch "^opc-skills: $OpcState ") {
         Fail-Test "unexpected status output: $($Result.StdOut)"
     }
 }
@@ -276,56 +269,57 @@ function Test-FreshLifecycle {
     $Install = Invoke-Installer $Context install
     Assert-ExitCode $Install 0 "fresh install"
     Assert-CurrentLink (Join-Path $Context.Skills "opc-skills") $OpcSource
-    Assert-CurrentLink (Join-Path $Context.Skills "zx-skills") $ZxSource
-    Assert-Status (Invoke-Installer $Context status) current current 0
+    Assert-Status (Invoke-Installer $Context status) current 0
 
     $OpcPath = Join-Path $Context.Skills "opc-skills"
-    $ZxPath = Join-Path $Context.Skills "zx-skills"
     $OpcRaw = Get-RawLinkTarget $OpcPath
-    $ZxRaw = Get-RawLinkTarget $ZxPath
     $Reinstall = Invoke-Installer $Context install
     Assert-ExitCode $Reinstall 0 "idempotent install"
-    if ((Get-RawLinkTarget $OpcPath) -ne $OpcRaw -or (Get-RawLinkTarget $ZxPath) -ne $ZxRaw) {
+    if ((Get-RawLinkTarget $OpcPath) -ne $OpcRaw) {
         Fail-Test "idempotent install replaced a current entry"
     }
 
     $Uninstall = Invoke-Installer $Context uninstall
     Assert-ExitCode $Uninstall 0 "uninstall"
     Assert-Absent $OpcPath
-    Assert-Absent $ZxPath
 }
 
-function Test-LegacyUpgrade {
-    $Context = New-CaseContext "legacy"
-    $ZxPath = Join-Path $Context.Skills "zx-skills"
-    New-CurrentLink $ZxPath $ZxSource
-    $LegacyRaw = Get-RawLinkTarget $ZxPath
-
-    Assert-ExitCode (Invoke-Installer $Context install) 0 "legacy-only upgrade"
+function Test-ForeignZxNonInterference {
+    $Context = New-CaseContext "foreign-zx-non-interference"
+    $ForeignZx = Join-Path $Context.Skills "zx-skills"
+    [IO.Directory]::CreateDirectory($Context.Skills) | Out-Null
+    [IO.File]::WriteAllText($ForeignZx, "foreign`n")
+    $Install = Invoke-Installer $Context "install"
+    Assert-ExitCode $Install 0 "install beside foreign zx-skills file"
     Assert-CurrentLink (Join-Path $Context.Skills "opc-skills") $OpcSource
-    Assert-CurrentLink $ZxPath $ZxSource
-    if ((Get-RawLinkTarget $ZxPath) -ne $LegacyRaw) {
-        Fail-Test "legacy alias was replaced"
+    if ([IO.File]::ReadAllText($ForeignZx) -ne "foreign`n") {
+        Fail-Test "installer modified unrelated zx-skills path"
+    }
+
+    $Uninstall = Invoke-Installer $Context "uninstall"
+    Assert-ExitCode $Uninstall 0 "uninstall beside foreign zx-skills file"
+    Assert-Absent (Join-Path $Context.Skills "opc-skills")
+    if ([IO.File]::ReadAllText($ForeignZx) -ne "foreign`n") {
+        Fail-Test "uninstaller modified unrelated zx-skills path"
     }
 }
 
 function Test-StatusMatrix {
     $Context = New-CaseContext "status-absent"
-    Assert-Status (Invoke-Installer $Context status) absent absent 1
+    Assert-Status (Invoke-Installer $Context status) absent 1
     if (Test-Path -LiteralPath $Context.Skills) {
         Fail-Test "absent status created the target parent"
     }
 
-    $Context = New-CaseContext "status-partial"
+    $Context = New-CaseContext "status-current"
     $OpcPath = Join-Path $Context.Skills "opc-skills"
     New-CurrentLink $OpcPath $OpcSource -Relative
     $Raw = Get-RawLinkTarget $OpcPath
-    Assert-Status (Invoke-Installer $Context status) current absent 1
+    Assert-Status (Invoke-Installer $Context status) current 0
     Assert-CurrentLink $OpcPath $OpcSource
     if ((Get-RawLinkTarget $OpcPath) -ne $Raw) {
-        Fail-Test "partial status replaced opc-skills"
+        Fail-Test "status replaced opc-skills"
     }
-    Assert-Absent (Join-Path $Context.Skills "zx-skills")
 }
 
 function Test-Fallback {
@@ -333,35 +327,27 @@ function Test-Fallback {
     $FallbackSkills = Join-Path $Context.Home ".agents\skills"
     Assert-ExitCode (Invoke-Installer $Context install -Fallback) 0 "fallback install"
     Assert-CurrentLink (Join-Path $FallbackSkills "opc-skills") $OpcSource
-    Assert-CurrentLink (Join-Path $FallbackSkills "zx-skills") $ZxSource
     if ($env:HOME -ne $OriginalHomeEnvironment -or $HOME -ne $OriginalPowerShellHome) {
         Fail-Test "test changed HOME in the parent PowerShell process"
     }
     Assert-ExitCode (Invoke-Installer $Context uninstall -Fallback) 0 "fallback uninstall"
     Assert-Absent (Join-Path $FallbackSkills "opc-skills")
-    Assert-Absent (Join-Path $FallbackSkills "zx-skills")
 }
 
 function Test-RelativeIdempotency {
     $Context = New-CaseContext "relative-idempotency"
     $OpcPath = Join-Path $Context.Skills "opc-skills"
-    $ZxPath = Join-Path $Context.Skills "zx-skills"
     New-CurrentLink $OpcPath $OpcSource -Relative
-    New-CurrentLink $ZxPath $ZxSource -Relative
     $OpcRaw = Get-RawLinkTarget $OpcPath
-    $ZxRaw = Get-RawLinkTarget $ZxPath
     $OpcCreated = (Get-Item -LiteralPath $OpcPath -Force).CreationTimeUtc
-    $ZxCreated = (Get-Item -LiteralPath $ZxPath -Force).CreationTimeUtc
 
     Assert-ExitCode (Invoke-Installer $Context install) 0 "relative idempotent install 1"
     Assert-ExitCode (Invoke-Installer $Context install) 0 "relative idempotent install 2"
     Assert-CurrentLink $OpcPath $OpcSource
-    Assert-CurrentLink $ZxPath $ZxSource
-    if ((Get-RawLinkTarget $OpcPath) -ne $OpcRaw -or (Get-RawLinkTarget $ZxPath) -ne $ZxRaw) {
+    if ((Get-RawLinkTarget $OpcPath) -ne $OpcRaw) {
         Fail-Test "relative current entries were replaced"
     }
-    if ((Get-Item -LiteralPath $OpcPath -Force).CreationTimeUtc -ne $OpcCreated -or
-        (Get-Item -LiteralPath $ZxPath -Force).CreationTimeUtc -ne $ZxCreated) {
+    if ((Get-Item -LiteralPath $OpcPath -Force).CreationTimeUtc -ne $OpcCreated) {
         Fail-Test "current entries were recreated"
     }
 }
@@ -424,7 +410,6 @@ function Test-LinkOnlyUninstall {
         Fail-Test "link-only uninstall wrote stderr: $($Result.StdErr)"
     }
     Assert-Absent (Join-Path $Context.Skills "opc-skills")
-    Assert-Absent (Join-Path $Context.Skills "zx-skills")
     Assert-RepositorySourcesIntact
 }
 
@@ -595,43 +580,20 @@ function Assert-ConflictIntact {
 
 function Test-ConflictMatrix {
     foreach ($Kind in @("foreign-link", "broken-link", "ordinary-directory", "repository-directory", "business-skill-directory")) {
-        foreach ($ConflictEntry in @("opc-skills", "zx-skills")) {
-            $Context = New-CaseContext "conflict-$Kind-$ConflictEntry"
-            $ConflictPath = Join-Path $Context.Skills $ConflictEntry
-            if ($ConflictEntry -eq "opc-skills") {
-                $OtherEntry = "zx-skills"
-                $OtherSource = $ZxSource
-                $ExpectedOpc = "conflict"
-                $ExpectedZx = "absent"
-            }
-            else {
-                $OtherEntry = "opc-skills"
-                $OtherSource = $OpcSource
-                $ExpectedOpc = "absent"
-                $ExpectedZx = "conflict"
-            }
-            $OtherPath = Join-Path $Context.Skills $OtherEntry
-            $Conflict = New-Conflict $Kind $ConflictPath $Context $ConflictEntry
+        $Context = New-CaseContext "conflict-$Kind-opc-skills"
+        $ConflictPath = Join-Path $Context.Skills "opc-skills"
+        $Conflict = New-Conflict $Kind $ConflictPath $Context "opc-skills"
 
-            Assert-Status (Invoke-Installer $Context status) $ExpectedOpc $ExpectedZx 1
-            Assert-ConflictIntact $Conflict
-            Assert-Absent $OtherPath
+        Assert-Status (Invoke-Installer $Context status) conflict 1
+        Assert-ConflictIntact $Conflict
 
-            $Install = Invoke-Installer $Context install
-            Assert-Nonzero $Install "install with $Kind at $ConflictEntry"
-            Assert-ConflictIntact $Conflict
-            Assert-Absent $OtherPath
+        $Install = Invoke-Installer $Context install
+        Assert-Nonzero $Install "install with $Kind at opc-skills"
+        Assert-ConflictIntact $Conflict
 
-            New-CurrentLink $OtherPath $OtherSource -Relative
-            $OtherRaw = Get-RawLinkTarget $OtherPath
-            $Uninstall = Invoke-Installer $Context uninstall
-            Assert-Nonzero $Uninstall "uninstall with $Kind at $ConflictEntry"
-            Assert-ConflictIntact $Conflict
-            Assert-CurrentLink $OtherPath $OtherSource
-            if ((Get-RawLinkTarget $OtherPath) -ne $OtherRaw) {
-                Fail-Test "uninstall replaced $OtherEntry beside $Kind conflict"
-            }
-        }
+        $Uninstall = Invoke-Installer $Context uninstall
+        Assert-Nonzero $Uninstall "uninstall with $Kind at opc-skills"
+        Assert-ConflictIntact $Conflict
     }
 }
 
@@ -707,35 +669,19 @@ function Invoke-FaultInstaller {
 function Test-Rollback {
     $HarnessPath = Write-FaultHarness
 
-    $Context = New-CaseContext "rollback-second"
-    $Result = Invoke-FaultInstaller $Context 2 $HarnessPath
-    Assert-Nonzero $Result "second-link fault injection"
+    $Context = New-CaseContext "rollback-only-entry"
+    $Result = Invoke-FaultInstaller $Context 1 $HarnessPath
+    Assert-Nonzero $Result "single-link fault injection"
     if ($Result.StdErr -notmatch "rolled back" -or $Result.StdErr -notmatch "injected link failure") {
-        Fail-Test "second-link fault did not exercise installer rollback: $($Result.StdErr)"
+        Fail-Test "single-link fault did not exercise installer rollback path: $($Result.StdErr)"
     }
     Assert-Absent (Join-Path $Context.Skills "opc-skills")
-    Assert-Absent (Join-Path $Context.Skills "zx-skills")
-
-    $Context = New-CaseContext "rollback-preserve-current"
-    $OpcPath = Join-Path $Context.Skills "opc-skills"
-    New-CurrentLink $OpcPath $OpcSource -Relative
-    $OpcRaw = Get-RawLinkTarget $OpcPath
-    $Result = Invoke-FaultInstaller $Context 1 $HarnessPath
-    Assert-Nonzero $Result "missing-alias fault injection"
-    if ($Result.StdErr -notmatch "rolled back" -or $Result.StdErr -notmatch "injected link failure") {
-        Fail-Test "missing-alias fault did not exercise installer rollback: $($Result.StdErr)"
-    }
-    Assert-CurrentLink $OpcPath $OpcSource
-    if ((Get-RawLinkTarget $OpcPath) -ne $OpcRaw) {
-        Fail-Test "rollback replaced the pre-existing current primary link"
-    }
-    Assert-Absent (Join-Path $Context.Skills "zx-skills")
 }
 
 try {
     [IO.Directory]::CreateDirectory($SuiteRoot) | Out-Null
     Test-FreshLifecycle
-    Test-LegacyUpgrade
+    Test-ForeignZxNonInterference
     Test-StatusMatrix
     Test-Fallback
     Test-RelativeIdempotency
@@ -748,7 +694,7 @@ try {
     if ($env:HOME -ne $OriginalHomeEnvironment -or $HOME -ne $OriginalPowerShellHome) {
         Fail-Test "test changed HOME in the parent PowerShell process"
     }
-    Write-Host "PASS: PowerShell Codex installer covers dual-entry lifecycle, status, conflicts, fallback, idempotency, and rollback"
+    Write-Host "PASS: PowerShell Codex installer covers the opc-skills lifecycle, status, conflicts, fallback, idempotency, non-interference, and rollback"
 }
 finally {
     try {

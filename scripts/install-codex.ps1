@@ -18,11 +18,6 @@ $Entries = @(
         Name = "opc-skills"
         Source = Join-Path $RepositoryRoot "adapters\codex\opc-skills"
         Target = Join-Path $TargetParent "opc-skills"
-    },
-    [pscustomobject]@{
-        Name = "zx-skills"
-        Source = Join-Path $RepositoryRoot "adapters\codex\zx-skills"
-        Target = Join-Path $TargetParent "zx-skills"
     }
 )
 
@@ -163,7 +158,7 @@ switch ($Action) {
                 Remove-CurrentEntrypointLink $State.Entry
             }
         }
-        Write-Host "OPCSkills Codex entrypoints removed."
+        Write-Host "OPCSkills Codex entrypoint removed."
         Write-Host "Repository preserved: $RepositoryRoot"
     }
 }
