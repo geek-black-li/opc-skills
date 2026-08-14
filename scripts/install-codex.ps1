@@ -31,6 +31,21 @@ foreach ($Entry in $Entries) {
     }
 }
 
+function Test-ResolvedPathsEqual {
+    param(
+        [string]$Left,
+        [string]$Right
+    )
+
+    $Comparison = if ($env:OS -eq "Windows_NT") {
+        [StringComparison]::OrdinalIgnoreCase
+    }
+    else {
+        [StringComparison]::Ordinal
+    }
+    return [string]::Equals($Left, $Right, $Comparison)
+}
+
 function Get-TargetState {
     param([pscustomobject]$Entry)
 
@@ -55,7 +70,7 @@ function Get-TargetState {
         }
         $ResolvedTarget = (Resolve-Path -LiteralPath $LinkTarget).Path.TrimEnd("\", "/")
         $ResolvedSource = (Resolve-Path -LiteralPath $Entry.Source).Path.TrimEnd("\", "/")
-        if ($ResolvedTarget -eq $ResolvedSource) {
+        if (Test-ResolvedPathsEqual $ResolvedTarget $ResolvedSource) {
             return "current"
         }
     }

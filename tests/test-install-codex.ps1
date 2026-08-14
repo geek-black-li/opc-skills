@@ -8,6 +8,12 @@ $SuiteRoot = Join-Path ([IO.Path]::GetTempPath()) ("opcskills-installer-" + [gui
 $OriginalHomeEnvironment = $env:HOME
 $OriginalPowerShellHome = $HOME
 $IsNativeWindows = $env:OS -eq "Windows_NT"
+$PathStringComparison = if ($IsNativeWindows) {
+    [StringComparison]::OrdinalIgnoreCase
+}
+else {
+    [StringComparison]::Ordinal
+}
 $RepositorySourceContracts = @(
     [pscustomobject]@{
         Path = Join-Path $OpcSource "SKILL.md"
@@ -18,6 +24,40 @@ $RepositorySourceContracts = @(
 function Fail-Test {
     param([string]$Message)
     throw "FAIL: $Message"
+}
+
+function Test-PathStringsEqualForCurrentPlatform {
+    param(
+        [string]$Left,
+        [string]$Right
+    )
+
+    return [string]::Equals($Left, $Right, $PathStringComparison)
+}
+
+function Get-InstallerFunctionDefinition {
+    param([string]$Name)
+
+    $Tokens = $null
+    $ParseErrors = $null
+    $Ast = [Management.Automation.Language.Parser]::ParseFile(
+        $ScriptPath,
+        [ref]$Tokens,
+        [ref]$ParseErrors
+    )
+    if (@($ParseErrors).Count -ne 0) {
+        Fail-Test "installer has PowerShell parse errors: $($ParseErrors -join '; ')"
+    }
+
+    $Definitions = @($Ast.FindAll({
+        param($Node)
+        $Node -is [Management.Automation.Language.FunctionDefinitionAst] -and
+            $Node.Name -eq $Name
+    }, $true))
+    if ($Definitions.Count -ne 1) {
+        Fail-Test "expected one $Name helper, found $($Definitions.Count)"
+    }
+    return [scriptblock]::Create($Definitions[0].Extent.Text)
 }
 
 function Assert-RepositorySourcesIntact {
@@ -207,7 +247,7 @@ function Assert-CurrentLink {
     }
     $Actual = (Resolve-Path -LiteralPath $LinkTarget).Path.TrimEnd("\", "/")
     $Expected = (Resolve-Path -LiteralPath $ExpectedSource).Path.TrimEnd("\", "/")
-    if ($Actual -ne $Expected) {
+    if (-not (Test-PathStringsEqualForCurrentPlatform $Actual $Expected)) {
         Fail-Test "$Path resolves to $Actual, expected $Expected"
     }
 }
@@ -264,6 +304,123 @@ function New-CurrentLink {
     Microsoft.PowerShell.Management\New-Item -ItemType $LinkType -Path $Path -Target $Target | Out-Null
 }
 
+function Test-PlatformPathComparison {
+    $CaseVariantUpper = "/platform-check/OPCSkills/CaseTarget"
+    $CaseVariantLower = "/platform-check/opcskills/casetarget"
+    $ExpectedCaseVariantEquality = $IsNativeWindows
+
+    $TestComparisonResult = Test-PathStringsEqualForCurrentPlatform $CaseVariantUpper $CaseVariantLower
+    if ($TestComparisonResult -ne $ExpectedCaseVariantEquality) {
+        Fail-Test "test path comparison does not match the current platform"
+    }
+
+    $ComparisonDefinition = Get-InstallerFunctionDefinition "Test-ResolvedPathsEqual"
+    . $ComparisonDefinition
+    if (-not (Test-ResolvedPathsEqual $CaseVariantUpper $CaseVariantUpper)) {
+        Fail-Test "installer path comparison rejected identical strings"
+    }
+    if (Test-ResolvedPathsEqual "/platform-check/first" "/platform-check/second") {
+        Fail-Test "installer path comparison accepted distinct strings"
+    }
+    if ((Test-ResolvedPathsEqual $CaseVariantUpper $CaseVariantLower) -ne $ExpectedCaseVariantEquality) {
+        Fail-Test "installer path comparison does not match the current platform"
+    }
+
+    $ProbeContext = New-CaseContext "case-sensitivity-probe"
+    $ProbeRoot = Join-Path $ProbeContext.Root "empty-probe"
+    [IO.Directory]::CreateDirectory($ProbeRoot) | Out-Null
+    $UpperProbe = Join-Path $ProbeRoot "CaseTarget"
+    $LowerProbe = Join-Path $ProbeRoot "casetarget"
+    [IO.Directory]::CreateDirectory($UpperProbe) | Out-Null
+    [IO.Directory]::CreateDirectory($LowerProbe) | Out-Null
+    $SupportsCaseDistinctPaths = @([IO.Directory]::EnumerateDirectories($ProbeRoot)).Count -eq 2
+
+    if ($SupportsCaseDistinctPaths -and -not $IsNativeWindows) {
+        $Context = New-CaseContext "case-variant-foreign-link"
+        $FixtureRepository = Join-Path $Context.Root "FixtureRepository"
+        $FixtureScriptDirectory = Join-Path $FixtureRepository "scripts"
+        $FixtureAdapterParent = Join-Path $FixtureRepository "adapters/codex"
+        $FixtureSource = Join-Path $FixtureAdapterParent "opc-skills"
+        $ForeignTarget = Join-Path $FixtureAdapterParent "OPC-SKILLS"
+        $FixtureScript = Join-Path $FixtureScriptDirectory "install-codex.ps1"
+        [IO.Directory]::CreateDirectory($FixtureScriptDirectory) | Out-Null
+        [IO.Directory]::CreateDirectory($FixtureSource) | Out-Null
+        [IO.Directory]::CreateDirectory($ForeignTarget) | Out-Null
+        [IO.File]::Copy($ScriptPath, $FixtureScript)
+        [IO.File]::WriteAllText((Join-Path $FixtureSource "SKILL.md"), "fixture source`n")
+        $MarkerPath = Join-Path $ForeignTarget "marker.txt"
+        [IO.File]::WriteAllText($MarkerPath, "case-variant foreign target`n")
+
+        $OpcPath = Join-Path $Context.Skills "opc-skills"
+        New-CurrentLink $OpcPath $ForeignTarget
+        $RawTarget = Get-RawLinkTarget $OpcPath
+        $Uninstall = Invoke-TestProcess @("-NoProfile", "-File", $FixtureScript, "uninstall") $Context "Override"
+        Assert-Nonzero $Uninstall "uninstall with a case-variant foreign target"
+        if ($null -eq (Get-Item -LiteralPath $OpcPath -Force -ErrorAction SilentlyContinue)) {
+            Fail-Test "uninstall removed a case-variant foreign link"
+        }
+        if (-not (Test-PathStringsEqualForCurrentPlatform (Get-RawLinkTarget $OpcPath) $RawTarget)) {
+            Fail-Test "uninstall changed a case-variant foreign link target"
+        }
+        if ([IO.File]::ReadAllText($MarkerPath) -ne "case-variant foreign target`n") {
+            Fail-Test "uninstall changed case-variant foreign target content"
+        }
+        return
+    }
+
+    if ($IsNativeWindows) {
+        return
+    }
+
+    $Context = New-CaseContext "case-variant-comparison-fallback"
+    $ForeignTarget = Join-Path $Context.Root "foreign-target"
+    [IO.Directory]::CreateDirectory($ForeignTarget) | Out-Null
+    $MarkerPath = Join-Path $ForeignTarget "marker.txt"
+    [IO.File]::WriteAllText($MarkerPath, "foreign target`n")
+    $OpcPath = Join-Path $Context.Skills "opc-skills"
+    New-CurrentLink $OpcPath $ForeignTarget
+    $RawTarget = Get-RawLinkTarget $OpcPath
+
+    $TargetStateDefinition = Get-InstallerFunctionDefinition "Get-TargetState"
+    . $TargetStateDefinition
+    function Resolve-Path {
+        param([string]$LiteralPath)
+
+        if ([string]::Equals($LiteralPath, $ForeignTarget, [StringComparison]::Ordinal)) {
+            return [pscustomobject]@{ Path = $CaseVariantUpper }
+        }
+        if ([string]::Equals($LiteralPath, $OpcSource, [StringComparison]::Ordinal)) {
+            return [pscustomobject]@{ Path = $CaseVariantLower }
+        }
+        return Microsoft.PowerShell.Management\Resolve-Path -LiteralPath $LiteralPath
+    }
+
+    $Entry = [pscustomobject]@{
+        Source = $OpcSource
+        Target = $OpcPath
+    }
+    if ((Get-TargetState $Entry) -ne "conflict") {
+        Fail-Test "case-variant foreign link was treated as current on a non-Windows platform"
+    }
+    if ($null -eq (Get-Item -LiteralPath $OpcPath -Force -ErrorAction SilentlyContinue)) {
+        Fail-Test "case-variant comparison removed the foreign link"
+    }
+    if (-not (Test-PathStringsEqualForCurrentPlatform (Get-RawLinkTarget $OpcPath) $RawTarget) -or
+        [IO.File]::ReadAllText($MarkerPath) -ne "foreign target`n") {
+        Fail-Test "case-variant comparison changed the foreign link or its target"
+    }
+
+    $Uninstall = Invoke-Installer $Context uninstall
+    Assert-Nonzero $Uninstall "uninstall with a real foreign target after case-variant comparison"
+    if ($null -eq (Get-Item -LiteralPath $OpcPath -Force -ErrorAction SilentlyContinue)) {
+        Fail-Test "uninstall removed the real foreign link"
+    }
+    if (-not (Test-PathStringsEqualForCurrentPlatform (Get-RawLinkTarget $OpcPath) $RawTarget) -or
+        [IO.File]::ReadAllText($MarkerPath) -ne "foreign target`n") {
+        Fail-Test "uninstall changed the real foreign link or its target"
+    }
+}
+
 function Test-FreshLifecycle {
     $Context = New-CaseContext "fresh"
     $Install = Invoke-Installer $Context install
@@ -275,7 +432,7 @@ function Test-FreshLifecycle {
     $OpcRaw = Get-RawLinkTarget $OpcPath
     $Reinstall = Invoke-Installer $Context install
     Assert-ExitCode $Reinstall 0 "idempotent install"
-    if ((Get-RawLinkTarget $OpcPath) -ne $OpcRaw) {
+    if (-not (Test-PathStringsEqualForCurrentPlatform (Get-RawLinkTarget $OpcPath) $OpcRaw)) {
         Fail-Test "idempotent install replaced a current entry"
     }
 
@@ -317,7 +474,7 @@ function Test-StatusMatrix {
     $Raw = Get-RawLinkTarget $OpcPath
     Assert-Status (Invoke-Installer $Context status) current 0
     Assert-CurrentLink $OpcPath $OpcSource
-    if ((Get-RawLinkTarget $OpcPath) -ne $Raw) {
+    if (-not (Test-PathStringsEqualForCurrentPlatform (Get-RawLinkTarget $OpcPath) $Raw)) {
         Fail-Test "status replaced opc-skills"
     }
 }
@@ -327,7 +484,8 @@ function Test-Fallback {
     $FallbackSkills = Join-Path $Context.Home ".agents\skills"
     Assert-ExitCode (Invoke-Installer $Context install -Fallback) 0 "fallback install"
     Assert-CurrentLink (Join-Path $FallbackSkills "opc-skills") $OpcSource
-    if ($env:HOME -ne $OriginalHomeEnvironment -or $HOME -ne $OriginalPowerShellHome) {
+    if (-not (Test-PathStringsEqualForCurrentPlatform $env:HOME $OriginalHomeEnvironment) -or
+        -not (Test-PathStringsEqualForCurrentPlatform $HOME $OriginalPowerShellHome)) {
         Fail-Test "test changed HOME in the parent PowerShell process"
     }
     Assert-ExitCode (Invoke-Installer $Context uninstall -Fallback) 0 "fallback uninstall"
@@ -344,7 +502,7 @@ function Test-RelativeIdempotency {
     Assert-ExitCode (Invoke-Installer $Context install) 0 "relative idempotent install 1"
     Assert-ExitCode (Invoke-Installer $Context install) 0 "relative idempotent install 2"
     Assert-CurrentLink $OpcPath $OpcSource
-    if ((Get-RawLinkTarget $OpcPath) -ne $OpcRaw) {
+    if (-not (Test-PathStringsEqualForCurrentPlatform (Get-RawLinkTarget $OpcPath) $OpcRaw)) {
         Fail-Test "relative current entries were replaced"
     }
     if ((Get-Item -LiteralPath $OpcPath -Force).CreationTimeUtc -ne $OpcCreated) {
@@ -552,7 +710,7 @@ function Assert-ConflictIntact {
             if ($null -eq $Item -or -not ($Item.Attributes -band [IO.FileAttributes]::ReparsePoint)) {
                 Fail-Test "$($Conflict.Kind) was removed"
             }
-            if ((Get-RawLinkTarget $Conflict.Path) -ne $Conflict.Expected) {
+            if (-not (Test-PathStringsEqualForCurrentPlatform (Get-RawLinkTarget $Conflict.Path) $Conflict.Expected)) {
                 Fail-Test "$($Conflict.Kind) target changed"
             }
             if ($Conflict.Kind -eq "foreign-link" -and
@@ -690,6 +848,7 @@ try {
     Test-FreshLifecycle
     Test-ForeignZxNonInterference
     Test-StatusMatrix
+    Test-PlatformPathComparison
     Test-Fallback
     Test-RelativeIdempotency
     Test-SuiteCleanupContract
@@ -698,7 +857,8 @@ try {
     Test-ConflictMatrix
     Test-Rollback
 
-    if ($env:HOME -ne $OriginalHomeEnvironment -or $HOME -ne $OriginalPowerShellHome) {
+    if (-not (Test-PathStringsEqualForCurrentPlatform $env:HOME $OriginalHomeEnvironment) -or
+        -not (Test-PathStringsEqualForCurrentPlatform $HOME $OriginalPowerShellHome)) {
         Fail-Test "test changed HOME in the parent PowerShell process"
     }
     Write-Host "PASS: PowerShell Codex installer covers the opc-skills lifecycle, status, conflicts, fallback, idempotency, non-interference, and rollback"
