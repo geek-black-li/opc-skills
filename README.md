@@ -8,7 +8,7 @@ OPCSkills 用于沉淀一个全栈 OPC 从需求到交付全过程中的可复�
 
 ## 目前提供什么
 
-当前版本提供一套可持续积累个人 Skills 的仓库框架，以及 Codex 原生主入口 `$opc-skills`；原有 `$zx-skills` 入口继续作为兼容别名：
+当前版本提供一套可持续积累个人 Skills 的仓库框架，以及 Codex 唯一原生入口 `$opc-skills`：
 
 | 能力 | 用途 |
 | --- | --- |
@@ -42,7 +42,7 @@ bash scripts/install-codex.sh
 
 每位使用者都在自己的本地副本中维护 `skills-custom` 和 `skills-external`。本地生成的内容不会自动回写原仓库；如需跨设备同步，请提交并推送到自己的 Fork 或私有远程仓库。
 
-### 第二步：确认双入口和 Windows 安装
+### 第二步：确认入口和 Windows 安装
 
 macOS / Linux 在上一步已经完成安装，脚本可随时重复运行。Windows PowerShell 在仓库根目录执行：
 
@@ -54,10 +54,9 @@ powershell -ExecutionPolicy Bypass -File .\scripts\install-codex.ps1
 
 ```text
 ~/.agents/skills/opc-skills
-~/.agents/skills/zx-skills
 ```
 
-前者是主入口，后者只用于兼容旧指令和使用习惯。脚本可以重复运行；旧版只安装了 `$zx-skills` 时，重新运行 `install` 即可补齐 `$opc-skills`，不会替换已经正确的兼容入口。若任一目标位置已经存在其他文件、目录或指向其他仓库的链接，脚本会拒绝整个操作并提示人工处理，外部路径绝不会被覆盖。
+这是唯一受安装器管理的 Codex 入口。脚本可以重复运行；若该目标位置已经存在其他文件、目录或指向其他仓库的链接，脚本会拒绝整个操作并提示人工处理，外部路径绝不会被覆盖。
 
 ### 第三步：验证安装
 
@@ -67,7 +66,7 @@ powershell -ExecutionPolicy Bypass -File .\scripts\install-codex.ps1
 /skills
 ```
 
-确认列表中同时出现 `opc-skills` 和 `zx-skills`，然后使用主入口执行：
+确认列表中出现本仓库的 `opc-skills`，然后执行：
 
 ```text
 $opc-skills 查看仓库状态
@@ -75,11 +74,10 @@ $opc-skills 查看仓库状态
 
 Codex 原生 Skill 使用 `$skill-name` 显式调用；`/skills` 只用于查看 Skill 列表。如果安装后没有出现，先完全重启 Codex，再检查安装脚本输出的目标路径。
 
-### 入口与远程兼容边界
+### 入口与远程边界
 
-- `$opc-skills` 是仓库主入口，也是正常使用时的推荐入口。
-- `$zx-skills` 仅作为兼容别名，继续支持已有指令和使用习惯，不再作为推荐主入口。
-- 个人 Skill ID 继续使用 `zx-*`；提案 ID 继续使用 `zxsi-*` 和 `zpo-*`，已有业务 Skill ID 不会因仓库改名而变化。
+- `$opc-skills` 是本仓库唯一的 Codex 入口。
+- 个人 Skill ID 继续使用 `zx-*`；提案 ID 继续使用 `zxsi-*` 和 `zpo-*`，包括 `zx-project-organizer`、`zx-ui-spec` 和 `zx-ui-check` 在内的已有业务 Skill ID 不会因仓库入口调整而变化。
 - GitHub 是主仓库和默认克隆源；Gitee 备用远程需要手动同步，不是自动镜像。
 
 ### 第四步（推荐）：开启项目节点完成提醒
@@ -122,7 +120,7 @@ powershell -ExecutionPolicy Bypass -File .\scripts\configure-codex-reminder.ps1 
 powershell -ExecutionPolicy Bypass -File .\scripts\configure-codex-reminder.ps1 uninstall
 ```
 
-提醒配置继续使用历史受管标记；旧标记 `zx-skills-reminder` 会刻意保持不变，以便升级和卸载能够识别既有片段。提醒脚本的 `uninstall` 只删除带有该标记的受管片段，不删除其他全局 Codex 指令。需要手动配置时，也可以打开模板并把完整标记片段合并到自己的全局 `AGENTS.md`；不要用模板覆盖原文件。
+提醒配置使用 `opc-skills-reminder` 受管标记。提醒脚本的 `uninstall` 只删除带有该标记的受管片段，不删除其他全局 Codex 指令。需要手动配置时，也可以打开模板并把完整标记片段合并到自己的全局 `AGENTS.md`；不要用模板覆盖原文件。
 
 ## 日常用法
 
@@ -501,7 +499,7 @@ powershell -ExecutionPolicy Bypass -File .\scripts\install-codex.ps1 status
 powershell -ExecutionPolicy Bypass -File .\scripts\install-codex.ps1 uninstall
 ```
 
-`status` 只有在两个受管入口都正确指向当前仓库时才通过；任一入口缺失或冲突都会分别显示状态并返回失败。`uninstall` 只删除这两个由安装器管理的链接，不删除仓库本身。若任一目标是普通文件、目录、失效链接或指向其他位置的链接，安装和卸载都会整体拒绝操作；外部路径绝不会被覆盖，也不会被删除。
+`status` 只有在受管入口正确指向当前仓库时才通过；入口缺失或冲突都会显示状态并返回失败。`uninstall` 只删除由安装器管理的 `opc-skills` 链接，不删除仓库本身。若目标是普通文件、目录、失效链接或指向其他位置的链接，安装和卸载都会整体拒绝操作；外部路径绝不会被覆盖，也不会被删除。
 
 OPCSkills 入口和完成提醒是两项独立配置。`install-codex.* uninstall` 不会删除提醒；如果同时配置了完成提醒，需要另行运行：
 
@@ -519,7 +517,7 @@ powershell -ExecutionPolicy Bypass -File .\scripts\configure-codex-reminder.ps1 
 
 | 工具 | 状态 | 使用方式 |
 | --- | --- | --- |
-| Codex 桌面端 / CLI / IDE 扩展 | 已提供原生入口 | 安装后使用 `$opc-skills`；`$zx-skills` 仅兼容旧用法 |
+| Codex 桌面端 / CLI / IDE 扩展 | 已提供原生入口 | 安装后使用 `$opc-skills` |
 | Cursor | 尚未提供一键适配 | 可手动读取仓库文件；后续需要 `.cursor/rules` / commands 适配器 |
 | Windsurf | 尚未提供一键适配 | 可手动读取仓库文件；后续需要对应规则或工作流适配器 |
 | 其他本地 AI 工具 | 取决于工具能力 | 按 `skill-manifest.yaml` 和通用 YAML 契约实现适配 |
@@ -534,11 +532,7 @@ powershell -ExecutionPolicy Bypass -File .\scripts\configure-codex-reminder.ps1 
 
 ### 输入 `$opc-skills` 没有触发
 
-先运行安装脚本的 `status`，确认 `opc-skills` 和 `zx-skills` 两个入口都指向当前仓库；再完全重启 Codex，通过 `/skills` 检查。不要输入 `/opc-skills`，Codex 的 Skill 显式调用符号是 `$`。
-
-### 旧版只有 `$zx-skills` 怎么升级
-
-在仓库根目录重新运行安装脚本的 `install`。安装器会保留正确的 `$zx-skills` 兼容入口并补建 `$opc-skills` 主入口；不要手工删除旧入口。
+先运行安装脚本的 `status`，确认 `opc-skills` 入口指向当前仓库；再完全重启 Codex，通过 `/skills` 检查。不要输入 `/opc-skills`，Codex 的 Skill 显式调用符号是 `$`。
 
 ### 更新后需要重新安装吗
 
@@ -596,8 +590,6 @@ OPCSkills/
 │       ├── opc-skills/
 │       │   ├── SKILL.md
 │       │   └── agents/openai.yaml
-│       └── zx-skills/
-│           └── SKILL.md
 ├── builtin/
 │   ├── skill-creator.yaml
 │   ├── skill-editor.yaml
@@ -628,7 +620,7 @@ OPCSkills/
             └── references/zx-full-delivery-structure.yaml
 ```
 
-Codex 主适配器位于 `adapters/codex/opc-skills/`；兼容适配器位于 `adapters/codex/zx-skills/`，只转交给主适配器，不复制仓库逻辑。
+Codex 适配器位于 `adapters/codex/opc-skills/`，提供唯一入口并读取仓库的通用 Skill 契约。
 
 仓库框架不批量预置空泛业务 Skill；当前包含 `zx-project-organizer`、`zx-ui-spec` 和 `zx-ui-check`。
 后续业务能力统一通过仓库工作流生成或导入。

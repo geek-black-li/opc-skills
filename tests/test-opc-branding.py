@@ -42,8 +42,8 @@ assert "$zx-skills" not in primary
 assert not (ROOT / "adapters/codex/zx-skills").exists()
 
 reminder = read("templates/codex-agents-reminder.md")
-assert "<!-- zx-skills-reminder:start -->" in reminder
-assert "<!-- zx-skills-reminder:end -->" in reminder
+assert "<!-- opc-skills-reminder:start -->" in reminder
+assert "<!-- opc-skills-reminder:end -->" in reminder
 assert "$opc-skills 总结一下当前链路" in reminder
 
 assert manifest["validation"]["custom_skill_id_format"] == "zx-<category>-<function>"
@@ -81,15 +81,16 @@ for phrase in (
     "cd opc-skills",
     "$opc-skills 查看仓库状态",
     "~/.agents/skills/opc-skills",
-    "~/.agents/skills/zx-skills",
     "Gitee 备用远程",
     "zx-<category>-<function>",
 ):
     assert phrase in readme, phrase
 
-assert "`$opc-skills` 是仓库主入口" in readme
-assert "`$zx-skills` 仅作为兼容别名" in readme
+assert "`$opc-skills` 是本仓库唯一的 Codex 入口" in readme
 assert "Gitee 备用远程需要手动同步，不是自动镜像" in readme
+assert "~/.agents/skills/zx-skills" not in readme
+assert "$zx-skills" not in readme
+assert "adapters/codex/zx-skills/" not in readme
 
 daily_use = readme.split("## 日常用法", 1)[1].split("\n## ", 1)[0]
 daily_commands = re.findall(r"^\$(?:opc|zx)-skills\b.*$", daily_use, re.MULTILINE)
@@ -98,12 +99,10 @@ assert all(command.startswith("$opc-skills") for command in daily_commands), dai
 
 for phrase in (
     "adapters/codex/opc-skills/",
-    "adapters/codex/zx-skills/",
-    "`status` 只有在两个受管入口都正确指向当前仓库时才通过",
-    "`uninstall` 只删除这两个由安装器管理的链接",
+    "`status` 只有在受管入口正确指向当前仓库时才通过",
+    "`uninstall` 只删除由安装器管理的 `opc-skills` 链接",
     "外部路径绝不会被覆盖",
-    "旧版只安装了 `$zx-skills`",
-    "旧标记 `zx-skills-reminder` 会刻意保持不变",
+    "opc-skills-reminder",
 ):
     assert phrase in readme, phrase
 
@@ -117,7 +116,6 @@ for preserved_contract in (
     "## 工作流 B：自动 Self-Improve",
     "## 工作流 C：导入第三方 Skill",
     "## 多工具兼容与接入",
-    "zx-skills-reminder",
     "zxsi-",
     "zpo-",
     "zx-project-organizer",
