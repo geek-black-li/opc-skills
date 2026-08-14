@@ -15,7 +15,7 @@ SKILL_PATH = (
     / "skill.yaml"
 )
 SCENARIOS_PATH = ROOT / "tests" / "fixtures" / "project-organizer-scenarios.yaml"
-ADAPTER_PATH = ROOT / "adapters" / "codex" / "zx-skills" / "SKILL.md"
+ADAPTER_PATH = ROOT / "adapters" / "codex" / "opc-skills" / "SKILL.md"
 FULL_PROFILE_PATH = (
     SKILL_PATH.parent / "references" / "zx-full-delivery-structure.yaml"
 )

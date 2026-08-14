@@ -10,7 +10,7 @@ ROOT = Path(__file__).resolve().parents[1]
 SELFIMPROVE = ROOT / "builtin" / "skill-selfimprove.yaml"
 CREATOR = ROOT / "builtin" / "skill-creator.yaml"
 EDITOR = ROOT / "builtin" / "skill-editor.yaml"
-ADAPTER = ROOT / "adapters" / "codex" / "zx-skills" / "SKILL.md"
+ADAPTER = ROOT / "adapters" / "codex" / "opc-skills" / "SKILL.md"
 
 
 def load_yaml(path: Path) -> dict:

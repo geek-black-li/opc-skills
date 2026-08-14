@@ -93,7 +93,7 @@ if "custom_skill_id_pattern" not in external_import["prompt"]:
 if CUSTOM_FORMAT not in external_import["prompt"]:
     fail("customized import does not generate a concise custom id")
 
-adapter = (ROOT / "adapters/codex/zx-skills/SKILL.md").read_text(encoding="utf-8")
+adapter = (ROOT / "adapters/codex/opc-skills/SKILL.md").read_text(encoding="utf-8")
 if CUSTOM_FORMAT not in adapter:
     fail("Codex entrypoint does not auto-generate namespaced ids")
 

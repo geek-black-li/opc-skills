@@ -1,6 +1,6 @@
 interface:
-  display_name: "ZXSkills"
-  short_description: "统一管理第三方导入、链路总结和个人 Skill 沉淀"
-  default_prompt: "Use $zx-skills to summarize the current workflow and decide whether to create or update a reusable skill."
+  display_name: "OPCSkills (zx-skills compatibility)"
+  short_description: "旧入口；新任务请优先使用 $opc-skills"
+  default_prompt: "Use the legacy $zx-skills alias and delegate the request to the OPCSkills primary adapter."
 policy:
   allow_implicit_invocation: false

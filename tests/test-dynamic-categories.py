@@ -155,7 +155,7 @@ for phrase in ("stage 阶段不得创建分类", "category_extension", "mirrored
 if "category_assessment" not in external_import["prompt"]:
     fail("external import prompt does not require structured category output")
 
-adapter = (ROOT / "adapters/codex/zx-skills/SKILL.md").read_text(encoding="utf-8")
+adapter = (ROOT / "adapters/codex/opc-skills/SKILL.md").read_text(encoding="utf-8")
 if "动态分类" not in adapter or "07-" not in adapter:
     fail("Codex entrypoint does not route dynamic categories")
 
