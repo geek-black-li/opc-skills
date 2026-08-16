@@ -1,5 +1,5 @@
 profile_id: zx-full-delivery
-version: "2.0.0"
+version: "3.0.0"
 name: "ZX 全栈 OPC 完整交付结构"
 description: "用于需要从项目开始即建立产品、设计、开发、测试、项目管理与调研资产完整边界的项目。"
 
@@ -7,7 +7,7 @@ policy:
   exact_structure: true
   allow_additional_paths: false
   initialize_git_default: false
-  directory_count: 39
+  directory_count: 38
   file_count: 4
   empty_directories_are_intentional: true
   allow_confirmed_application_extensions: true
@@ -54,18 +54,16 @@ directories:
     scope: "产品验收条件和完成定义。"
   - path: docs/design
     scope: "设计全流程资料。"
-  - path: docs/design/01-信息架构
-    scope: "导航、页面层级和信息组织。"
-  - path: docs/design/02-用户流程
-    scope: "用户任务路径、状态和异常分支。"
-  - path: docs/design/03-低保真原型
-    scope: "低保真原型和结构验证材料。"
-  - path: docs/design/04-视觉设计
-    scope: "高保真视觉稿和视觉交付。"
-  - path: docs/design/05-设计规范
+  - path: docs/design/01-信息架构与交互流程
+    scope: "导航、页面层级、信息组织、用户任务路径、状态和异常分支。"
+  - path: docs/design/02-原型设计
+    scope: "所有可浏览或可操作原型；按已确认的版本和成熟度建立子目录。"
+  - path: docs/design/03-品牌与视觉资产
+    scope: "Logo、图标、品牌组合、色彩方案和可复用视觉素材。"
+  - path: docs/design/04-设计规范
     scope: "设计令牌、组件和交互规范。"
-  - path: docs/design/06-设计评审
-    scope: "设计评审材料、问题和结论。"
+  - path: docs/design/05-设计评审
+    scope: "正式设计评审结论、问题清单、处理状态和验收结果。"
   - path: docs/testing
     scope: "业务测试与验收证据。"
   - path: docs/testing/01-测试计划
@@ -144,3 +142,7 @@ placement_rules:
   - "不得创建 services、packages、libs 或 shared-code 作为应用共享容器；应用之间只通过 HTTP API、RPC 或消息协议协作。"
   - "接口规范跟随提供方应用，按需放入 specifications/http-api、specifications/rpc 或 specifications/messages。"
   - "完整结构只允许在两个 apps 根目录下增加用户已确认的应用及其提供方规范路径，其他新增路径仍须切换 adaptive/custom 或单独确认。"
+  - "所有可浏览或可操作的低保真、高保真、交互验证和开发交付原型统一进入 docs/design/02-原型设计；版本子目录使用 V1-低保真、V2-高保真、V3-交互验证、V4-开发交付等清晰名称，但只创建用户已确认且当前真实存在的版本，不预建未来版本。"
+  - "项目名称默认不在 docs/design 内重复套层；只有同一仓库已确认包含多个独立产品且需要产品级隔离时，才在设计分类下增加产品层。"
+  - "docs/design/05-设计评审只保存正式结论、问题清单、处理状态和验收结果；过程截图、临时对比页和自动化证据跟随对应原型版本，放入其 audits 或 previews。"
+  - "重组已有设计目录时，迁移映射必须同时覆盖 README、文档索引、相对链接、构建产物路径、测试夹具和固定预览服务根目录；未确认的删除或归档不包含在迁移授权中。"

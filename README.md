@@ -319,12 +319,11 @@ ai-huoke/
 │   │   ├── 08-需求评审/
 │   │   └── 09-验收标准/
 │   ├── design/
-│   │   ├── 01-信息架构/
-│   │   ├── 02-用户流程/
-│   │   ├── 03-低保真原型/
-│   │   ├── 04-视觉设计/
-│   │   ├── 05-设计规范/
-│   │   └── 06-设计评审/
+│   │   ├── 01-信息架构与交互流程/
+│   │   ├── 02-原型设计/
+│   │   ├── 03-品牌与视觉资产/
+│   │   ├── 04-设计规范/
+│   │   └── 05-设计评审/
 │   └── testing/
 │       ├── 01-测试计划/
 │       ├── 02-测试用例/
@@ -365,12 +364,11 @@ create directory: docs/product/07-版本规划
 create directory: docs/product/08-需求评审
 create directory: docs/product/09-验收标准
 create directory: docs/design
-create directory: docs/design/01-信息架构
-create directory: docs/design/02-用户流程
-create directory: docs/design/03-低保真原型
-create directory: docs/design/04-视觉设计
-create directory: docs/design/05-设计规范
-create directory: docs/design/06-设计评审
+create directory: docs/design/01-信息架构与交互流程
+create directory: docs/design/02-原型设计
+create directory: docs/design/03-品牌与视觉资产
+create directory: docs/design/04-设计规范
+create directory: docs/design/05-设计评审
 create directory: docs/testing
 create directory: docs/testing/01-测试计划
 create directory: docs/testing/02-测试用例

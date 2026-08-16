@@ -472,7 +472,7 @@ def main() -> None:
         "expected_writes": 0,
     }
 
-    assert skill["version"] == "6.0.0"
+    assert skill["version"] == "7.0.0"
     assert "project_root" not in skill["input_schema"]["required"]
 
     update = skill["input_schema"]["properties"]["recommendation_updates"]["items"]
@@ -1114,7 +1114,7 @@ def main() -> None:
             assert naming_form in source, f"missing data-sync naming form in {source_name}: {naming_form}"
     assert "两种清晰形式" in readme
 
-    print("zx-project-organizer directory-first v6 contract: ok")
+    print("zx-project-organizer directory-first v7 contract: ok")
 
 
 if __name__ == "__main__":

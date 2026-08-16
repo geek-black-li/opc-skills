@@ -1,7 +1,7 @@
 schema_version: "1.0"
 id: zx-project-organizer
 name: "ZX 项目结构整理"
-version: "6.0.0"
+version: "7.0.0"
 description: "当需要引导创建全新项目、生成独立前后端应用骨架、审计或重构存量项目时使用。支持逐问逐答和推荐选项，但推荐不等于确认；完整提案匹配确认后才写入。"
 category: 06-project-manage
 origin: custom
@@ -1218,6 +1218,9 @@ constraints:
   - "按产物用途、成熟度和权威性分类，不按创建者、AI 工具或文件格式作为首要分类。"
   - "不因未来可能需要而预建微服务、消息队列、部署、迁移、集成、归档等推测性模块。"
   - "当前权威资料与历史资料必须分离；归档、日志、构建产物和原始测试输出默认不作为当前事实来源。"
+  - "设计资料按信息架构与交互流程、原型设计、品牌与视觉资产、设计规范和设计评审划分；低保真与高保真不得作为互相分离的同级分类。"
+  - "原型版本目录只在版本已确认且真实存在时创建；不得因未来可能出现 V3、V4 而预建空目录。"
+  - "设计评审只保存正式结论，过程证据跟随对应原型版本；项目名称默认不在单产品项目的设计目录中重复套层。"
   - "AGENTS.md 只保存短小、长期有效且可执行的规则，不写入过程流水账、完整历史或大段项目知识。"
   - "物理删除必须有精确目标和用户明确授权；仅有提案确认不等于删除授权。"
 
@@ -1340,7 +1343,7 @@ prompt: |-
   - 同时存在多个仍可识别的提案时，纯数字 `1` 必须返回 needs-input，proposal_actions 为空，不得选择任一提案，changes 为空且不得写入。
 
   initialize 必须先选择一种结构策略，且没有隐式默认值：
-  - zx-full-delivery：读取同目录 `references/zx-full-delivery-structure.yaml`，把其中版本化的 39 个基础目录、
+  - zx-full-delivery：读取同目录 `references/zx-full-delivery-structure.yaml`，把其中版本化的 38 个基础目录、
     4 个文件和 placement_rules 视为用户选择的完整结构。所有目录都是已确认的长期交付边界，即使为空也
     进入 creation_plan；只允许在 frontend/apps、backend/apps 下增加已确认应用及其提供方规范路径，不得借此添加
     其他未确认路径或 forbidden_default_paths。文件内容根据项目事实生成，但路径和必备章节固定。
@@ -1398,6 +1401,7 @@ prompt: |-
      - 只执行已确认映射；已跟踪文件优先保留历史。按非代码资料、文档与引用、代码与配置的小批次处理，
        每批后验证，失败即停止扩大影响并返回 validation-failed。
      - 更新受影响的 import、别名、Markdown 链接、脚本、环境示例、容器、CI、部署和测试夹具。
+     - 设计目录重组还必须检查 README、文档索引、原型相对链接、离线构建产物路径和固定预览服务根目录；正式评审结论保留在设计评审目录，过程截图与对比证据跟随对应原型版本。
 
   文件归类顺序只适用于 adaptive 或用户未指定归属的新增产物：先判定源码/当前正式文档/原始调研/
   设计交付/测试证据/机器生成物/历史资料；
@@ -1419,7 +1423,7 @@ prompt: |-
 metadata:
   author: ZX
   created_at: "2026-08-13"
-  updated_at: "2026-08-14"
+  updated_at: "2026-08-16"
   tags:
     - project-structure
     - workspace-organization

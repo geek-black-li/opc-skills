@@ -41,7 +41,7 @@ scenarios:
     description: "选择 ZX 完整交付结构后，必须精确采用受版本管理的完整目录契约。"
     structure_profile: zx-full-delivery
     expected_result: awaiting-confirmation
-    expected_directory_count: 39
+    expected_directory_count: 38
     expected_file_count: 4
     forbidden_paths:
       - src/

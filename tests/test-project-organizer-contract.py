@@ -34,7 +34,7 @@ def main() -> None:
     scenarios = load_yaml(SCENARIOS_PATH)["scenarios"]
     adapter = ADAPTER_PATH.read_text(encoding="utf-8")
 
-    assert skill["version"] == "6.0.0"
+    assert skill["version"] == "7.0.0"
 
     inputs = skill["input_schema"]["properties"]
     assert inputs["workflow_mode"]["enum"] == [
@@ -347,10 +347,10 @@ def main() -> None:
 
     full_profile = load_yaml(FULL_PROFILE_PATH)
     assert full_profile["profile_id"] == "zx-full-delivery"
-    assert full_profile["version"] == "2.0.0"
+    assert full_profile["version"] == "3.0.0"
     directories = full_profile["directories"]
     files = full_profile["files"]
-    assert len(directories) == 39
+    assert len(directories) == 38
     assert len(files) == 4
     directory_paths = {item["path"] for item in directories}
     file_paths = {item["path"] for item in files}
@@ -374,12 +374,11 @@ def main() -> None:
         "docs/product/08-需求评审",
         "docs/product/09-验收标准",
         "docs/design",
-        "docs/design/01-信息架构",
-        "docs/design/02-用户流程",
-        "docs/design/03-低保真原型",
-        "docs/design/04-视觉设计",
-        "docs/design/05-设计规范",
-        "docs/design/06-设计评审",
+        "docs/design/01-信息架构与交互流程",
+        "docs/design/02-原型设计",
+        "docs/design/03-品牌与视觉资产",
+        "docs/design/04-设计规范",
+        "docs/design/05-设计评审",
         "docs/testing",
         "docs/testing/01-测试计划",
         "docs/testing/02-测试用例",
@@ -397,7 +396,17 @@ def main() -> None:
     }
     assert directory_paths == expected_directories
     assert file_paths == {"AGENTS.md", "README.md", ".gitignore", "docs/README.md"}
-    assert scenario_by_id["zx-full-delivery-profile"]["expected_directory_count"] == 39
+    assert scenario_by_id["zx-full-delivery-profile"]["expected_directory_count"] == 38
+
+    placement_rules = "\n".join(full_profile["placement_rules"])
+    for phrase in (
+        "V1-低保真",
+        "不预建未来版本",
+        "项目名称默认不在 docs/design 内重复套层",
+        "过程截图",
+        "固定预览服务根目录",
+    ):
+        assert phrase in placement_rules
     assert not {
         "src",
         "development/frontend/packages",
