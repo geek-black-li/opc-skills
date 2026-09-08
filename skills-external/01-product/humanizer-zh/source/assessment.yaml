@@ -1,0 +1,47 @@
+assessment_version: "1.0"
+inbox_id: "20260825T033237Z-humanizer-zh-91f3d394"
+result: "staged-awaiting-confirmation"
+source:
+  type: "url"
+  original_locator: "https://github.com/op7418/Humanizer-zh"
+  final_url: "https://github.com/op7418/Humanizer-zh"
+  fetched_at: "2026-08-25T03:32:37Z"
+  expected_ref: "main"
+  resolved_commit: "91f3d394db8419c20d67ebe22a96cf8fee0a404b"
+  commit_date: "2026-01-19T07:45:46Z"
+  scope: "repository root"
+  source_sha256: "a842076ab6db39b7fd90806da5f9b34e0f5869b26d24f128de608c67d15fb044"
+detected_files:
+  total: 4
+  text: 4
+  binary: 0
+  executable: 0
+  symlink: 0
+  primary_entrypoint: "source/SKILL.md"
+purpose:
+  summary: "编辑或审阅中文文本，识别并减弱常见的 AI 写作痕迹，同时尽量保留原意和语气。"
+  capability_boundary: "仅提供文本编辑规则；未包含代码、安装器、后台服务或持久化机制。"
+license:
+  declared: "MIT"
+  file: "source/LICENSE"
+  status: "present"
+compatibility:
+  source_format: "agent-skill-markdown"
+  opc_portable_yaml_contract: "requires-adapter"
+  findings:
+    - "入口使用 SKILL.md 与 allowed-tools 前置元数据，不是 OPCSkills portable YAML。"
+    - "Read、Write、Edit、AskUserQuestion 可映射为 OPCSkills 适配器的受控文件与交互能力。"
+risk_assessment:
+  overall: "low"
+  findings:
+    - "未发现脚本、可执行文件、符号链接、二进制载荷或生命周期安装钩子。"
+    - "未发现凭证读取、环境变量访问、隐蔽联网、自动更新、持久化或数据外传逻辑。"
+    - "README 中的 npx 和 git clone 仅为人工安装说明，不在技能执行入口中。"
+    - "规则可能主动调整文风；事实性、法律或合规文本仍应由用户复核，避免语气优化改变含义。"
+recommendation:
+  action: "approve-original"
+  reason: "来源与许可证明确，静态风险低；正式入库时仅需生成 OPCSkills 兼容适配层。"
+category_assessment:
+  result: "matched-existing"
+  matched_category: "01-product"
+  reason: "主要用于产品文案、需求说明和文档的中文表达优化。"

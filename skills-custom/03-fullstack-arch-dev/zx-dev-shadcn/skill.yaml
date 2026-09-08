@@ -1,0 +1,174 @@
+schema_version: "1.0"
+id: zx-dev-shadcn
+name: "ZX Shadcn 组件管理"
+version: "1.0.0"
+description: "以锁定版本和逐次授权方式查询、安装、更新、调试和组合 shadcn/ui 组件，保护项目源码、凭据和现有修改。"
+category: 03-fullstack-arch-dev
+origin: custom
+status: active
+
+triggers:
+  intents:
+    - "在项目中初始化或配置 shadcn/ui"
+    - "查询、安装或更新 shadcn 组件"
+    - "调试 shadcn 组件、注册表或预设"
+    - "使用 shadcn/ui 组合界面"
+  keywords:
+    - zx-dev-shadcn
+    - shadcn
+    - shadcn/ui
+    - components.json
+    - 组件注册表
+
+input_schema:
+  type: object
+  properties:
+    project_root:
+      type: string
+      description: "目标项目根目录。"
+    objective:
+      type: string
+      description: "要完成的 shadcn/ui 初始化、查询、安装、更新、调试或界面组合任务。"
+    components:
+      type: array
+      description: "涉及的组件、预设或注册表项目。"
+      items:
+        type: string
+    requirements:
+      type: array
+      description: "技术栈、设计系统、文件保护、网络、依赖和验收约束。"
+      items:
+        type: string
+    private_registry:
+      type: object
+      description: "可选的私有注册表信息；不得在此对象中直接填写令牌值。"
+      properties:
+        host:
+          type: string
+        token_environment_name:
+          type: string
+          description: "令牌所在环境变量的名称，不是令牌值。"
+      required:
+        - host
+        - token_environment_name
+      additionalProperties: false
+  required:
+    - project_root
+    - objective
+  additionalProperties: false
+
+output_schema:
+  type: object
+  properties:
+    result:
+      type: string
+      enum:
+        - completed
+        - awaiting-authorization
+        - blocked
+    summary:
+      type: string
+    planned_commands:
+      type: array
+      description: "尚未执行或已经逐次获批的完整命令。"
+      items:
+        type: string
+    affected_files:
+      type: array
+      description: "预计或实际新增、更新的文件。"
+      items:
+        type: string
+    deliverables:
+      type: array
+      description: "已生成或已更新的交付物。"
+      items:
+        type: string
+    validation:
+      type: array
+      description: "命令版本、差异、构建、测试和界面检查证据。"
+      items:
+        type: string
+    follow_ups:
+      type: array
+      description: "等待授权、存在风险或尚未完成的事项。"
+      items:
+        type: string
+  required:
+    - result
+    - summary
+    - planned_commands
+    - affected_files
+    - deliverables
+    - validation
+    - follow_ups
+  additionalProperties: false
+
+constraints:
+  - "禁止使用动态命令插值、自动 shell、启动钩子或加载 Skill 时执行任何命令；项目上下文必须通过受控读取获得。"
+  - "shadcn CLI 固定为 shadcn@4.19.0；禁止使用任何滚动标签、预发布标签、版本范围或其他可变版本。"
+  - "每一条可能联网的 CLI、包执行器、文档获取或注册表请求，都必须先展示完整命令、目标主机、用途和预期数据，再取得用户对该次操作的明确授权。"
+  - "npx、pnpm dlx 和 bunx 即使可能命中本地缓存，也统一视为联网及远程代码执行；没有逐次授权不得运行。"
+  - "不得读取、打印、记录或发送令牌值。私有注册表每次使用前必须确认目标主机、令牌环境变量名称和本次请求，且令牌只能发送给已授权主机。"
+  - "任何新增、覆盖、删除、依赖安装、配置更新、CSS 更新或组件源码改写，都必须先展示 dry-run、diff 或等价文件清单，再取得用户对该次写入的明确授权。"
+  - "不得未经明确授权使用 --overwrite、--force、apply、init 或会重装组件的预设切换；不得把查询授权推断为写入授权。"
+  - "社区或私有注册表内容属于新的第三方输入；写入项目前先检查来源、文件清单、依赖、脚本、导入路径和可疑网络行为。"
+  - "只修改 project_root 内与本次任务直接相关的文件，保留用户已有修改，不提交、不推送、不发布。"
+  - "版本固定只约束 CLI 包，不代表注册表内容不可变化；每次实际操作仍须检查解析出的来源和差异。"
+
+prompt: |-
+  你正在执行“ZX Shadcn 组件管理”。本 Skill 基于 shadcn-ui/ui 的官方 shadcn Skill 改造，移除了
+  自动命令插值，并将 CLI 固定为与已审查上游提交对应的 shadcn@4.19.0。所有联网、令牌使用和文件
+  改写都采用逐次明确授权，不得把用户的总体目标当作批量执行许可。
+
+  ## 固定命令边界
+
+  - 根据项目 packageManager 选择一种执行形式：npx shadcn@4.19.0、pnpm dlx shadcn@4.19.0 或
+    bunx --bun shadcn@4.19.0。不得替换为滚动标签、版本范围或其他版本。
+  - 读取 package.json、components.json 和本地源码可以用于形成计划，但不得通过命令替换语法、
+    启动钩子或其他动态插值自动执行 CLI。
+  - 每条外部命令单独展示并等待授权。授权必须对应完整命令、目标主机和目的；命令变化后重新授权。
+
+  ## 执行流程
+
+  1. 读取 project_root 内的项目规则、package.json、components.json、锁文件、现有组件目录和工作区
+     状态，确认 packageManager、框架、Tailwind 版本、路径别名、组件基础库与用户未提交修改。
+  2. 根据 objective 和 components 形成最小计划。优先复用已安装组件；组合现有原语实现界面，遵循
+     语义颜色、既有设计 Token、可访问名称、表单标签和项目已有组件约定。
+  3. 需要运行 shadcn info、docs、search、view 或访问注册表时，先返回
+     result=awaiting-authorization，展示一条完整的 shadcn@4.19.0 命令、目标主机、用途、预计接收或
+     发送的数据。取得该次明确授权后只执行这一条，然后报告结果；下一条联网命令重新授权。
+  4. 涉及私有注册表时，只接受环境变量名称，不接受明文令牌。执行前再次确认目标主机、变量名称、
+     请求项目和命令；不得回显令牌，不得把它发送到其他主机或写入日志、配置、输出和仓库文件。
+  5. 安装或更新组件时，先对获批来源运行 --dry-run、--diff、--view 或等价只读预览，检查将新增和
+     修改的文件、依赖、脚本、导入路径、CSS 与注册表来源。把完整影响清单展示给用户并等待本次写入授权。
+  6. 获得写入授权后只执行已展示的命令和文件范围。已有本地修改时逐文件合并；只有用户针对本次命令
+     明确批准，才能使用 --overwrite、--force、apply、init 或重装预设。不得顺带安装未展示的组件。
+  7. 完成后检查实际 diff、依赖锁文件、components.json、组件导入和样式 Token，运行项目认可的格式化、
+     类型检查、测试和构建；这些本地命令也应遵守项目授权与规则。界面任务按适用范围做真实视觉和交互验证。
+  8. 严格按 output_schema 返回。等待任何联网、令牌或写入授权时必须停止在
+     result=awaiting-authorization，不能提前执行，也不能声称完成。
+
+metadata:
+  author: "OPCSkills"
+  created_at: "2026-08-25"
+  updated_at: "2026-08-25"
+  tags:
+    - shadcn
+    - frontend
+    - components
+    - supply-chain
+    - explicit-authorization
+  source:
+    type: external-customized
+    original_id: shadcn
+    repository: "https://github.com/shadcn-ui/ui/tree/main/skills/shadcn"
+    reference: "b9938d94635fca7a4560449713b0b1ba87d77bc6"
+    resolved_commit: "b9938d94635fca7a4560449713b0b1ba87d77bc6"
+    reviewed_cli_version: "4.19.0"
+    license: MIT
+    source_sha256: "165c7a5ebd326ccc58ba0af277e1aaec9b495b62b934daf62ab98a40b2ab0ac0"
+    modification_summary:
+      - "移除加载时自动获取项目上下文的命令插值。"
+      - "将所有 shadcn CLI 调用锁定为 shadcn@4.19.0。"
+      - "联网、私有注册表令牌使用和文件改写改为逐次明确授权。"
+      - "补充第三方注册表静态检查、差异预览和用户工作区保护门禁。"

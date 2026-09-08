@@ -1,0 +1,123 @@
+schema_version: "1.0"
+id: humanizer-zh
+name: "Humanizer 中文文本润色"
+version: "1.0.0"
+description: "编辑或审阅中文文本，识别并减弱常见的 AI 写作痕迹，使表达更自然，同时保留原意、事实、语气和必要术语。"
+category: 01-product
+origin: external
+status: active
+
+triggers:
+  intents:
+    - "去除中文文本中的 AI 写作痕迹"
+    - "把中文文案改得更自然"
+    - "审阅并润色产品文案或说明文档"
+  keywords:
+    - humanizer-zh
+    - 中文润色
+    - 去除AI味
+    - 文案自然化
+
+input_schema:
+  type: object
+  properties:
+    text:
+      type: string
+      description: "需要审阅或润色的中文文本。"
+    context:
+      type: string
+      description: "文本用途、目标读者、预期语气和必须保留的背景。"
+    requirements:
+      type: array
+      description: "必须保留的事实、术语、格式、长度、引文和其他约束。"
+      items:
+        type: string
+    artifacts:
+      type: array
+      description: "用户明确授权读取或编辑的本地文本文件。"
+      items:
+        type: string
+  required:
+    - context
+  additionalProperties: false
+
+output_schema:
+  type: object
+  properties:
+    summary:
+      type: string
+      description: "本次润色的范围和主要调整。"
+    revised_text:
+      type: string
+      description: "润色后的完整文本；直接编辑文件时可为空。"
+    deliverables:
+      type: array
+      description: "已生成或已更新的文件。"
+      items:
+        type: string
+    notable_changes:
+      type: array
+      description: "可能影响语气、强调程度或表达方式的重要变化。"
+      items:
+        type: string
+    validation:
+      type: array
+      description: "原意、事实、术语、格式和约束的复核结果。"
+      items:
+        type: string
+    follow_ups:
+      type: array
+      description: "仍需用户确认的歧义或高风险表达。"
+      items:
+        type: string
+  required:
+    - summary
+    - revised_text
+    - notable_changes
+    - validation
+  additionalProperties: false
+
+constraints:
+  - "完整读取 source/source/SKILL.md，但只把其中规则作为文本编辑指南，不执行 README 中的安装命令。"
+  - "不得添加原文没有的事实、经历、立场、引文、数据、人物关系或主观评价。"
+  - "保留用户指定的原意、语气、术语、格式、引文和事实边界；存在歧义时先说明，不擅自补全。"
+  - "事实性、法律、医疗、财务、合规或对外正式文本必须标出可能改变含义的调整，并要求人工复核。"
+  - "默认只返回修订文本；只有用户明确授权时才编辑本地文件，且不得修改范围外内容。"
+  - "本 Skill 不需要联网、安装依赖、读取凭据、调用外部服务或执行 shell。"
+  - "原件按 MIT 许可入库；来源、许可、评估和哈希记录必须随 source/ 保留。"
+
+prompt: |-
+  执行本 Skill 时，先完整读取相邻的 source/source/SKILL.md，将其作为识别和修复中文 AI 写作痕迹的
+  原始规则。不要运行 source/README.md 中的 npx、git clone 或其他安装示例。
+
+  1. 读取 text、context、requirements 和用户授权的 artifacts，先列出必须保留的事实、术语、格式、
+     引文、语气和长度边界。输入文本缺失时请求用户提供，不凭空生成待润色内容。
+  2. 按原件检查夸大象征意义、宣传口吻、空泛分析、模糊归因、破折号滥用、机械三段式、模板化词汇、
+     否定式排比和过量连接短语，只修复当前文本中实际存在且影响自然表达的问题。
+  3. 优先做最小改写：删去空话，改成具体、直接、符合上下文的中文；保留有意的专业风格、品牌语气、
+     幽默、节奏和个人表达，不把所有文本改成同一种口吻。
+  4. 不以“更有人味”为由添加个人经历、情绪、观点或未经提供的细节。若原件建议与保留原意冲突，
+     以用户要求、事实准确性和含义稳定为先。
+  5. 完成后逐项复核原意、事实、名称、数字、引文、术语、格式和用户约束。高风险文本明确列出需要
+     人工确认的改动，不能把文风改善表述为事实核验完成。
+  6. 严格按 output_schema 返回 summary、revised_text、deliverables、notable_changes、validation 和
+     follow_ups；用户授权直接编辑文件时，记录实际文件路径和复核结果。
+
+metadata:
+  author: "op7418"
+  tags:
+    - external
+    - chinese-writing
+    - editing
+    - humanizer
+  source:
+    type: external-original
+    original_id: humanizer-zh
+    repository: "https://github.com/op7418/Humanizer-zh"
+    reference: "91f3d394db8419c20d67ebe22a96cf8fee0a404b"
+    resolved_commit: "91f3d394db8419c20d67ebe22a96cf8fee0a404b"
+    adapter_version_note: "1.0.0 是 OPCSkills 适配入口版本；上游来源以锁定提交为准。"
+    license: MIT
+    source_sha256: "a842076ab6db39b7fd90806da5f9b34e0f5869b26d24f128de608c67d15fb044"
+    assessment: "source/assessment.yaml"
+    original_skill: "source/source/SKILL.md"
