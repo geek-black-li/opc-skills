@@ -52,6 +52,8 @@ description: Use when the user explicitly invokes OPCSkills to execute a formal 
 | “新建一个 Skill…” | 以 `invocation_source=direct` 读取 `builtin/skill-creator.yaml` |
 | “修改/优化某个 Skill…” | 以 `invocation_source=direct` 读取 `builtin/skill-editor.yaml` |
 | “使用/调用 `<skill-id>` …” | 扫描正式 Skill，按唯一 id 加载并执行该 Skill |
+| “创建/更新/复审 PRD…” | 调用 `zx-product-prd`，使用 `mode=auto` 按当前明确动作选择写入或只读复审 |
+| “创建/更新/复审技术设计…” | 调用 `zx-dev-architecture`，使用 `mode=auto` 并核对 PRD 修订与追踪门禁 |
 | “按 ZX 完整结构初始化项目” | 调用 `zx-project-organizer`，设置 `structure_profile=zx-full-delivery` |
 | “按项目实际情况初始化” | 调用 `zx-project-organizer`，设置 `structure_profile=adaptive` |
 | “按以下目录初始化…” | 调用 `zx-project-organizer`，设置 `structure_profile=custom` 并原样传入目录树 |
@@ -216,6 +218,8 @@ $opc-skills 总结一下当前链路
 $opc-skills 总结当前链路并沉淀成 Skill
 $opc-skills 确认提炼 zxsi-0123456789abcdef
 $opc-skills 放弃提炼 zxsi-0123456789abcdef
+$opc-skills 创建 docs/PRD.md，并区分已确认、建议和未知需求
+$opc-skills 基于已批准 PRD 创建 docs/技术设计.md
 $opc-skills 使用 zx-project-organizer，帮我审计当前项目结构
 $opc-skills 使用 zx-project-organizer，引导我创建一个全新项目
 $opc-skills 使用 zx-project-organizer，引导我整理现有项目

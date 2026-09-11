@@ -1,7 +1,7 @@
 schema_version: "1.0"
 id: zx-project-organizer
 name: "ZX 项目结构整理"
-version: "7.0.0"
+version: "7.1.0"
 description: "当需要引导创建全新项目、生成独立前后端应用骨架、审计或重构存量项目时使用。支持逐问逐答和推荐选项，但推荐不等于确认；完整提案匹配确认后才写入。"
 category: 06-project-manage
 origin: custom
@@ -1222,6 +1222,8 @@ constraints:
   - "原型版本目录只在版本已确认且真实存在时创建；不得因未来可能出现 V3、V4 而预建空目录。"
   - "设计评审只保存正式结论，过程证据跟随对应原型版本；项目名称默认不在单产品项目的设计目录中重复套层。"
   - "AGENTS.md 只保存短小、长期有效且可执行的规则，不写入过程流水账、完整历史或大段项目知识。"
+  - "任务清单不构成执行授权；下一候选任务只用于状态和交接，后续实施范围由用户当前明确请求决定。"
+  - "创建 AGENTS.md 或任务清单时必须读取对应 assets 模板；不得把阶段、动态状态、完整技术设计或模板示例复制成长期项目规则。"
   - "物理删除必须有精确目标和用户明确授权；仅有提案确认不等于删除授权。"
 
 prompt: |-
@@ -1230,6 +1232,15 @@ prompt: |-
 
   开始前必须读取同目录 `references/guided-project-workflows.yaml`。该文件定义 workflow_mode、逐问逐答、
   推荐生命周期、应用命名、接口归属和代码骨架门禁；不得只凭本 prompt 中的摘要重新发明这些规则。
+
+  当用户确认项目需要根 `AGENTS.md` 或 `docs/任务清单.md` 时，分别读取同目录
+  `assets/AGENTS-模板.md` 和 `assets/任务清单-模板.md`，把它们作为 creation_plan 中最终文件内容的
+  结构来源。只有用户已确认创建这些文件时才加载资产；不得因为资产存在而扩大 adaptive/custom 提案。
+  模板中的占位符、示例 ID 和候选栏目都不是项目事实，必须根据 fact_register.confirmed、实际仓库证据和
+  已确认路径裁剪或填写。进入 creation_plan 的最终文件内容不得残留花括号占位符；未知命令写纯文本
+  “待确认”。任务清单不构成执行授权；其中“下一候选任务”不能触发新的写入、命令、提交或发布。
+  AGENTS.md 只保留文档入口、真实项目命令、工作区保护、权限边界、验证门禁和长期规则；阶段、任务状态、
+  临时决定、完整技术栈与架构细节进入各自权威文档，不复制到常驻入口。
 
   这是严格的“提案—确认—执行”协议：
   - action=propose：只读检查并输出完整提案，result 为 needs-input、awaiting-confirmation、audited
@@ -1411,6 +1422,12 @@ prompt: |-
   上下文治理形成四层：常驻入口（短小 AGENTS.md、根 README、状态、索引）；当前资料（唯一权威文档）；
   历史资料（可检索但默认不读）；机器数据（默认忽略，仅诊断时读取局部）。为每个主题指定唯一权威入口；
   文档与代码冲突时报告冲突，不自行宣布一方正确。
+  若创建计划包含 PRD、技术设计或任务清单，AGENTS.md 只写相对链接和各自权威范围；PRD 内容由
+  zx-product-prd 及其 `skills-custom/01-product/zx-product-prd/assets/PRD-模板.md` 负责，技术设计由
+  zx-dev-architecture 及其
+  `skills-custom/03-fullstack-arch-dev/zx-dev-architecture/assets/技术设计文档-模板.md` 负责，本 Skill
+  不临场重写这些领域模板。模板或上游文档变化时，旧计划与
+  验证证据应标记待复核，不能用复制到 AGENTS.md 的旧内容维持表面一致。
 
   验证要求：所有结果只报告实际检查证据。apply 成功后核对实际变更与 creation_plan 或 migration_map
   一致；reorganize 至少检查版本库差异、路径引用和文档链接，涉及代码时运行相称的 lint、测试、构建或启动检查。
@@ -1423,7 +1440,7 @@ prompt: |-
 metadata:
   author: ZX
   created_at: "2026-08-13"
-  updated_at: "2026-08-16"
+  updated_at: "2026-09-11"
   tags:
     - project-structure
     - workspace-organization
@@ -1441,3 +1458,8 @@ metadata:
     reference: ""
     license: ""
     checksum: ""
+  direct_updates:
+    - date: "2026-09-11"
+      version_before: "7.0.0"
+      version_after: "7.1.0"
+      reason: "接入 Codex AGENTS 与任务清单模板，明确任务状态不构成执行授权，并避免常驻入口复制动态事实。"

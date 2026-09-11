@@ -472,7 +472,7 @@ def main() -> None:
         "expected_writes": 0,
     }
 
-    assert skill["version"] == "7.0.0"
+    assert skill["version"] == "7.1.0"
     assert "project_root" not in skill["input_schema"]["required"]
 
     update = skill["input_schema"]["properties"]["recommendation_updates"]["items"]

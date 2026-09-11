@@ -18,9 +18,10 @@ OPCSkills 用于沉淀一个全栈 OPC 从需求到交付全过程中的可复�
 | Skill 优化 | 先展示通用增补项、排除项和风险，确认后对已有 Skill 做最小、可追溯更新 |
 | 仓库查看 | 按分类列出正式 Skill 和仓库状态 |
 
-当前仓库只沉淀经过实际项目提炼的业务能力，目前包含项目结构整理 `zx-project-organizer`、UI 规范整理
-`zx-ui-spec` 和 UI 页面检查 `zx-ui-check`；不会为了填满分类预置一批空泛 Skill。后续能力继续通过
-实际项目的 Self-Improve、手动创建或第三方评估导入逐步积累。
+当前仓库只沉淀经过实际项目提炼的业务能力。当前产品到开发链路包含 `zx-product-prd`、
+`zx-ui-spec`、`zx-ui-check`、`zx-dev-architecture`、`zx-dev-shadcn` 和
+`zx-project-organizer`；不会为了填满分类预置一批空泛 Skill。后续能力继续通过实际项目的
+Self-Improve、手动创建或第三方评估导入逐步积累。
 
 ## 5 分钟开始使用 Codex
 
@@ -77,7 +78,7 @@ Codex 原生 Skill 使用 `$skill-name` 显式调用；`/skills` 只用于查看
 ### 入口与远程边界
 
 - `$opc-skills` 是本仓库唯一的 Codex 入口。
-- 个人 Skill ID 继续使用 `zx-*`；提案 ID 继续使用 `zxsi-*` 和 `zpo-*`，包括 `zx-project-organizer`、`zx-ui-spec` 和 `zx-ui-check` 在内的已有业务 Skill ID 不会因仓库入口调整而变化。
+- 个人 Skill ID 继续使用 `zx-*`；提案 ID 继续使用 `zxsi-*` 和 `zpo-*`。已有业务 Skill ID 不会因仓库入口调整而变化。
 - GitHub 是主仓库和默认克隆源；Gitee 备用远程需要手动同步，不是自动镜像。
 
 ### 第四步（推荐）：开启项目节点完成提醒
@@ -132,6 +133,8 @@ $opc-skills 总结一下当前链路
 $opc-skills 总结当前链路并沉淀成 Skill
 $opc-skills 确认提炼 <proposal_id>
 $opc-skills 放弃提炼 <proposal_id>
+$opc-skills 创建 docs/PRD.md，并区分已确认、建议和未知需求
+$opc-skills 基于已批准 PRD 创建 docs/技术设计.md
 $opc-skills 使用 zx-project-organizer，帮我审计当前项目结构
 $opc-skills 确认执行项目结构提案 <zpo-proposal_id>
 $opc-skills 放弃项目结构提案 <zpo-proposal_id>
@@ -581,6 +584,7 @@ OPCSkills/
 ├── tests/
 │   ├── test-configure-codex-reminder.sh
 │   ├── test-configure-codex-reminder.ps1
+│   ├── test-document-delivery-contract.py
 │   ├── test-dynamic-categories.py
 │   ├── test-install-codex.sh
 │   ├── test-install-codex.ps1
@@ -611,24 +615,39 @@ OPCSkills/
 │   ├── 05-ops-release/_readme.md
 │   └── 06-project-manage/_readme.md
 └── skills-custom/
-    ├── 01-product/_readme.md
+    ├── 01-product/
+    │   ├── _readme.md
+    │   └── zx-product-prd/
+    │       ├── skill.yaml
+    │       └── assets/PRD-模板.md
     ├── 02-ui-design/
     │   ├── _readme.md
     │   ├── zx-ui-spec/skill.yaml
     │   └── zx-ui-check/skill.yaml
-    ├── 03-fullstack-arch-dev/_readme.md
+    ├── 03-fullstack-arch-dev/
+    │   ├── _readme.md
+    │   ├── zx-dev-architecture/
+    │   │   ├── skill.yaml
+    │   │   └── assets/技术设计文档-模板.md
+    │   └── zx-dev-shadcn/skill.yaml
     ├── 04-test-quality/_readme.md
     ├── 05-ops-release/_readme.md
     └── 06-project-manage/
         ├── _readme.md
         └── zx-project-organizer/
             ├── skill.yaml
-            └── references/zx-full-delivery-structure.yaml
+            ├── assets/
+            │   ├── AGENTS-模板.md
+            │   └── 任务清单-模板.md
+            └── references/
+                ├── guided-project-workflows.yaml
+                └── zx-full-delivery-structure.yaml
 ```
 
 Codex 适配器位于 `adapters/codex/opc-skills/`，提供唯一入口并读取仓库的通用 Skill 契约。
 
-仓库框架不批量预置空泛业务 Skill；当前包含 `zx-project-organizer`、`zx-ui-spec` 和 `zx-ui-check`。
+仓库框架不批量预置空泛业务 Skill；当前产品到开发链路由 `zx-product-prd`、`zx-ui-spec`、
+`zx-ui-check`、`zx-dev-architecture`、`zx-dev-shadcn` 和 `zx-project-organizer` 分别承担明确职责。
 后续业务能力统一通过仓库工作流生成或导入。
 
 ## 六个核心业务分类

@@ -1,0 +1,198 @@
+schema_version: "1.0"
+id: zx-product-prd
+name: "ZX 产品需求设计"
+version: "1.0.0"
+description: "当需要从需求描述、调研证据、现有产品或历史文档创建、补全或复审可供设计、技术方案和开发追踪的 PRD 时使用。"
+category: 01-product
+origin: custom
+status: active
+
+triggers:
+  intents:
+    - "创建可供 AI 和研发使用的 PRD"
+    - "把口头需求整理成可评审的产品需求"
+    - "复审 PRD 的范围、业务规则和验收标准"
+    - "补齐需求到设计、开发和测试的追踪标识"
+  keywords:
+    - zx-product-prd
+    - PRD
+    - 产品需求文档
+    - 需求设计
+    - 验收标准
+    - 需求追踪
+
+input_schema:
+  type: object
+  properties:
+    project_root:
+      type: string
+      description: "目标项目根目录；只读评审纯文本时可省略。"
+    request:
+      type: string
+      description: "需要整理、创建或复审的产品需求。"
+    mode:
+      type: string
+      enum:
+        - auto
+        - assess
+        - draft
+        - review
+      default: auto
+      description: "按当前请求自动判断，或显式选择只读分析、创建或更新 PRD、复审现有 PRD。"
+    evidence_paths:
+      type: array
+      description: "用户反馈、调研、截图、数据、现有代码、历史文档或其他证据路径。"
+      items:
+        type: string
+    target_document:
+      type: string
+      description: "PRD 目标路径；draft 未指定时按项目规则定位。"
+    existing_prd:
+      type: string
+      description: "待补全或复审的现有 PRD 路径。"
+    constraints:
+      type: object
+      description: "范围、发布时间、受众、合规、设备或其他已确认约束。"
+      additionalProperties: true
+  required:
+    - request
+  additionalProperties: false
+
+output_schema:
+  type: object
+  properties:
+    status:
+      type: string
+      enum:
+        - assessed
+        - drafted
+        - reviewed
+        - blocked
+    document_path:
+      type: string
+    requirement_register:
+      type: array
+      items:
+        type: object
+        properties:
+          id:
+            type: string
+          kind:
+            type: string
+            enum:
+              - feature
+              - business-rule
+              - acceptance
+              - non-functional
+              - permission
+              - data
+          state:
+            type: string
+            enum:
+              - confirmed
+              - proposed
+              - unknown
+              - removed
+          summary:
+            type: string
+          evidence:
+            type: array
+            items:
+              type: string
+        required:
+          - id
+          - kind
+          - state
+          - summary
+          - evidence
+        additionalProperties: false
+    blocking_questions:
+      type: array
+      items:
+        type: string
+    non_blocking_questions:
+      type: array
+      items:
+        type: string
+    validation:
+      type: array
+      items:
+        type: string
+    next_actions:
+      type: array
+      items:
+        type: string
+  required:
+    - status
+    - requirement_register
+    - blocking_questions
+    - non_blocking_questions
+    - validation
+    - next_actions
+  additionalProperties: false
+
+constraints:
+  - "assess 和 review 默认只读；draft 只有在用户明确要求创建或更新 PRD 时才写入用户授权的项目路径。"
+  - "用户提供的事实、可验证证据、建议和未知项必须分开；不得因赶时间、示例或行业惯例把猜测写成 confirmed。"
+  - "PRD 只拥有产品目标、范围、用户行为、业务规则、用户可见文案、权限语义和验收条件；不固定技术栈、代码目录、数据库表或接口实现。"
+  - "用户最新明确指令可以变更旧 PRD；必须指出受影响内容并更新 PRD 或记录本次例外，不能静默继续使用旧版本。"
+  - "稳定 ID 不重排、不复用；删除项标记 removed，新增项追加新 ID。"
+  - "只有会实质改变产品行为、数据、安全、公共契约或需要新权限的未知项才阻塞；其他未知项记录为 non-blocking 或 proposed。"
+  - "验收条件必须可观察，并说明验证方式；不把计划、实现、验证和用户验收混成一个状态。"
+  - "不自动生成技术设计、任务计划、代码、提交、推送、发布或生产变更；这些由后续明确任务负责。"
+  - "保留用户现有工作和范围外文件；外部检索、第三方写入或数据发送遵守项目授权边界。"
+
+prompt: |-
+  你正在执行“ZX 产品需求设计”。目标是把用户意图和 evidence 转化为可评审、可追踪、可交给设计与技术方案继续处理的 PRD，而不是根据模板补齐一份看似完整但包含虚构事实的文档。
+
+  ## 模式与路径
+
+  - 读取 request、mode、project_root、evidence_paths、existing_prd、target_document 和 constraints。
+  - auto 或未提供 mode：当前用户明确要求创建或更新 PRD 时使用 draft；明确要求复审时使用 review；其余使用 assess。自动判断不能扩大用户指定的写入路径或后续执行范围。
+  - assess：只读梳理范围、证据、缺口和建议结构，返回 assessed。
+  - review：只读检查现有 PRD 的权威边界、追踪、冲突和可验收性，返回 reviewed。
+  - draft：用户明确要求创建或更新 PRD 时，按项目规则选择 target_document 并写入，返回 drafted；仅有 mode=draft 但没有写入授权时保持只读。
+  - 创建或重构 PRD 时读取同目录 `assets/PRD-模板.md`；模板提供输出形状，其中示例和占位符都不是项目事实。
+
+  ## 证据与状态
+
+  1. 先读取适用的项目规则、当前用户请求、现有 PRD、调研/反馈/数据和已实现行为。记录来源路径、版本、日期或仓库提交；没有证据时明确写 unknown。
+  2. 分开记录 confirmed、proposed、unknown 和 removed。用户要求“信息不全就合理补齐”只允许补齐结构和 proposed 方案，不能把管理员角色、状态、字段限制、通知方式、货币、审批级数或已有基础设施写成 confirmed。
+  3. 用户最新明确指令优先于旧文档。发现变更时列出被替代的旧内容、受影响 ID 和下游文档；更新权威 PRD 或明确记录未落盘原因。
+  4. 问题分为 blocking 与 non-blocking：影响 P0 产品行为、权限、数据语义、安全、外部承诺或公共契约的缺口进入 blocking；可逆且不影响当前交付的未知项进入 non-blocking，可带 proposed 临时方案继续起草。
+
+  ## PRD 契约
+
+  - 使用稳定 ID：功能 F-、业务规则 BR-、验收条件 AC-、非功能要求 NFR-、权限 PERM-、数据对象 DATA-。同一 ID 的正文可变但不可换义；删除保留编号并标 removed。
+  - 每个 P0/P1 功能写清用户、入口/前置状态、主流程、规则与边界、异常和关联 ID。范围外内容单独记录，不由 Agent 顺手实现。
+  - 每条 BR-/PERM- 只有一个权威正文；下游技术设计、计划和测试只能引用 ID，不复制后另立规则。
+  - 每条 AC- 使用 Given/When/Then 或同等明确结构，包含前置状态、操作、可观察结果和验证方式（自动化、接口、浏览器、手工、监控或专项测试）。不能把“功能正常”“体验良好”当作验收标准。
+  - 每条 NFR- 包含指标、阈值、测量环境/负载、测量方法和证据要求。用户没有确认阈值时写 proposed 或 unknown，不伪造数字。
+  - 数据要求使用 DATA- ID 描述业务对象、来源、敏感级别、保留/删除语义和所有权，不写数据库表结构；任何会约束实现或验收的数据规则必须关联 BR-、NFR- 或 PERM-。权限同时说明主体、动作、资源范围、条件和默认拒绝规则。
+  - 有界面的项目关联 UI 设计规范、原型或设计稿版本，并列出正常、空、加载、失败、禁用、权限不足和响应式/无障碍要求；无 UI 的项目标记 N/A。
+  - 重要产品取舍可引用 ADR，但不要把普通文案或容易撤销的小决定都升级为 ADR。
+
+  ## 交接与验证
+
+  - PRD 进入 approved/frozen 前必须满足：所有 P0 功能有 AC-；没有未解决 blocking 问题；范围内 BR-/PERM-/NFR-/DATA- 有状态和证据，且 DATA- 的实现约束已关联 BR-/NFR-/PERM-；引用路径有效；模板示例和无意义占位符已移除。
+  - 输出 requirement_register，逐项给出 id、kind、state、summary 和 evidence；不得把 drafted 表述为 implemented、verified 或 accepted。
+  - 只读模式不修改文件。draft 写入后检查文档链接、ID 唯一性、引用完整性、冲突、占位符和变更记录，并在 validation 报告实际证据。
+  - 下一步只建议已具备前置条件的工作：UI 项目可进入 UI 规范，架构任务可使用 zx-dev-architecture，实施计划可在技术设计评审后使用 writing-plans。引用 Skill 名称只是路由，不替代用户对后续写入或执行的授权。
+
+  严格按 output_schema 返回 status、document_path、requirement_register、blocking_questions、non_blocking_questions、validation 和 next_actions。
+
+metadata:
+  author: "OPCSkills"
+  created_at: "2026-09-11"
+  updated_at: "2026-09-11"
+  tags:
+    - product-requirements
+    - prd
+    - acceptance-criteria
+    - traceability
+    - evidence
+  source:
+    type: original
+    reference: "direct:user-approved-document-delivery-v2"
+    license: ""
+    checksum: ""
