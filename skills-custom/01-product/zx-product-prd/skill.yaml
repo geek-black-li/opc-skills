@@ -1,7 +1,7 @@
 schema_version: "1.0"
 id: zx-product-prd
 name: "ZX 产品需求设计"
-version: "1.1.0"
+version: "1.2.0"
 description: "当需要从需求描述、调研证据、现有产品或历史文档创建、补全或复审可供设计、技术方案和开发追踪的 PRD 时使用。"
 category: 01-product
 origin: custom
@@ -169,6 +169,13 @@ prompt: |-
   - 不为了完整而增加内容，不用固定篇幅、表格数、图表数或编号数判断质量。编号只给需要跨文档引用或长期维护的内容。
   - requirement_register 只用于结构化交接，不要把机器字段、英文状态名或完整 JSON 复制到面向人的 PRD 正文。正文状态使用“已确认、建议、待确认、已移除”。
 
+  ## 核心业务流程图
+
+  - 起草和复审时逐个检查本期核心模块：包含多个业务步骤、角色交接、条件分支或关键状态变化的核心流程，必须有对应图，不能用长段落代替。单步操作、文案调整无需配图；已有图覆盖多个功能时引用同一图，不按功能数量凑图。
+  - PRD用业务流程图说明谁在什么情况下做什么、主要分支及用户可见结果；关键状态变化可用状态图。图中不放数据库、服务调用和未确认技术选型。缺少业务依据时标记待确认，不为连通流程编造步骤、角色或失败处理。
+  - 优先使用内嵌mermaid代码块；图放在对应功能旁，标题写明场景和关联功能编号，并用短句说明结论。节点用常用中文，分支注明条件，覆盖已知的关键异常或返回路径；复杂流程按业务场景拆分，已有图文冲突必须报告或在授权内同步。
+  - 图示只概括关联正文，不另立规则；图文不一致时核对确认来源，不自动让任一方覆盖另一方。review只报告缺图、覆盖范围和冲突，draft才在授权内补图。
+
   ## 证据与状态
 
   1. 先读取适用的项目规则、当前用户请求、现有 PRD、调研/反馈/数据和已实现行为。记录来源路径、版本、日期或仓库提交；没有证据时明确写 unknown。
@@ -192,6 +199,7 @@ prompt: |-
   - PRD 进入 approved/frozen 前必须满足：所有 P0 功能有 AC-；没有未解决 blocking 问题；范围内 BR-/PERM-/NFR-/DATA- 有状态和证据，且 DATA- 的实现约束已关联 BR-/NFR-/PERM-；引用路径有效；模板示例和无意义占位符已移除。
   - 输出 requirement_register，逐项给出 id、kind、state、summary 和 evidence；不得把 drafted 表述为 implemented、verified 或 accepted。
   - 只读模式不修改文件。draft 写入后检查文档链接、ID 唯一性、引用完整性、冲突、占位符和变更记录，并在 validation 报告实际证据。
+  - 检查核心流程是否已配图、图与正文及验收条件是否一致。用可用工具渲染并查看可读性；不能渲染时列出具体未验证图，不能把围栏检查或语法检查称为渲染通过。不自动安装绘图工具或向外部服务上传项目文档。
   - 下一步只建议已具备前置条件的工作：UI 项目可进入 UI 规范，架构任务可使用 zx-dev-architecture，实施计划可在技术设计评审后使用 writing-plans。引用 Skill 名称只是路由，不替代用户对后续写入或执行的授权。
 
   严格按 output_schema 返回 status、document_path、requirement_register、blocking_questions、non_blocking_questions、validation 和 next_actions。
@@ -216,3 +224,7 @@ metadata:
       version_before: "1.0.0"
       version_after: "1.1.0"
       reason: "默认生成人类可读的精简 PRD，按真实复杂度加载可选章节，并减少表格、缩写与无价值编号。"
+    - date: "2026-09-11"
+      version_before: "1.1.0"
+      version_after: "1.2.0"
+      reason: "要求核心多步业务流程配图，补充图文一致性和渲染验证，保留简单需求例外。"

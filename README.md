@@ -22,8 +22,20 @@ OPCSkills 用于沉淀一个全栈 OPC 从需求到交付全过程中的可复�
 
 当前仓库只沉淀经过实际项目提炼的业务能力。当前产品到开发链路包含 `zx-product-prd`、
 `zx-ui-spec`、`zx-ui-check`、`zx-dev-architecture`、`zx-dev-shadcn` 和
-`zx-project-organizer`；不会为了填满分类预置一批空泛 Skill。后续能力继续通过实际项目的
+`zx-project-organizer`、`zx-project-docs`；不会为了填满分类预置一批空泛 Skill。后续能力继续通过实际项目的
 Self-Improve、手动创建或第三方评估导入逐步积累。
+
+核心模块的多步业务流程和关键分支需要配图：PRD展示业务过程与用户结果，技术设计展示模块处理、调用和状态变化。架构总览不能替代核心流程图；单步操作或文案改动无需配图。
+
+[`zx-project-docs`](skills-custom/06-project-manage/zx-project-docs/skill.yaml)负责已有文档的检查、日常整理和历史清理；目录重组由`zx-project-organizer`负责。使用示例：
+
+```text
+$opc-skills 使用 zx-project-docs，只读检查当前项目文档，重点看核心流程缺图和图文冲突。
+$opc-skills 使用 zx-project-docs，整理本轮修改涉及的文档，按已确认内容补齐核心流程图，保留业务含义和历史材料。
+$opc-skills 使用 zx-project-docs，清理我指定目录中已过期且有可验证备份的历史文档，允许删除这些文件，不提交。
+```
+
+指定项目路径和范围即可；省略模式时默认只读检查。已有版本校验机制继续维护，旧测试和验收证据保留原版本，不因更新哈希就视为新版本通过。
 
 ## 5 分钟开始使用 Codex
 
@@ -638,6 +650,9 @@ OPCSkills/
     ├── 05-ops-release/_readme.md
     └── 06-project-manage/
         ├── _readme.md
+        ├── zx-project-docs/
+        │   ├── skill.yaml
+        │   └── references/review-scenarios.md
         └── zx-project-organizer/
             ├── skill.yaml
             ├── assets/
@@ -651,7 +666,7 @@ OPCSkills/
 Codex 适配器位于 `adapters/codex/opc-skills/`，提供唯一入口并读取仓库的通用 Skill 契约。
 
 仓库框架不批量预置空泛业务 Skill；当前产品到开发链路由 `zx-product-prd`、`zx-ui-spec`、
-`zx-ui-check`、`zx-dev-architecture`、`zx-dev-shadcn` 和 `zx-project-organizer` 分别承担明确职责。
+`zx-ui-check`、`zx-dev-architecture`、`zx-dev-shadcn`、`zx-project-organizer` 和 `zx-project-docs` 分别承担明确职责。
 后续业务能力统一通过仓库工作流生成或导入。
 
 ## 六个核心业务分类

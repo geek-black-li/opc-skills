@@ -82,7 +82,7 @@ for marker in (
 ):
     assert marker in prd, f"PRD template is missing readability rule: {marker}"
 
-assert prd_skill["version"] == "1.1.0"
+assert prd_skill["version"] == "1.2.0"
 for marker in (
     "普通中文",
     "简单需求",
@@ -149,7 +149,7 @@ for required_fragment in (
         continue
     raise AssertionError(f"mutation was not detected: {required_fragment}")
 
-assert architecture["version"] == "1.4.0"
+assert architecture["version"] == "1.5.0"
 for marker in (
     "普通中文",
     "简单改动",
