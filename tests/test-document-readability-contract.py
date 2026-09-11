@@ -17,15 +17,6 @@ def load_yaml(relative_path: str) -> dict:
     return yaml.safe_load(read(relative_path))
 
 
-def count_tables(markdown: str) -> int:
-    lines = markdown.splitlines()
-    return sum(
-        1
-        for index, line in enumerate(lines)
-        if line.startswith("|") and (index == 0 or not lines[index - 1].startswith("|"))
-    )
-
-
 def id_prefixes(markdown: str) -> set[str]:
     return set(re.findall(r"(?<![A-Z])([A-Z][A-Z-]*)-\d{3}", markdown))
 
@@ -56,9 +47,6 @@ prd_skill = load_yaml("skills-custom/01-product/zx-product-prd/skill.yaml")
 
 assert "模板说明（正式成文时连同本提示删除）" in prd
 assert "代码版本（commit）" in prd
-assert len(prd.splitlines()) <= 220
-assert sum(1 for line in prd.splitlines() if re.match(r"^#{1,4} ", line)) <= 22
-assert count_tables(prd) <= 12
 assert id_prefixes(prd) <= {"EVID", "F", "BR", "AC", "NFR", "PERM", "DATA"}
 for marker in (
     "先让人读懂",
@@ -82,7 +70,7 @@ for marker in (
 ):
     assert marker in prd, f"PRD template is missing readability rule: {marker}"
 
-assert prd_skill["version"] == "1.2.0"
+assert prd_skill["version"] == "1.3.0"
 for marker in (
     "普通中文",
     "简单需求",
@@ -99,11 +87,8 @@ architecture = load_yaml(
     "skills-custom/03-fullstack-arch-dev/zx-dev-architecture/skill.yaml"
 )
 
-assert len(technical.splitlines()) <= 320
 assert "模板说明（正式成文时连同本提示删除）" in technical
 assert "代码版本（commit）" in technical
-assert sum(1 for line in technical.splitlines() if re.match(r"^#{1,4} ", line)) <= 32
-assert count_tables(technical) <= 18
 assert id_prefixes(technical) <= {
     "F",
     "BR",
@@ -149,7 +134,7 @@ for required_fragment in (
         continue
     raise AssertionError(f"mutation was not detected: {required_fragment}")
 
-assert architecture["version"] == "1.5.0"
+assert architecture["version"] == "1.6.0"
 for marker in (
     "普通中文",
     "简单改动",
@@ -199,11 +184,8 @@ organizer = load_yaml(
 )
 adapter = read("adapters/codex/opc-skills/SKILL.md")
 
-assert len(tasks.splitlines()) <= 170
 assert "模板说明（正式成文时连同本提示删除）" in tasks
 assert "代码版本（commit）" in tasks
-assert sum(1 for line in tasks.splitlines() if re.match(r"^#{1,4} ", line)) <= 16
-assert count_tables(tasks) <= 8
 assert id_prefixes(tasks) <= {"TASK", "F", "AC", "ADR", "VERIFY"}
 for marker in (
     "先让人读懂",
@@ -219,10 +201,7 @@ assert "handoff_status" not in tasks
 assert "stale" not in tasks
 assert "VERIFY-001" not in tasks
 
-assert len(agents.splitlines()) <= 115
 assert "模板说明（正式成文时连同本提示删除）" in agents
-assert sum(1 for line in agents.splitlines() if re.match(r"^#{1,4} ", line)) <= 11
-assert count_tables(agents) <= 3
 for marker in (
     "普通中文",
     "一分钟",

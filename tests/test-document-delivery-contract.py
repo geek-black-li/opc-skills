@@ -101,7 +101,7 @@ assert "[UI 设计规范](./docs/UI设计规范.md)" in documents["agents"]
 
 prd_skill = load_yaml("skills-custom/01-product/zx-product-prd/skill.yaml")
 assert prd_skill["id"] == "zx-product-prd"
-assert prd_skill["version"] == "1.2.0"
+assert prd_skill["version"] == "1.3.0"
 assert prd_skill["origin"] == "custom"
 assert prd_skill["category"] == "01-product"
 assert prd_skill["input_schema"]["properties"]["mode"]["enum"] == [
@@ -123,7 +123,7 @@ for marker in ("blocking", "non-blocking", "BR-", "AC-", "NFR-", "PERM-", "DATA-
 architecture = load_yaml(
     "skills-custom/03-fullstack-arch-dev/zx-dev-architecture/skill.yaml"
 )
-assert architecture["version"] == "1.5.0"
+assert architecture["version"] == "1.6.0"
 architecture_inputs = architecture["input_schema"]["properties"]
 for field in ("prd_path", "prd_revision", "requirement_ids"):
     assert field in architecture_inputs, f"architecture skill is missing {field}"
