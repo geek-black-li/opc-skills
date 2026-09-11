@@ -18,6 +18,8 @@ OPCSkills 用于沉淀一个全栈 OPC 从需求到交付全过程中的可复�
 | Skill 优化 | 先展示通用增补项、排除项和风险，确认后对已有 Skill 做最小、可追溯更新 |
 | 仓库查看 | 按分类列出正式 Skill 和仓库状态 |
 
+生成 PRD、技术设计、任务清单和 `AGENTS.md` 时，默认采用“人先读懂、AI 再追踪”：结论在前、使用常用中文、必要术语首次解释，并按实际复杂度删除无关章节、表格、图和编号。简单需求和单任务不会被扩写成完整企业级文档；结构化机器字段只用于 Skill 之间的校验与交接。
+
 当前仓库只沉淀经过实际项目提炼的业务能力。当前产品到开发链路包含 `zx-product-prd`、
 `zx-ui-spec`、`zx-ui-check`、`zx-dev-architecture`、`zx-dev-shadcn` 和
 `zx-project-organizer`；不会为了填满分类预置一批空泛 Skill。后续能力继续通过实际项目的
@@ -135,6 +137,7 @@ $opc-skills 确认提炼 <proposal_id>
 $opc-skills 放弃提炼 <proposal_id>
 $opc-skills 创建 docs/PRD.md，并区分已确认、建议和未知需求
 $opc-skills 基于已批准 PRD 创建 docs/技术设计.md
+$opc-skills 基于已批准的 PRD 和技术设计创建简洁任务清单，先不要执行
 $opc-skills 使用 zx-project-organizer，帮我审计当前项目结构
 $opc-skills 确认执行项目结构提案 <zpo-proposal_id>
 $opc-skills 放弃项目结构提案 <zpo-proposal_id>
@@ -585,6 +588,7 @@ OPCSkills/
 │   ├── test-configure-codex-reminder.sh
 │   ├── test-configure-codex-reminder.ps1
 │   ├── test-document-delivery-contract.py
+│   ├── test-document-readability-contract.py
 │   ├── test-dynamic-categories.py
 │   ├── test-install-codex.sh
 │   ├── test-install-codex.ps1

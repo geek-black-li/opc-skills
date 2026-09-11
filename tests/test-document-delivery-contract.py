@@ -33,21 +33,21 @@ for marker in ("F-001", "BR-001", "AC-001", "NFR-001", "PERM-001", "DATA-001"):
     assert marker in documents["prd"], f"PRD template is missing {marker}"
 assert "本文档是需求的唯一来源" not in documents["prd"]
 assert "最新明确指令" in documents["prd"]
-assert "分级" in documents["prd"]
+assert "阻塞问题" in documents["prd"]
+assert "非阻塞或延期项" in documents["prd"]
 assert "验证方式" in documents["prd"]
-assert "DATA ID 都有关联需求" in documents["prd"]
-assert "{F／BR／AC／NFR／PERM／DATA ID}" in documents["prd"]
-assert "所有正式 F、BR、AC、NFR、PERM、DATA ID" in documents["prd"]
+assert "关联规则" in documents["prd"]
+assert "同一编号不要换义或复用" in documents["prd"]
 
 for marker in (
     "对应 PRD",
     "仓库基线",
-    "上游修订状态",
-    "handoff_status",
+    "PRD 状态",
+    "交接结论",
     "当前状态与证据",
     "ADR-001",
-    "追踪矩阵",
-    "stale",
+    "需求追踪",
+    "需要复核",
 ):
     assert marker in documents["technical"], f"technical template is missing {marker}"
 for hard_coded_default in (
@@ -72,7 +72,7 @@ for marker in (
     "授权来源／时间／单次边界",
     "历史记录不授权未来任务",
     "上游修订",
-    "handoff_status=ready",
+    "技术设计写明“可以进入实施计划”",
     "并行",
 ):
     assert marker in documents["tasks"], f"task template is missing {marker}"
@@ -101,7 +101,7 @@ assert "[UI 设计规范](./docs/UI设计规范.md)" in documents["agents"]
 
 prd_skill = load_yaml("skills-custom/01-product/zx-product-prd/skill.yaml")
 assert prd_skill["id"] == "zx-product-prd"
-assert prd_skill["version"] == "1.0.0"
+assert prd_skill["version"] == "1.1.0"
 assert prd_skill["origin"] == "custom"
 assert prd_skill["category"] == "01-product"
 assert prd_skill["input_schema"]["properties"]["mode"]["enum"] == [
@@ -123,7 +123,7 @@ for marker in ("blocking", "non-blocking", "BR-", "AC-", "NFR-", "PERM-", "DATA-
 architecture = load_yaml(
     "skills-custom/03-fullstack-arch-dev/zx-dev-architecture/skill.yaml"
 )
-assert architecture["version"] == "1.2.0"
+assert architecture["version"] == "1.3.0"
 architecture_inputs = architecture["input_schema"]["properties"]
 for field in ("prd_path", "prd_revision", "requirement_ids"):
     assert field in architecture_inputs, f"architecture skill is missing {field}"
@@ -139,7 +139,7 @@ for marker in ("stale", "追踪矩阵", "AC-", "NFR-", "DATA-"):
 organizer = load_yaml(
     "skills-custom/06-project-manage/zx-project-organizer/skill.yaml"
 )
-assert organizer["version"] == "7.1.0"
+assert organizer["version"] == "7.2.0"
 for asset in ("assets/AGENTS-模板.md", "assets/任务清单-模板.md"):
     assert asset in organizer["prompt"], f"organizer does not route {asset}"
 for routed_asset in (

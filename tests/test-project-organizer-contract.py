@@ -34,7 +34,7 @@ def main() -> None:
     scenarios = load_yaml(SCENARIOS_PATH)["scenarios"]
     adapter = ADAPTER_PATH.read_text(encoding="utf-8")
 
-    assert skill["version"] == "7.1.0"
+    assert skill["version"] == "7.2.0"
 
     inputs = skill["input_schema"]["properties"]
     assert inputs["workflow_mode"]["enum"] == [

@@ -54,6 +54,7 @@ description: Use when the user explicitly invokes OPCSkills to execute a formal 
 | “使用/调用 `<skill-id>` …” | 扫描正式 Skill，按唯一 id 加载并执行该 Skill |
 | “创建/更新/复审 PRD…” | 调用 `zx-product-prd`，使用 `mode=auto` 按当前明确动作选择写入或只读复审 |
 | “创建/更新/复审技术设计…” | 调用 `zx-dev-architecture`，使用 `mode=auto` 并核对 PRD 修订与追踪门禁 |
+| “创建/更新/复审实施计划或任务清单…” | 读取 `skills-custom/06-project-manage/zx-project-organizer/assets/任务清单-模板.md`；可用时使用 `writing-plans`，否则按同一简洁契约生成；只写计划，不自动执行 |
 | “按 ZX 完整结构初始化项目” | 调用 `zx-project-organizer`，设置 `structure_profile=zx-full-delivery` |
 | “按项目实际情况初始化” | 调用 `zx-project-organizer`，设置 `structure_profile=adaptive` |
 | “按以下目录初始化…” | 调用 `zx-project-organizer`，设置 `structure_profile=custom` 并原样传入目录树 |
@@ -205,6 +206,8 @@ zx-full-delivery 提案必须展示 `structure_comparison`，确认 missing、ad
 ## 输出和变更
 
 - 优先直接执行用户明确授权的只读或可恢复操作，不让用户整理内部参数。
+- 业务 Skill 的结构化字段用于内部交接和后续校验。除非用户明确要求原始 JSON，否则先展示普通中文摘要，再说明文件、验证和待决定事项；不要把大段机器字段当作主要答复。
+- 面向人的文档先给结论，使用常用词并解释必要术语；按实际复杂度删除无关章节、表格、图和编号。
 - 写入后校验 YAML、唯一 id、分类路径、manifest 可发现性和残留占位符。
 - 不自动提交或推送 Git，除非用户明确要求。
 - 保留任务范围外的用户文件和未提交修改。
@@ -220,6 +223,7 @@ $opc-skills 确认提炼 zxsi-0123456789abcdef
 $opc-skills 放弃提炼 zxsi-0123456789abcdef
 $opc-skills 创建 docs/PRD.md，并区分已确认、建议和未知需求
 $opc-skills 基于已批准 PRD 创建 docs/技术设计.md
+$opc-skills 基于已批准的 PRD 和技术设计创建简洁任务清单，先不要执行
 $opc-skills 使用 zx-project-organizer，帮我审计当前项目结构
 $opc-skills 使用 zx-project-organizer，引导我创建一个全新项目
 $opc-skills 使用 zx-project-organizer，引导我整理现有项目
