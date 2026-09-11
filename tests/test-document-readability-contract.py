@@ -30,6 +30,27 @@ def id_prefixes(markdown: str) -> set[str]:
     return set(re.findall(r"(?<![A-Z])([A-Z][A-Z-]*)-\d{3}", markdown))
 
 
+def assert_architecture_optional_blocks(markdown: str) -> None:
+    required_fragments = (
+        "| 需求与来源 | 当前基线 | 目标及适用条件 | 设计措施 | 验证与运行观察 |",
+        "| 场景 | 数据流向 | 同步／异步 | 防重复与重试 | 最终失败去向 |",
+        "| 依赖与提供方 | 用途和权威契约 | 客户端处理 | 服务承诺、证据和负责人 |",
+        "有明确目标，或正式服务准备上线时保留",
+        "只有多个系统、消息、批处理或最终一致性确实存在时保留本节",
+        "服务承诺与客户端超时是两件事",
+        "没有正式服务或部署变化时删除本节",
+        "- 部署形态：",
+        "- 关键观察信号：",
+        "- 告警与处理：",
+        "- 降级与停止条件：",
+        "- 备份：",
+        "- 日常恢复目标与演练：",
+        "- 日志与审计：",
+    )
+    for fragment in required_fragments:
+        assert fragment in markdown, f"technical template is missing: {fragment}"
+
+
 prd = read("skills-custom/01-product/zx-product-prd/assets/PRD-模板.md")
 prd_skill = load_yaml("skills-custom/01-product/zx-product-prd/skill.yaml")
 
@@ -103,20 +124,69 @@ for marker in (
     "日常恢复目标与演练",
     "运行观察",
     "模块与边界（涉及多个模块或系统时）",
+    "关键质量与容量目标（有明确要求或准备上线时）",
+    "外部依赖（调用其他系统时）",
+    "跨系统或异步数据流（确实存在时）",
+    "生产运行与恢复（正式服务或部署变化时）",
+    "服务承诺与客户端超时是两件事",
+    "有明确目标，或正式服务准备上线时保留",
 ):
     assert marker in technical, f"technical template is missing readability rule: {marker}"
 assert "handoff_status" not in technical
 assert "stale" not in technical
+assert_architecture_optional_blocks(technical)
 
-assert architecture["version"] == "1.3.0"
+# Mutation checks prove the contract fails when a required production field is removed.
+for required_fragment in (
+    "| 依赖与提供方 | 用途和权威契约 | 客户端处理 | 服务承诺、证据和负责人 |",
+    "| 场景 | 数据流向 | 同步／异步 | 防重复与重试 | 最终失败去向 |",
+    "- 日常恢复目标与演练：",
+):
+    changed = technical.replace(required_fragment, "", 1)
+    try:
+        assert_architecture_optional_blocks(changed)
+    except AssertionError:
+        continue
+    raise AssertionError(f"mutation was not detected: {required_fragment}")
+
+assert architecture["version"] == "1.4.0"
 for marker in (
     "普通中文",
     "简单改动",
     "不适用章节",
     "不为了完整而增加",
     "机器字段只用于结构化输出",
+    "外部依赖",
+    "关键质量与容量目标",
+    "跨系统或异步数据流",
+    "生产运行与恢复",
 ):
     assert marker in architecture["prompt"], f"architecture skill is missing {marker}"
+for marker in (
+    "不能把服务承诺与客户端超时混为一项",
+    "没有依据时不编造数字",
+    "本地小改动删除该块",
+):
+    assert marker in architecture["prompt"], f"architecture condition is missing {marker}"
+assert any(
+    "不硬编码" in item and "固定技术栈" in item
+    for item in architecture["constraints"]
+)
+
+direct_updates = architecture["metadata"]["direct_updates"]
+assert direct_updates[-1]["version_after"] == architecture["version"]
+for earlier, later in zip(direct_updates, direct_updates[1:]):
+    assert earlier["version_after"] == later["version_before"]
+
+for hard_coded_default in (
+    "PostgreSQL",
+    "RabbitMQ",
+    "K8s",
+    "JWT",
+    "100QPS",
+    "P99<3s",
+):
+    assert hard_coded_default not in technical
 
 tasks = read(
     "skills-custom/06-project-manage/zx-project-organizer/assets/任务清单-模板.md"
