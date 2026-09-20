@@ -134,7 +134,7 @@ for required_fragment in (
         continue
     raise AssertionError(f"mutation was not detected: {required_fragment}")
 
-assert architecture["version"] == "1.6.0"
+assert architecture["version"] == "1.7.0"
 for marker in (
     "普通中文",
     "简单改动",
@@ -159,7 +159,13 @@ assert any(
 )
 
 direct_updates = architecture["metadata"]["direct_updates"]
-assert direct_updates[-1]["version_after"] == architecture["version"]
+updates = sorted(
+    direct_updates + architecture["metadata"]["self_improve_updates"],
+    key=lambda item: tuple(map(int, item["version_after"].split("."))),
+)
+assert updates[-1]["version_after"] == architecture["version"]
+for earlier, later in zip(updates, updates[1:]):
+    assert earlier["version_after"] == later["version_before"]
 for earlier, later in zip(direct_updates, direct_updates[1:]):
     assert earlier["version_after"] == later["version_before"]
 

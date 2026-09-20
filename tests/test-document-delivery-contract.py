@@ -123,7 +123,7 @@ for marker in ("blocking", "non-blocking", "BR-", "AC-", "NFR-", "PERM-", "DATA-
 architecture = load_yaml(
     "skills-custom/03-fullstack-arch-dev/zx-dev-architecture/skill.yaml"
 )
-assert architecture["version"] == "1.6.0"
+assert architecture["version"] == "1.7.0"
 architecture_inputs = architecture["input_schema"]["properties"]
 for field in ("prd_path", "prd_revision", "requirement_ids"):
     assert field in architecture_inputs, f"architecture skill is missing {field}"
