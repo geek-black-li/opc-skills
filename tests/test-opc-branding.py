@@ -22,6 +22,7 @@ ACTIVE_BRAND_FILES = [
     "templates/codex-agents-reminder.md",
     "scripts/install-codex.sh",
     "scripts/install-codex.ps1",
+    "scripts/install-claude-code.sh",
     "scripts/configure-codex-reminder.sh",
     "scripts/configure-codex-reminder.ps1",
 ]
@@ -40,6 +41,12 @@ assert re.search(r"^name: opc-skills$", primary, re.MULTILINE)
 assert "$opc-skills" in primary
 assert "$zx-skills" not in primary
 assert not (ROOT / "adapters/codex/zx-skills").exists()
+
+claude_entry = read("adapters/claude-code/opc-skills/SKILL.md")
+assert re.search(r"^name: opc-skills$", claude_entry, re.MULTILINE)
+assert "/opc-skills" in claude_entry
+assert "skill-manifest.yaml" in claude_entry
+assert "adapters/codex/opc-skills/SKILL.md" in claude_entry
 
 reminder = read("templates/codex-agents-reminder.md")
 assert "<!-- opc-skills-reminder:start -->" in reminder
@@ -81,12 +88,15 @@ for phrase in (
     "cd opc-skills",
     "$opc-skills 查看仓库状态",
     "~/.agents/skills/opc-skills",
+    "~/.claude/skills/opc-skills",
+    "/opc-skills 查看仓库状态",
     "Gitee 备用远程",
     "zx-<category>-<function>",
 ):
     assert phrase in readme, phrase
 
 assert "`$opc-skills` 是本仓库唯一的 Codex 入口" in readme
+assert "`/opc-skills` 是本仓库唯一的 Claude Code 入口" in readme
 assert "Gitee 备用远程需要手动同步，不是自动镜像" in readme
 assert "~/.agents/skills/zx-skills" not in readme
 assert "$zx-skills" not in readme

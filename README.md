@@ -99,6 +99,38 @@ Codex 原生 Skill 使用 `$skill-name` 显式调用；`/skills` 只用于查看
 - 个人 Skill ID 继续使用 `zx-*`；提案 ID 继续使用 `zxsi-*` 和 `zpo-*`。已有业务 Skill ID 不会因仓库入口调整而变化。
 - GitHub 是主仓库和默认克隆源；Gitee 备用远程需要手动同步，不是自动镜像。
 
+## 在 Claude Code 中使用
+
+Claude Code 不直接扫描本仓库的 `skill.yaml`，需要安装专用入口。macOS / Linux 在仓库根目录执行：
+
+```bash
+bash scripts/install-claude-code.sh install
+```
+
+脚本会创建一个指向正式仓库适配器的用户级链接：
+
+```text
+~/.claude/skills/opc-skills
+```
+
+安装器只管理这个入口。重复安装不会替换已有正确链接；若目标位置已有普通文件、目录、失效链接或指向其他来源的链接，脚本会拒绝覆盖。仓库更新后无需重新复制 Skill，链接会继续读取当前正式源码。
+
+首次创建这个顶级 Skill 后重新启动 Claude Code，在 `/skills` 中确认 `opc-skills` 已出现，然后执行：
+
+```text
+/opc-skills 查看仓库状态
+/opc-skills 使用 zx-dev-architecture，复审当前技术设计
+```
+
+`/opc-skills` 是本仓库唯一的 Claude Code 入口。业务 Skill 仍由 `skill-manifest.yaml` 发现，不会分别注册成 `/zx-product-prd` 或 `/zx-dev-architecture`；调用时通过 `/opc-skills 使用 <skill-id>，...` 路由。Codex 中仍使用 `$opc-skills`，两端读取同一份 `skill.yaml` 正式源码。
+
+检查或卸载入口：
+
+```bash
+bash scripts/install-claude-code.sh status
+bash scripts/install-claude-code.sh uninstall
+```
+
 ### 第四步（推荐）：开启项目节点完成提醒
 
 如果希望 Codex 在完成并验证一个功能、方案、测试、问题排查或发布节点后，主动判断本次链路是否值得沉淀，可以安装 OPCSkills 的全局提醒规则。
@@ -596,6 +628,7 @@ OPCSkills/
 ├── scripts/
 │   ├── install-codex.sh
 │   ├── install-codex.ps1
+│   ├── install-claude-code.sh
 │   ├── configure-codex-reminder.sh
 │   └── configure-codex-reminder.ps1
 ├── templates/
@@ -608,6 +641,7 @@ OPCSkills/
 │   ├── test-dynamic-categories.py
 │   ├── test-install-codex.sh
 │   ├── test-install-codex.ps1
+│   ├── test-install-claude-code.sh
 │   ├── test-opc-branding.py
 │   ├── test-personal-namespace.py
 │   ├── test-project-organizer-contract.py
@@ -616,10 +650,12 @@ OPCSkills/
 │   ├── test-selfimprove-confirmation.py
 │   └── …
 ├── adapters/
+│   ├── claude-code/
+│   │   └── opc-skills/SKILL.md
 │   └── codex/
-│       ├── opc-skills/
-│       │   ├── SKILL.md
-│       │   └── agents/openai.yaml
+│       └── opc-skills/
+│           ├── SKILL.md
+│           └── agents/openai.yaml
 ├── builtin/
 │   ├── skill-creator.yaml
 │   ├── skill-editor.yaml
@@ -667,7 +703,7 @@ OPCSkills/
                 └── zx-full-delivery-structure.yaml
 ```
 
-Codex 适配器位于 `adapters/codex/opc-skills/`，提供唯一入口并读取仓库的通用 Skill 契约。
+Codex 和 Claude Code 适配器分别位于 `adapters/codex/opc-skills/` 与 `adapters/claude-code/opc-skills/`。两者只负责工具原生发现和调用语法，均读取同一份 manifest 与业务 Skill，不复制正式能力。
 
 仓库框架不批量预置空泛业务 Skill；当前产品到开发链路由 `zx-product-prd`、`zx-ui-spec`、
 `zx-ui-check`、`zx-dev-architecture`、`zx-dev-shadcn`、`zx-project-organizer` 和 `zx-project-docs` 分别承担明确职责。
