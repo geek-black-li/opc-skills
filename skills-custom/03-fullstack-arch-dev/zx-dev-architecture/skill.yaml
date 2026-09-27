@@ -1,7 +1,7 @@
 schema_version: '1.0'
 id: zx-dev-architecture
 name: ZX 技术架构设计
-version: 1.7.0
+version: 1.9.0
 description: 从已批准需求、原型、现有代码及维护约束出发，创建或复审兼顾人类阅读、上游版本、需求追踪和实施门禁的技术架构设计。
 category: 03-fullstack-arch-dev
 origin: custom
@@ -313,6 +313,7 @@ prompt: |-
   - 用户已明确选择Go，且明确采用ezgo或当前权威技术设计已确认ezgo时，读取同目录 references/go-ezgo-backend.md。仅选择Go而未定框架时，将该基线列为候选，不自动启用；未选语言或仅选择单体时不推断Go。
   - 参考文档用于设计和规范提取，不是可直接执行的脚手架。复用现有constraints与decisions表达语言、框架、数据库和入口选择，不增加输入输出字段，不改变assess/review/design的授权边界。
   - 核验实际脚手架和ezgo版本、调用签名及配置行为后，按需记录启动与CLI、显式分层、DAO、DTO、路由版本、错误常量、阅读布局、测试隔离和源码契约规则。MongoDB、三入口、事务、消息任务按业务确认，不为了套基线增加组件。
+  - 核对真实纵向调用链而不只看目录：包函数默认、完整Controller流转、命名返回与错误语义、PostgreSQL同一事务传递及人工逐模块复核按参考执行；保留已确认接口与安全边界，Service按模块集中、DAO按数据对象组织，优先框架响应/连接/配置；逐项复核常量、全部方法注释与废弃引用，历史例外不自动升级为规则。
   - 输入为现有系统时先列源码事实与基线差异，不自动重命名、覆盖工程或迁移数据。项目整理Skill负责已授权的目录创建，后续代码实施另按用户授权进行；公共框架修复和发版不能由采用该基线推导出授权。
 
   四、从业务约束推导数据与流程
@@ -379,7 +380,7 @@ prompt: |-
 metadata:
   author: OPCSkills
   created_at: '2026-09-11'
-  updated_at: '2026-09-20'
+  updated_at: '2026-09-27'
   tags:
   - architecture
   - technical-design
@@ -429,3 +430,11 @@ metadata:
     version_before: 1.5.0
     version_after: 1.6.0
     reason: 区分概要与详细设计及完整与局部范围，补齐数据库、接口、技术组成和前端实现，按适用内容检查交接。
+  - date: '2026-09-27'
+    version_before: 1.7.0
+    version_after: 1.8.0
+    reason: 根据用户确认补充包函数与完整请求流、可读返回和查询语义、PostgreSQL事务传递、真实调用链审查及人工逐模块复核。
+  - date: '2026-09-27'
+    version_before: 1.8.0
+    version_after: 1.9.0
+    reason: 补齐Service与DAO组织、框架优先、数字错误码和常量分组、请求头追踪、私有方法注释及完整调用链复核。

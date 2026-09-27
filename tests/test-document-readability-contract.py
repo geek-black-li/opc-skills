@@ -134,7 +134,7 @@ for required_fragment in (
         continue
     raise AssertionError(f"mutation was not detected: {required_fragment}")
 
-assert architecture["version"] == "1.7.0"
+assert architecture["version"] == "1.9.0"
 for marker in (
     "普通中文",
     "简单改动",
@@ -166,8 +166,10 @@ updates = sorted(
 assert updates[-1]["version_after"] == architecture["version"]
 for earlier, later in zip(updates, updates[1:]):
     assert earlier["version_after"] == later["version_before"]
+# Direct edits may be separated by a self-improve release; the merged history
+# above must be contiguous, while direct edits only need increasing versions.
 for earlier, later in zip(direct_updates, direct_updates[1:]):
-    assert earlier["version_after"] == later["version_before"]
+    assert tuple(map(int, earlier["version_after"].split("."))) < tuple(map(int, later["version_after"].split(".")))
 
 for hard_coded_default in (
     "PostgreSQL",

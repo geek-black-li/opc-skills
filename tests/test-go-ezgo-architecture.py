@@ -34,7 +34,12 @@ for required in [
     "go vet", "GOWORK=off", "不是可直接运行的工程",
 ]:
     assert required in body, required
-assert body.count("```go") == 1
+for rule in ["Service默认按业务模块", "DAO按数据对象", "New构造方法", "resp.Json(c, err, response)",
+             "code/msg/data", "business.go", "code.go", "configs/code.yaml", "X-Request-ID", "WithTx(tx).Write",
+             "公开与私有方法", "不为旧写法增加兼容转发", "逐项对照维护者"]:
+    assert rule in body, rule
+assert "bcontroller.Json(" not in body
+assert body.count("```go") == 2
 assert body.count("```") % 2 == 0
 for forbidden in ["175.27.134.81", "/Users/", "pfc_api", "BEGIN OPENSSH PRIVATE KEY"]:
     assert forbidden not in body, forbidden
