@@ -139,7 +139,7 @@ for marker in ("stale", "追踪矩阵", "AC-", "NFR-", "DATA-"):
 organizer = load_yaml(
     "skills-custom/06-project-manage/zx-project-organizer/skill.yaml"
 )
-assert organizer["version"] == "7.2.0"
+assert organizer["version"] == "7.3.0"
 for asset in ("assets/AGENTS-模板.md", "assets/任务清单-模板.md"):
     assert asset in organizer["prompt"], f"organizer does not route {asset}"
 for routed_asset in (

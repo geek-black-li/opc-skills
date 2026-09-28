@@ -90,14 +90,14 @@ for phrase in (
     "~/.agents/skills/opc-skills",
     "~/.claude/skills/opc-skills",
     "/opc-skills 查看仓库状态",
-    "Gitee 备用远程",
+    "GitHub 是本仓库唯一配置的远程代码托管平台",
     "zx-<category>-<function>",
 ):
     assert phrase in readme, phrase
 
 assert "`$opc-skills` 是本仓库唯一的 Codex 入口" in readme
 assert "`/opc-skills` 是本仓库唯一的 Claude Code 入口" in readme
-assert "Gitee 备用远程需要手动同步，不是自动镜像" in readme
+assert "Gitee" not in readme
 assert "~/.agents/skills/zx-skills" not in readme
 assert "$zx-skills" not in readme
 assert "adapters/codex/zx-skills/" not in readme

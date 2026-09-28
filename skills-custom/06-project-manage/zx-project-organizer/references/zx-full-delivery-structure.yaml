@@ -1,5 +1,5 @@
 profile_id: zx-full-delivery
-version: "3.0.0"
+version: "3.1.0"
 name: "ZX 全栈 OPC 完整交付结构"
 description: "用于需要从项目开始即建立产品、设计、开发、测试、项目管理与调研资产完整边界的项目。"
 
@@ -121,6 +121,7 @@ files:
     required_sections:
       - 文档地图
       - 权威入口
+      - 目录基线
       - 状态规则
       - 历史与冲突处理
 
@@ -135,7 +136,8 @@ forbidden_default_paths:
 placement_rules:
   - "自动化测试跟随 development 中对应代码模块；业务测试计划、用例、报告和验收证据进入 docs/testing。"
   - "整理后的调研结论进入 docs/product 的相应分类；原始来源进入 research/sources，素材进入 research/assets。"
-  - "技术架构文档按主题进入 docs/project/05-决策记录 或随代码模块维护；除非用户另行确认，不新增 docs/architecture。"
+  - "项目总体架构和跨模块决策进入 docs/project/05-决策记录；应用内部详细设计跟随对应应用，优先复用其已有文档位置，短说明可写应用README。接口契约进入提供方应用的specifications/http-api、specifications/rpc或specifications/messages。每份内容只保留一个权威正文，其他入口引用；既有已确认例外先保留，不自动搬迁。"
+  - "上述归属规则不预建应用docs子目录；需要新增时纳入确认提案。除非用户另行确认，不新增docs/architecture，也不为目录跳号重新编号。"
   - "环境、发布和运行说明在真实需要出现时随代码或后续自定义扩展；除非用户另行确认，不新增 docs/operations。"
   - "该结构不预建归档目录；资料被替代后再由用户选择归档策略。"
   - "前端应用统一进入 development/frontend/apps，后端应用统一进入 development/backend/apps；即使只有一个应用也保留 apps 层。"
@@ -146,3 +148,15 @@ placement_rules:
   - "项目名称默认不在 docs/design 内重复套层；只有同一仓库已确认包含多个独立产品且需要产品级隔离时，才在设计分类下增加产品层。"
   - "docs/design/05-设计评审只保存正式结论、问题清单、处理状态和验收结果；过程截图、临时对比页和自动化证据跟随对应原型版本，放入其 audits 或 previews。"
   - "重组已有设计目录时，迁移映射必须同时覆盖 README、文档索引、相对链接、构建产物路径、测试夹具和固定预览服务根目录；未确认的删除或归档不包含在迁移授权中。"
+
+# 只增加治理规则，不改变完整模板的目录名称、编号或数量。
+document_governance:
+  baseline_location: docs/README.md
+  baseline_fields: [structure_profile, template_version, confirmed_exceptions]
+  missing_baseline: unknown-not-latest
+  upgrade: compare-propose-confirm-apply
+  ownership:
+    project_architecture: docs/project/05-决策记录
+    cross_module_decisions: docs/project/05-决策记录
+    application_design: provider-application
+    interface_contract: provider-application/specifications

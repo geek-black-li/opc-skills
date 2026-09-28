@@ -34,7 +34,7 @@ def main() -> None:
     scenarios = load_yaml(SCENARIOS_PATH)["scenarios"]
     adapter = ADAPTER_PATH.read_text(encoding="utf-8")
 
-    assert skill["version"] == "7.2.0"
+    assert skill["version"] == "7.3.0"
 
     inputs = skill["input_schema"]["properties"]
     assert inputs["workflow_mode"]["enum"] == [
@@ -347,7 +347,7 @@ def main() -> None:
 
     full_profile = load_yaml(FULL_PROFILE_PATH)
     assert full_profile["profile_id"] == "zx-full-delivery"
-    assert full_profile["version"] == "3.0.0"
+    assert full_profile["version"] == "3.1.0"
     directories = full_profile["directories"]
     files = full_profile["files"]
     assert len(directories) == 38

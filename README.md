@@ -31,6 +31,8 @@ Self-Improve、手动创建或第三方评估导入逐步积累。
 
 模板验证检查结构、字段定义落点及引用，不用固定行数、标题数或表格数裁剪内容；检查通过不代表已经在实际项目中验证生成效果。
 
+目录治理沿用当前完整模板的名称和编号，不因跳号或空目录自动重排。项目总体架构、跨模块决策放入`docs/project/05-决策记录`，应用内部详细设计跟随应用，接口契约跟随提供方的`specifications`；每个主题只保留一份权威正文。项目在现有`docs/README.md`的“目录基线”登记采用策略、模板版本与已确认例外；模板版本不等于Skill版本，缺失登记不能推断为最新版。Skill更新只提示差异，不自动迁移旧项目；迁移与基线更新均须经过提案确认和验证，不新增目录台账文件。
+
 [`zx-project-docs`](skills-custom/06-project-manage/zx-project-docs/skill.yaml)负责已有文档的检查、日常整理和历史清理；目录重组由`zx-project-organizer`负责。使用示例：
 
 ```text
@@ -97,7 +99,7 @@ Codex 原生 Skill 使用 `$skill-name` 显式调用；`/skills` 只用于查看
 
 - `$opc-skills` 是本仓库唯一的 Codex 入口。
 - 个人 Skill ID 继续使用 `zx-*`；提案 ID 继续使用 `zxsi-*` 和 `zpo-*`。已有业务 Skill ID 不会因仓库入口调整而变化。
-- GitHub 是主仓库和默认克隆源；Gitee 备用远程需要手动同步，不是自动镜像。
+- GitHub 是本仓库唯一配置的远程代码托管平台，默认远程名为 `origin`。
 
 ## 在 Claude Code 中使用
 

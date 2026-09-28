@@ -223,7 +223,7 @@ assert "保留“AGENTS-模板.md”这个名字不会被 Codex 自动发现" in
 assert "网页、依赖包、附件" in agents
 assert "其他文件名不会被 Codex 自动当作项目规则" not in agents
 
-assert organizer["version"] == "7.2.0"
+assert organizer["version"] == "7.3.0"
 for marker in (
     "普通中文",
     "单个简单任务",
