@@ -72,9 +72,28 @@ for rule in ["原型操作 → 接口请求响应 → 业务规则与数据变�
     assert rule in template, rule
 for rule in ["原型功能对齐", "Route、Controller、Service、DAO及Req/Resp", "已实现、已验证、未完成和差异"]:
     assert rule in body, rule
-assert skill["version"] == "1.10.0"
+assert skill["version"] == "1.11.0"
 record = next(item for item in skill["metadata"]["self_improve_updates"]
               if item["proposal_id"] == "zxsi-6f8cb8228ec71cf2")
 assert record["confirmed"] is True and record["action"] == "update-skill"
 assert record["version_before"] == "1.9.0" and record["version_after"] == "1.10.0"
 print("PASS: Go/ezgo and 7 prototype-alignment instruction scenarios; authorization contracts unchanged")
+
+
+# HTTP rules distinguish real invocation scenarios instead of forcing one visual pattern.
+http_scenarios = {
+    "fixed-service": ["固定外部服务", "conn.url", "Service + pathKey", "Get/PostJSON"],
+    "dynamic-target": ["动态完整目标", "ezhttp.Request", "不登记占位Service/pathKey"],
+    "dynamic-root-fixed-protocol": ["根地址动态、协议路径固定", "协议路径可以由对应DAO明确维护"],
+    "no-style-only-wrapper": ["不为表面一致增加HttpBase", "WithOptions不是必需规范"],
+    "http-models": ["model/mreq/http.go", "model/mresp/http.go", "不直接传数据库持久实体"],
+    "separate-responsibilities": ["组合验证、事务、审计", "不新增第二套HTTP执行器"],
+    "safe-response": ["非成功HTTP状态", "不记录上游正文", "不能把HTTP 200直接视为业务成功"],
+    "readable-layout": ["结构体声明和函数体使用多行形式", "即使只有一个嵌入字段或一条return"],
+}
+for scenario, rules in http_scenarios.items():
+    for rule in rules:
+        assert rule in body, (scenario, rule)
+assert "固定服务与动态目标" in skill["prompt"]
+assert "HTTP DAO规范" in skill["triggers"]["keywords"]
+print("PASS: 8 HTTP DAO instruction scenarios; no runtime verification claimed")
