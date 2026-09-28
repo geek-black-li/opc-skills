@@ -50,4 +50,31 @@ assert record["confirmed"] is True
 assert record["action"] == "update-skill"
 assert record["version_before"] == "1.6.0"
 assert record["version_after"] == "1.7.0"
-print("PASS: optional Go/ezgo profile, evidence boundaries and existing contracts")
+
+
+# These are instruction-contract regressions, not a claim that an agent or a
+# production backend has passed acceptance. Each scenario fixes a known omission.
+template = (DIRECTORY / "assets/技术设计文档-模板.md").read_text(encoding="utf-8")
+scenarios = {
+    "approved-baseline": ["二-B、已确认原型到后端的功能对齐", "确认依据", "原型位置、修订"],
+    "missing-list-behavior": ["搜索、筛选、排序、分页", "不能只过滤当前页"],
+    "state-or-permission-drift": ["状态转换、角色权限", "不得静默增删业务行为"],
+    "mock-is-not-proof": ["模拟成功不能作为真实验证通过", "后端验证不等于前端联调或用户验收"],
+    "source-conflict": ["最新用户确认", "受影响项", "不强制没有原型的项目补造原型"],
+    "no-second-business-system": ["不以通用CRUD替代原型合同", "不强制一个按钮对应一个接口"],
+    "bidirectional-review": ["接口设计后", "授权实现后", "已实现、已验证、未完成和差异"],
+}
+for scenario, rules in scenarios.items():
+    for rule in rules:
+        assert rule in skill["prompt"], (scenario, rule)
+assert "基于已确认原型设计或复核后端接口的功能覆盖" in skill["triggers"]["intents"]
+for rule in ["原型操作 → 接口请求响应 → 业务规则与数据变更 → 验证用例", "已确认原型", "确认依据"]:
+    assert rule in template, rule
+for rule in ["原型功能对齐", "Route、Controller、Service、DAO及Req/Resp", "已实现、已验证、未完成和差异"]:
+    assert rule in body, rule
+assert skill["version"] == "1.10.0"
+record = next(item for item in skill["metadata"]["self_improve_updates"]
+              if item["proposal_id"] == "zxsi-6f8cb8228ec71cf2")
+assert record["confirmed"] is True and record["action"] == "update-skill"
+assert record["version_before"] == "1.9.0" and record["version_after"] == "1.10.0"
+print("PASS: Go/ezgo and 7 prototype-alignment instruction scenarios; authorization contracts unchanged")
