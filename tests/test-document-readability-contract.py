@@ -134,7 +134,7 @@ for required_fragment in (
         continue
     raise AssertionError(f"mutation was not detected: {required_fragment}")
 
-assert architecture["version"] == "1.11.0"
+assert architecture["version"] == "1.12.0"
 for marker in (
     "普通中文",
     "简单改动",

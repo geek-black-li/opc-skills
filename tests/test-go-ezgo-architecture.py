@@ -72,12 +72,32 @@ for rule in ["原型操作 → 接口请求响应 → 业务规则与数据变�
     assert rule in template, rule
 for rule in ["原型功能对齐", "Route、Controller、Service、DAO及Req/Resp", "已实现、已验证、未完成和差异"]:
     assert rule in body, rule
-assert skill["version"] == "1.11.0"
+assert skill["version"] == "1.12.0"
+for rule in [
+    "六-A、开发与交付的验证节奏",
+    "开发中先测试后实现",
+    "完整交付包稳定后统一执行",
+    "全量失败加专项成功不能称为全量通过",
+    "输入发生变化时识别失效证据",
+    "不把skip算作通过",
+]:
+    assert rule in skill["prompt"], rule
+for rule in [
+    "遵循主Skill“六-A”的验证节奏",
+    "相关修改集中专项回归",
+    "最终稳定代码仍须完整通过",
+    "长测试期间不修改被测输入",
+]:
+    assert rule in body, rule
+record = next(item for item in skill["metadata"]["self_improve_updates"]
+              if item["proposal_id"] == "zxsi-5d9d9e9bb2cf8d4e")
+assert record["confirmed"] is True and record["action"] == "update-skill"
+assert record["version_before"] == "1.11.0" and record["version_after"] == "1.12.0"
 record = next(item for item in skill["metadata"]["self_improve_updates"]
               if item["proposal_id"] == "zxsi-6f8cb8228ec71cf2")
 assert record["confirmed"] is True and record["action"] == "update-skill"
 assert record["version_before"] == "1.9.0" and record["version_after"] == "1.10.0"
-print("PASS: Go/ezgo and 7 prototype-alignment instruction scenarios; authorization contracts unchanged")
+print("PASS: Go/ezgo, prototype alignment and staged verification contracts; authorization unchanged")
 
 
 # HTTP rules distinguish real invocation scenarios instead of forcing one visual pattern.
