@@ -1,0 +1,4488 @@
+{
+  "network": [
+    {
+      "path": ".agents/plugins/marketplace.json",
+      "hits": [
+        {
+          "line": 11,
+          "text": "        \"url\": \"https://github.com/Leonxlnx/taste-skill.git\","
+        }
+      ]
+    },
+    {
+      "path": ".claude-plugin/plugin.json",
+      "hits": [
+        {
+          "line": 9,
+          "text": "  \"homepage\": \"https://github.com/leonxlnx/taste-skill\","
+        },
+        {
+          "line": 10,
+          "text": "  \"repository\": \"https://github.com/leonxlnx/taste-skill\","
+        }
+      ]
+    },
+    {
+      "path": ".codex-plugin/plugin.json",
+      "hits": [
+        {
+          "line": 7,
+          "text": "    \"url\": \"https://github.com/Leonxlnx\""
+        },
+        {
+          "line": 9,
+          "text": "  \"homepage\": \"https://github.com/Leonxlnx/taste-skill\","
+        },
+        {
+          "line": 10,
+          "text": "  \"repository\": \"https://github.com/Leonxlnx/taste-skill\","
+        },
+        {
+          "line": 27,
+          "text": "    \"websiteURL\": \"https://github.com/Leonxlnx/taste-skill\","
+        }
+      ]
+    },
+    {
+      "path": "CHANGELOG.md",
+      "hits": [
+        {
+          "line": 147,
+          "text": "npx skills add https://github.com/Leonxlnx/taste-skill --skill \"design-taste-frontend-v1\""
+        }
+      ]
+    },
+    {
+      "path": "README.md",
+      "hits": [
+        {
+          "line": 6,
+          "text": "  <a href=\"https://tasteskill.dev\" title=\"Visit tasteskill.dev\"><img src=\"https://img.shields.io/badge/website-tasteskill.dev-24292f?style=flat\" alt=\"Visit tasteskill.dev\" /></a>"
+        },
+        {
+          "line": 8,
+          "text": "  <a href=\"https://tastecode.dev\" title=\"Visit tastecode.dev\"><img src=\"https://img.shields.io/badge/new-TasteCode-ff6b00?style=flat\" alt=\"New: TasteCode\" /></a>"
+        },
+        {
+          "line": 10,
+          "text": "  <a href=\"LICENSE\"><img src=\"https://img.shields.io/badge/license-MIT-24292f?style=flat&amp;logo=github&amp;logoColor=white\" alt=\"MIT License\" /></a>"
+        },
+        {
+          "line": 12,
+          "text": "  <a href=\"https://github.com/vercel-labs/agent-skills\"><img src=\"https://img.shields.io/badge/Agent_Skills-compatible-24292f?style=flat&amp;logo=github&amp;logoColor=white\" alt=\"Agent Skills compatible\" /></a>"
+        },
+        {
+          "line": 14,
+          "text": "  <a href=\"#install\"><img src=\"https://img.shields.io/badge/Codex_%2F_Cursor_%2F_Claude-install-24292f?style=flat\" alt=\"Codex, Cursor, Claude\" /></a>"
+        },
+        {
+          "line": 16,
+          "text": "  <a href=\"CHANGELOG.md\"><img src=\"https://img.shields.io/badge/changelog-view-24292f?style=flat\" alt=\"Changelog\" /></a>"
+        },
+        {
+          "line": 20,
+          "text": "  <a href=\"https://tastecode.dev\"><img src=\"assets/readme-tastecode.webp\" alt=\"TasteCode is here. Taste Skill as a desktop app, with a design agent built in. Free and open source. Download at tastecode.dev\" width=\"100%\" /></a>"
+        },
+        {
+          "line": 23,
+          "text": "<p align=\"center\"><sub>The easiest way to get Taste Skill results: <a href=\"https://tastecode.dev\"><strong>download TasteCode</strong></a>. Its design agent briefs, builds and visually reviews your UI. <a href=\"https://github.com/Leonxlnx/tastecode\">Source on GitHub</a>.</sub></p>"
+        },
+        {
+          "line": 29,
+          "text": "    <td align=\"center\" width=\"104\"><a href=\"https://fluxionai.space/register?source=github&amp;campaign=github-tasteskill&amp;promo=TASTESKILL\"><img src=\"assets/sponsors/sidrune-ai.png\" alt=\"Sidrune AI\" width=\"80\" height=\"80\" /></a></td>"
+        },
+        {
+          "line": 30,
+          "text": "    <td><sub><a href=\"https://fluxionai.space/register?source=github&amp;campaign=github-tasteskill&amp;promo=TASTESKILL\"><strong>Sidrune AI</strong></a>: one API for GPT, Claude, and other leading AI models.<br />Sign up through this link and get $3 in API credit.</sub></td>"
+        },
+        {
+          "line": 34,
+          "text": "      <a href=\"https://interfaces.dev/?utm_source=tasteskill&utm_medium=sponsorship\">"
+        },
+        {
+          "line": 38,
+          "text": "    <td><sub><a href=\"https://interfaces.dev/?utm_source=tasteskill&utm_medium=sponsorship\"><strong>interfaces.dev</strong></a> · A design engineering magazine by <a href=\"https://github.com/jakubkrehel\"><strong>Jakub Krehel</strong></a></sub></td>"
+        },
+        {
+          "line": 42,
+          "text": "      <a href=\"https://reactbits.dev\">"
+        },
+        {
+          "line": 49,
+          "text": "    <td><sub><a href=\"https://reactbits.dev\"><strong>React Bits</strong></a> · animated React components for creative interfaces</sub></td>"
+        },
+        {
+          "line": 52,
+          "text": "    <td align=\"center\" width=\"104\"><a href=\"https://img.ly/\"><img src=\"assets/sponsors/imgly-logo.svg\" alt=\"IMG.LY\" width=\"52\" height=\"52\" /></a></td>"
+        },
+        {
+          "line": 53,
+          "text": "    <td><sub><a href=\"https://img.ly/\"><strong>IMG.LY</strong></a> · CreativeEditor SDK</sub></td>"
+        },
+        {
+          "line": 56,
+          "text": "    <td align=\"center\" width=\"104\"><a href=\"https://www.sent.dm\"><img src=\"assets/sponsors/sentdm.png\" alt=\"Sent.dm\" width=\"52\" height=\"52\" /></a></td>"
+        },
+        {
+          "line": 57,
+          "text": "    <td><sub><a href=\"https://www.sent.dm\"><strong>Sent.dm</strong></a> · messaging APIs for SMS, WhatsApp, and RCS</sub></td>"
+        },
+        {
+          "line": 61,
+          "text": "<p align=\"center\"><sub><a href=\"https://github.com/sponsors/Leonxlnx\">Become a sponsor</a></sub></p>"
+        },
+        {
+          "line": 78,
+          "text": "The photographs are real, found in open archives and credited by the skill ([credits](examples/v2/CREDITS.md)). Watch the [launch film](https://github.com/Leonxlnx/taste-skill/releases/tag/v2.0.0)."
+        },
+        {
+          "line": 85,
+          "text": "npx skills add https://github.com/Leonxlnx/taste-skill"
+        },
+        {
+          "line": 88,
+          "text": "That installs every skill in this repo with the [`npx skills`](https://github.com/vercel-labs/agent-skills) CLI. To install one, pass its install name:"
+        },
+        {
+          "line": 91,
+          "text": "npx skills add https://github.com/Leonxlnx/taste-skill --skill \"design-taste-frontend\""
+        },
+        {
+          "line": 200,
+          "text": "npx skills add https://github.com/Leonxlnx/taste-skill --skill \"design-taste-frontend-v2-experimental\""
+        },
+        {
+          "line": 201,
+          "text": "npx skills add https://github.com/Leonxlnx/taste-skill --skill \"design-taste-frontend-v1\""
+        },
+        {
+          "line": 226,
+          "text": "[Sponsor on GitHub](https://github.com/sponsors/Leonxlnx)"
+        },
+        {
+          "line": 232,
+          "text": "    <td align=\"center\" width=\"104\"><a href=\"https://www.kimi.com\"><img src=\"assets/sponsors/kimi-icon.png\" alt=\"Kimi\" width=\"52\" height=\"52\" /></a></td>"
+        },
+        {
+          "line": 233,
+          "text": "    <td><a href=\"https://www.kimi.com\"><picture><source media=\"(prefers-color-scheme: dark)\" srcset=\"https://kimi-file.moonshot.cn/prod-chat-kimi/kfs/4/1/2026-06-05/1d8h69mt3v89kkekg24gg\" /><img alt=\"Kimi Open Source Friends\" src=\"https://kimi-file.moonshot.cn/prod-chat-kimi/kfs/4/1/2026-06-05/1d8h69fudcmosb3pipls0\" height=\"42\" /></picture></a><br /><sub><a href=\"https://platform.kimi.ai?track_id="
+        },
+        {
+          "line": 236,
+          "text": "    <td align=\"center\" width=\"104\"><a href=\"https://vercel.com/open-source-program\"><img src=\"assets/sponsors/vercel-logo.svg\" alt=\"Vercel\" width=\"52\" height=\"52\" /></a></td>"
+        },
+        {
+          "line": 237,
+          "text": "    <td><a href=\"https://vercel.com/open-source-program\"><img src=\"assets/vercel-oss-program-badge.svg\" alt=\"Vercel Open Source Program\" height=\"28\" /></a></td>"
+        },
+        {
+          "line": 244,
+          "text": "<a href=\"https://github.com/dnakov\"><img src=\"https://github.com/dnakov.png\" width=\"40\" height=\"40\" style=\"border-radius:50%\" alt=\"dnakov\" title=\"dnakov\" /></a>"
+        },
+        {
+          "line": 245,
+          "text": "<a href=\"https://github.com/AkramReshad\"><img src=\"https://github.com/AkramReshad.png\" width=\"40\" height=\"40\" style=\"border-radius:50%\" alt=\"AkramReshad\" title=\"AkramReshad\" /></a>"
+        },
+        {
+          "line": 246,
+          "text": "<a href=\"https://github.com/ajmalaksar25\"><img src=\"https://github.com/ajmalaksar25.png\" width=\"40\" height=\"40\" style=\"border-radius:50%\" alt=\"ajmalaksar25\" title=\"ajmalaksar25\" /></a>"
+        },
+        {
+          "line": 247,
+          "text": "<a href=\"https://github.com/krikkkk\"><img src=\"https://github.com/krikkkk.png\" width=\"40\" height=\"40\" style=\"border-radius:50%\" alt=\"krikkkk\" title=\"krikkkk\" /></a>"
+        },
+        {
+          "line": 248,
+          "text": "<a href=\"https://github.com/navanchauhan\"><img src=\"https://github.com/navanchauhan.png\" width=\"40\" height=\"40\" style=\"border-radius:50%\" alt=\"navanchauhan\" title=\"navanchauhan\" /></a>"
+        },
+        {
+          "line": 249,
+          "text": "<a href=\"https://github.com/robinebers\"><img src=\"https://github.com/robinebers.png\" width=\"40\" height=\"40\" style=\"border-radius:50%\" alt=\"robinebers\" title=\"robinebers\" /></a>"
+        },
+        {
+          "line": 250,
+          "text": "<a href=\"https://github.com/JKc66\"><img src=\"https://github.com/JKc66.png\" width=\"40\" height=\"40\" style=\"border-radius:50%\" alt=\"JKc66\" title=\"JKc66\" /></a>"
+        },
+        {
+          "line": 251,
+          "text": "<a href=\"https://github.com/u2393696078-rgb\"><img src=\"https://github.com/u2393696078-rgb.png\" width=\"40\" height=\"40\" style=\"border-radius:50%\" alt=\"u2393696078-rgb\" title=\"u2393696078-rgb\" /></a>"
+        },
+        {
+          "line": 252,
+          "text": "<a href=\"https://github.com/a-human-created-this\"><img src=\"https://github.com/a-human-created-this.png\" width=\"40\" height=\"40\" style=\"border-radius:50%\" alt=\"a-human-created-this\" title=\"a-human-created-this\" /></a>"
+        },
+        {
+          "line": 253,
+          "text": "<a href=\"https://github.com/AtharvaJaiswal005\"><img src=\"https://github.com/AtharvaJaiswal005.png\" width=\"40\" height=\"40\" style=\"border-radius:50%\" alt=\"AtharvaJaiswal005\" title=\"AtharvaJaiswal005\" /></a>"
+        },
+        {
+          "line": 254,
+          "text": "<a href=\"https://github.com/ghughes7\"><img src=\"https://github.com/ghughes7.png\" width=\"40\" height=\"40\" style=\"border-radius:50%\" alt=\"ghughes7\" title=\"ghughes7\" /></a>"
+        },
+        {
+          "line": 255,
+          "text": "<a href=\"https://github.com/mccun934\"><img src=\"https://github.com/mccun934.png\" width=\"40\" height=\"40\" style=\"border-radius:50%\" alt=\"mccun934\" title=\"mccun934\" /></a>"
+        },
+        {
+          "line": 256,
+          "text": "<a href=\"https://github.com/techmedic5\"><img src=\"https://github.com/techmedic5.png\" width=\"40\" height=\"40\" style=\"border-radius:50%\" alt=\"techmedic5\" title=\"techmedic5\" /></a>"
+        },
+        {
+          "line": 257,
+          "text": "<a href=\"https://github.com/bytewerk-dev\"><img src=\"https://github.com/bytewerk-dev.png\" width=\"40\" height=\"40\" style=\"border-radius:50%\" alt=\"bytewerk-dev\" title=\"bytewerk-dev\" /></a>"
+        },
+        {
+          "line": 258,
+          "text": "<a href=\"https://github.com/LuisGot\"><img src=\"https://github.com/LuisGot.png\" width=\"40\" height=\"40\" style=\"border-radius:50%\" alt=\"LuisGot\" title=\"LuisGot\" /></a>"
+        },
+        {
+          "line": 259,
+          "text": "<a href=\"https://github.com/oskar-collab\"><img src=\"https://github.com/oskar-collab.png\" width=\"40\" height=\"40\" style=\"border-radius:50%\" alt=\"oskar-collab\" title=\"oskar-collab\" /></a>"
+        },
+        {
+          "line": 260,
+          "text": "<a href=\"https://github.com/denvit\"><img src=\"https://github.com/denvit.png\" width=\"40\" height=\"40\" style=\"border-radius:50%\" alt=\"denvit\" title=\"denvit\" /></a>"
+        },
+        {
+          "line": 261,
+          "text": "<a href=\"https://github.com/onedollarstock\"><img src=\"https://github.com/onedollarstock.png\" width=\"40\" height=\"40\" style=\"border-radius:50%\" alt=\"onedollarstock\" title=\"onedollarstock\" /></a>"
+        },
+        {
+          "line": 262,
+          "text": "<a href=\"https://github.com/KANA-33\"><img src=\"https://github.com/KANA-33.png\" width=\"40\" height=\"40\" style=\"border-radius:50%\" alt=\"KANA-33\" title=\"KANA-33\" /></a>"
+        },
+        {
+          "line": 263,
+          "text": "<a href=\"https://github.com/emilkowalski\"><img src=\"https://github.com/emilkowalski.png\" width=\"40\" height=\"40\" style=\"border-radius:50%\" alt=\"emilkowalski\" title=\"emilkowalski\" /></a>"
+        },
+        {
+          "line": 264,
+          "text": "<a href=\"https://github.com/AnthonyLiuVa\"><img src=\"https://github.com/AnthonyLiuVa.png\" width=\"40\" height=\"40\" style=\"border-radius:50%\" alt=\"AnthonyLiuVa\" title=\"AnthonyLiuVa\" /></a>"
+        },
+        {
+          "line": 265,
+          "text": "<a href=\"https://github.com/Wolfy18\"><img src=\"https://github.com/Wolfy18.png\" width=\"40\" height=\"40\" style=\"border-radius:50%\" alt=\"Wolfy18\" title=\"Wolfy18\" /></a>"
+        },
+        {
+          "line": 266,
+          "text": "<a href=\"https://github.com/Gigslol\"><img src=\"https://github.com/Gigslol.png\" width=\"40\" height=\"40\" style=\"border-radius:50%\" alt=\"Gigslol\" title=\"Gigslol\" /></a>"
+        },
+        {
+          "line": 269,
+          "text": " <a href=\"https://www.star-history.com/leonxlnx/taste-skill\">"
+        },
+        {
+          "line": 271,
+          "text": "   <source media=\"(prefers-color-scheme: dark)\" srcset=\"https://api.star-history.com/badge?repo=Leonxlnx/taste-skill&theme=dark\" />"
+        },
+        {
+          "line": 272,
+          "text": "   <source media=\"(prefers-color-scheme: light)\" srcset=\"https://api.star-history.com/badge?repo=Leonxlnx/taste-skill\" />"
+        },
+        {
+          "line": 273,
+          "text": "   <img alt=\"Star History Rank\" src=\"https://api.star-history.com/badge?repo=Leonxlnx/taste-skill\" />"
+        },
+        {
+          "line": 280,
+          "text": "<sub>Feedback: open an issue or pull request, DM [@lexnlin](https://x.com/lexnlin) or [@blueemi99](https://x.com/blueemi99), or email [hello@tasteskill.dev](mailto:hello@tasteskill.dev).</sub>"
+        }
+      ]
+    },
+    {
+      "path": "assets/sponsors/imgly-logo.svg",
+      "hits": [
+        {
+          "line": 1,
+          "text": "<svg width=\"62\" height=\"62\" viewBox=\"0 0 62 62\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\" role=\"img\" aria-label=\"IMG.LY\">"
+        }
+      ]
+    },
+    {
+      "path": "assets/sponsors/reactbits-icon-dark.svg",
+      "hits": [
+        {
+          "line": 1,
+          "text": "<svg width=\"233\" height=\"233\" viewBox=\"0 0 233 233\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">"
+        }
+      ]
+    },
+    {
+      "path": "assets/sponsors/reactbits-icon-light.svg",
+      "hits": [
+        {
+          "line": 1,
+          "text": "<svg width=\"233\" height=\"233\" viewBox=\"0 0 233 233\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">"
+        }
+      ]
+    },
+    {
+      "path": "assets/sponsors/vercel-logo.svg",
+      "hits": [
+        {
+          "line": 1,
+          "text": "<svg width=\"62\" height=\"62\" viewBox=\"0 0 62 62\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\" role=\"img\" aria-label=\"Vercel\">"
+        }
+      ]
+    },
+    {
+      "path": "assets/vercel-oss-program-badge.svg",
+      "hits": [
+        {
+          "line": 1,
+          "text": "<svg width=\"256\" height=\"32\" viewBox=\"0 0 256 32\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\" role=\"img\" aria-label=\"Vercel Open Source Program\">"
+        }
+      ]
+    },
+    {
+      "path": "examples/v2/CREDITS.md",
+      "hits": [
+        {
+          "line": 9,
+          "text": "- \"2020-01-20-Helios-Leuchtturm-\" by Superbass, CC BY-SA 4.0, via Wikimedia Commons [photograph](https://commons.wikimedia.org/wiki/File:2020-01-20-Helios-Leuchtturm-.jpg)"
+        },
+        {
+          "line": 10,
+          "text": "- \"Helios-Leuchtturm in Abenddämmerung-3860\" by Raimond Spekking, CC BY-SA 4.0, via Wikimedia Commons [photograph](https://commons.wikimedia.org/wiki/File:Helios-Leuchtturm_in_Abendd%C3%A4mmerung-3860.jpg)"
+        },
+        {
+          "line": 11,
+          "text": "- \"1906 ETZ Kraftwerk Teltowkanal Maschinenhalle\", public domain, via Wikimedia Commons [photograph](https://commons.wikimedia.org/wiki/File:1906_ETZ_Kraftwerk_Teltowkanal_Maschinenhalle.jpg)"
+        },
+        {
+          "line": 12,
+          "text": "- \"Kraftwerk Wienerbruck hist Maschinenhalle ca 1911\", public domain, via Wikimedia Commons [photograph](https://commons.wikimedia.org/wiki/File:Kraftwerk_Wienerbruck_hist_Maschinenhalle_ca_1911.jpg)"
+        },
+        {
+          "line": 13,
+          "text": "- \"Control room, Callide Power Station, circa 1967\" by Queensland State Archives, public domain, via Wikimedia Commons [photograph](https://commons.wikimedia.org/wiki/File:Control_room,_Callide_Power_Station,_circa_1967.jpg)"
+        },
+        {
+          "line": 14,
+          "text": "- \"Rauch-Kraftwerk (K16A0025)\" by Simon Legner ( User:simon04 ), CC BY-SA 4.0, via Wikimedia Commons [photograph](https://commons.wikimedia.org/wiki/File:Rauch-Kraftwerk_(K16A0025).jpg)"
+        },
+        {
+          "line": 15,
+          "text": "- \"(Turbo-generators in a hydro-electric power station)\" by Collins, Tudor Washington, 1898-1970, photographer, CC BY 4.0, via Wikimedia Commons [photograph](https://commons.wikimedia.org/wiki/File:Turbo-generators_in_a_hydro-electric_power_station_(AM_75745-1).jpg)"
+        },
+        {
+          "line": 16,
+          "text": "- \"2020-01-18-Bahnhof Ehrenfeld-8194\" by Superbass, CC BY-SA 4.0, via Wikimedia Commons [photograph](https://commons.wikimedia.org/wiki/File:2020-01-18-Bahnhof_Ehrenfeld-8194.jpg)"
+        },
+        {
+          "line": 17,
+          "text": "- \"Hochtrasse mit Bahnbögen, Ansicht Venloer Straße von Süden-8740\" by Raimond Spekking, CC BY-SA 4.0, via Wikimedia Commons [photograph](https://commons.wikimedia.org/wiki/File:Hochtrasse_mit_Bahnb%C3%B6gen,_Ansicht_Venloer_Stra%C3%9Fe_von_S%C3%BCden-8740.jpg)"
+        },
+        {
+          "line": 18,
+          "text": "- \"Electrical breakdown Slow Motion\" by Cheshin61, CC BY-SA 3.0, via Wikimedia Commons [film](https://commons.wikimedia.org/wiki/File:Electrical_breakdown_Slow_Motion.ogv)"
+        },
+        {
+          "line": 19,
+          "text": "- \"Bahnhof, 1, Ehrenfeld, Köln\" by GeorgDerReisende, CC BY-SA 4.0, via Wikimedia Commons [photograph](https://commons.wikimedia.org/wiki/File:Bahnhof,_1,_Ehrenfeld,_K%C3%B6ln.jpg)"
+        },
+        {
+          "line": 23,
+          "text": "- \"Karl-Heine-Straße 41 Leipzig\" by Freddo213, CC BY-SA 4.0, via Wikimedia Commons [photograph](https://commons.wikimedia.org/wiki/File:Karl-Heine-Stra%C3%9Fe_41_Leipzig.jpg)"
+        },
+        {
+          "line": 24,
+          "text": "- \"Karl-Heine-Kanal 1903\", public domain, via Wikimedia Commons [photograph](https://commons.wikimedia.org/wiki/File:Karl-Heine-Kanal_1903.jpg)"
+        },
+        {
+          "line": 25,
+          "text": "- \"Kanalbau Leipzig Plagwitz um1900\" by Hermann Walter, public domain, via Wikimedia Commons [photograph](https://commons.wikimedia.org/wiki/File:Kanalbau_Leipzig_Plagwitz_um1900.jpg)"
+        },
+        {
+          "line": 26,
+          "text": "- \"Bahnhoefe Industriegleise Plagwitz-Lindenau\", public domain, via Wikimedia Commons [photograph](https://commons.wikimedia.org/wiki/File:Bahnhoefe_Industriegleise_Plagwitz-Lindenau.jpg)"
+        },
+        {
+          "line": 27,
+          "text": "- \"Karl-Heine-Straße, Leipzig (32362978828)\" by Thomas Woodtli from Zürich, Switzerland, CC BY-SA 2.0, via Wikimedia Commons [photograph](https://commons.wikimedia.org/wiki/File:Karl-Heine-Stra%C3%9Fe,_Leipzig_(32362978828).jpg)"
+        },
+        {
+          "line": 28,
+          "text": "- \"75 degrees green coffee\" by Dan Bollinger, CC BY-SA 3.0, via Wikimedia Commons [photograph](https://commons.wikimedia.org/wiki/File:75_degrees_green_coffee.png)"
+        },
+        {
+          "line": 29,
+          "text": "- \"385 degrees cinnamon roast coffee\" by Dan Bollinger, CC BY-SA 3.0, via Wikimedia Commons [photograph](https://commons.wikimedia.org/wiki/File:385_degrees_cinnamon_roast_coffee.png)"
+        },
+        {
+          "line": 30,
+          "text": "- \"440 degrees full city roast coffee\" by Dan Bollinger, CC BY-SA 3.0, via Wikimedia Commons [photograph](https://commons.wikimedia.org/wiki/File:440_degrees_full_city_roast_coffee.png)"
+        },
+        {
+          "line": 31,
+          "text": "- \"Fazenda Da Lagoa\" by Knase, CC BY 3.0, via Wikimedia Commons [photograph](https://commons.wikimedia.org/wiki/File:Fazenda_Da_Lagoa.jpg)"
+        },
+        {
+          "line": 32,
+          "text": "- \"Finca cafetera en Pitalito, Huila, Colombia\" by Jhysus, CC BY-SA 4.0, via Wikimedia Commons [photograph](https://commons.wikimedia.org/wiki/File:Finca_cafetera_en_Pitalito,_Huila,_Colombia.jpg)"
+        },
+        {
+          "line": 33,
+          "text": "- \"Coffee-cherries-green-coffee-tarrazu-costa-rica\" by Tarrazu at en.wikipedia, public domain, via Wikimedia Commons [photograph](https://commons.wikimedia.org/wiki/File:Coffee-cherries-green-coffee-tarrazu-costa-rica.jpg)"
+        },
+        {
+          "line": 34,
+          "text": "- \"Kaffe - Ystad-2024\" by Foto: Jonn Leffmann, CC BY 3.0, via Wikimedia Commons [film](https://commons.wikimedia.org/wiki/File:Kaffe_-_Ystad-2024.ogg)"
+        },
+        {
+          "line": 35,
+          "text": "- \"Coffee beans in Ethiopia\" by Ninaras, CC BY-SA 4.0, via Wikimedia Commons [photograph](https://commons.wikimedia.org/wiki/File:Coffee_beans_in_Ethiopia.jpg)"
+        },
+        {
+          "line": 36,
+          "text": "- \"J27 798 Karl-Heine-Kanal, »Stelzenhaus«\" by Falk2, CC BY-SA 4.0, via Wikimedia Commons [photograph](https://commons.wikimedia.org/wiki/File:J27_798_Karl-Heine-Kanal,_%C2%BBStelzenhaus%C2%AB.jpg)"
+        },
+        {
+          "line": 37,
+          "text": "- \"AK Leipzig Plagwitz Weißenfelser Straße\", public domain, via Wikimedia Commons [photograph](https://commons.wikimedia.org/wiki/File:AK_Leipzig_Plagwitz_Wei%C3%9Fenfelser_Stra%C3%9Fe.jpg)"
+        },
+        {
+          "line": 38,
+          "text": "- \"T00 005 Karl-Heine-Kanal\" by Falk2, CC BY-SA 4.0, via Wikimedia Commons [photograph](https://commons.wikimedia.org/wiki/File:T00_005_Karl-Heine-Kanal.jpg)"
+        },
+        {
+          "line": 42,
+          "text": "- \"Tisvildehegn-feb-2009\" by Ktp72, CC BY 3.0, via Wikimedia Commons [photograph](https://commons.wikimedia.org/w/index.php?curid=5995786)"
+        },
+        {
+          "line": 43,
+          "text": "- \"Boomstammen bij De Laagt\" by E. Dronkert from Utrecht, Netherlands, CC BY 2.0, via Wikimedia Commons [photograph](https://commons.wikimedia.org/w/index.php?curid=39464091)"
+        },
+        {
+          "line": 44,
+          "text": "- \"Pörtschach Winklern Quellweg Fichten am Wanderweg 12022020 8311\" by Johann Jaritz, CC BY-SA 4.0, via Wikimedia Commons [photograph](https://commons.wikimedia.org/wiki/File:P%C3%B6rtschach_Winklern_Quellweg_Fichten_am_Wanderweg_12022020_8311.jpg)"
+        },
+        {
+          "line": 45,
+          "text": "- \"Stack of spruce logs near Wernigerode, Germany – side view\" by Profpcde, CC0, via Wikimedia Commons [photograph](https://commons.wikimedia.org/wiki/File:Stack_of_spruce_logs_near_Wernigerode,_Germany_%E2%80%93_side_view.jpg)"
+        },
+        {
+          "line": 46,
+          "text": "- \"Timber frame 0857\" by Riisipuuro, CC BY-SA 3.0, via Wikimedia Commons [photograph](https://commons.wikimedia.org/wiki/File:Timber_frame_0857.jpg)"
+        },
+        {
+          "line": 47,
+          "text": "- \"Lärchenholz\" by ThomasKohler, CC BY 2.0, via Flickr [photograph](https://www.flickr.com/photos/28077296@N02/4804146821)"
+        },
+        {
+          "line": 48,
+          "text": "- \"Planks on a shed in Holma marina\" by W.carter, CC0, via Wikimedia Commons [photograph](https://commons.wikimedia.org/wiki/File:Planks_on_a_shed_in_Holma_marina.jpg)"
+        },
+        {
+          "line": 49,
+          "text": "- \"Tar Coated Wood - geograph.org.uk - 2604503\" by Keith Evans, CC BY-SA 2.0, via Wikimedia Commons [photograph](https://commons.wikimedia.org/wiki/File:Tar_Coated_Wood_-_geograph.org.uk_-_2604503.jpg)"
+        },
+        {
+          "line": 50,
+          "text": "- \"Tarring a boat\" by Erkki Voutilainen, CC BY 4.0, via Wikimedia Commons [photograph](https://commons.wikimedia.org/wiki/File:Tarring_a_boat_1960_(JOKAMT2Kot13-2).tif)"
+        },
+        {
+          "line": 51,
+          "text": "- \"Trefiberisolasjon - 1\" by Øyvind Holmstad, CC0, via Wikimedia Commons [photograph](https://commons.wikimedia.org/wiki/File:Trefiberisolasjon_-_1.JPG)"
+        },
+        {
+          "line": 52,
+          "text": "- \"Germany Plane-with-wood-shavings-01\" by CEphoto, Uwe Aranas, CC BY-SA 3.0, via Wikimedia Commons [photograph](https://commons.wikimedia.org/w/index.php?curid=34213500)"
+        },
+        {
+          "line": 53,
+          "text": "- \"Stack of wooden planks - close-up 01\" by David r jenkins, CC BY-SA 4.0, via Wikimedia Commons [photograph](https://commons.wikimedia.org/wiki/File:Stack_of_wooden_planks_-_close-up_01.jpg)"
+        },
+        {
+          "line": 54,
+          "text": "- \"Laminated wood\" by Own work, CC BY-SA 3.0, via Wikimedia Commons [photograph](https://commons.wikimedia.org/wiki/File:Laminated_wood.jpg)"
+        },
+        {
+          "line": 55,
+          "text": "- \"The sun in Rørvig\" by No machine-readable author provided. Otuzniak assumed (base…, public domain, via Wikimedia Commons [photograph](https://commons.wikimedia.org/wiki/File:The_sun_in_R%C3%B8rvig.jpg)"
+        },
+        {
+          "line": 56,
+          "text": "- \"Møns Klint lub 2025-07-12 mov03\" by Lukas Beck, CC BY 4.0, via Wikimedia Commons [film](https://commons.wikimedia.org/wiki/File:M%C3%B8ns_Klint_lub_2025-07-12_mov03.webm)"
+        },
+        {
+          "line": 57,
+          "text": "- \"Douglasie Holz\" by Philipp Zinger, CC BY-SA 3.0, via Wikimedia Commons [photograph](https://commons.wikimedia.org/wiki/File:Douglasie_Holz.JPG)"
+        },
+        {
+          "line": 58,
+          "text": "- \"The Burmeister & Wain shipyard at Refshaleøen, Copenhagen.\" by Carl Baagøe, public domain, via Wikimedia Commons [photograph](https://commons.wikimedia.org/wiki/File:Carl_Baag%C3%B8e_-_Burmeister_%26_Wains_skibsv%C3%A6rft_p%C3%A5_Refshale%C3%B8en,_K%C3%B8benhavn_-_1883.png)"
+        },
+        {
+          "line": 62,
+          "text": "- \"Bifolium with the Decretals of Gratian\" by Master Honore, ca. 1290, public domain (CC0), via The Metropolitan Museum of Art [photograph](https://www.metmuseum.org/art/collection/search/466179)"
+        },
+        {
+          "line": 63,
+          "text": "- \"Manuscript Leaf with Marriage Scene, from Decretals of Gregory IX\" by Italian maker, ca. 1300, public domain (CC0), via The Metropolitan Museum of Art [photograph](https://www.metmuseum.org/art/collection/search/468476)"
+        },
+        {
+          "line": 64,
+          "text": "- \"Gratianus, Decretum ; Magister Rolandus, Glossae in Decretum Gratiani ; Nicolaus Maniacut…\" by Gratianus (11..?-1160?). Auteur du texte Rolandus Canonista…, public domain, via Wikimedia Commons [photograph](https://commons.wikimedia.org/wiki/File:Gratianus,_Decretum_;_Magister_Rolandus,_Glossae_in_Decretum_Gratiani_;_Nicolaus_Maniacutius,_Versus_ad_incorrupta_pontificum_nomina_conservanda._-_bt"
+        },
+        {
+          "line": 65,
+          "text": "- \"Italian notarial record - DPLA - ba5fce47eb87626a3f149e88f5d951e5 (page 94)\", public domain, via Wikimedia Commons [photograph](https://commons.wikimedia.org/wiki/File:Italian_notarial_record_-_DPLA_-_ba5fce47eb87626a3f149e88f5d951e5_(page_94).jpg)"
+        },
+        {
+          "line": 66,
+          "text": "- \"Marriage Contract\", 380–343 BCE, public domain (CC0), via The Metropolitan Museum of Art [photograph](https://www.metmuseum.org/art/collection/search/544736)"
+        },
+        {
+          "line": 67,
+          "text": "- \"William Henry Duryea (1827-1903) administrator's deed on January 23, 1906\", public domain, via Wikimedia Commons [photograph](https://commons.wikimedia.org/wiki/File:William_Henry_Duryea_(1827-1903)_administrator%27s_deed_on_January_23,_1906.jpg)"
+        },
+        {
+          "line": 68,
+          "text": "- \"Typewriter Optima M12 - typing\" by Sounds of Changes, CC BY 3.0, via Wikimedia Commons [film](https://commons.wikimedia.org/wiki/File:Typewriter_Optima_M12_-_typing.webm)"
+        },
+        {
+          "line": 69,
+          "text": "- \"The Rosetta Stone\" by Book: Sir Ernest Alfred Wallis (1857-1934) Photo: Donald Ma…, public domain, via Wikimedia Commons [photograph](https://commons.wikimedia.org/wiki/File:The_Rosetta_Stone.jpg)"
+        }
+      ]
+    },
+    {
+      "path": "skills/gpt-tasteskill/SKILL.md",
+      "hits": [
+        {
+          "line": 64,
+          "text": "- **Image Context & Style:** Use `https://picsum.photos/seed/{keyword}/1920/1080` and match the keyword to the vibe. Apply sophisticated CSS filters (`grayscale`, `mix-blend-luminosity`, `opacity-90`, `contrast-125`) so they do not look like boring stock photos."
+        }
+      ]
+    },
+    {
+      "path": "skills/minimalist-skill/SKILL.md",
+      "hits": [
+        {
+          "line": 66,
+          "text": "- Photography: Use high-quality, desaturated images with a warm tone. Apply subtle overlays (`opacity: 0.04` warm grain) to blend photos into the monochrome palette. Never use oversaturated stock photos. Use reliable placeholders like `https://picsum.photos/seed/{context}/1200/800` when real assets are unavailable."
+        }
+      ]
+    },
+    {
+      "path": "skills/redesign-skill/SKILL.md",
+      "hits": [
+        {
+          "line": 43,
+          "text": "- **Empty, flat sections with no visual depth.** Sections that are just text on a plain background feel unfinished. Add high-quality background imagery (blurred, overlaid, or masked), subtle patterns, or ambient gradients. Use reliable placeholder sources like `https://picsum.photos/seed/{name}/1920/1080` when real assets are not available. Experiment with background images behind hero sections, f"
+        }
+      ]
+    },
+    {
+      "path": "skills/stitch-skill/SKILL.md",
+      "hits": [
+        {
+          "line": 14,
+          "text": "- Access to Google Stitch via [labs.google/stitch](https://labs.google/stitch)"
+        }
+      ]
+    },
+    {
+      "path": "skills/taste-skill-v1/SKILL.md",
+      "hits": [
+        {
+          "line": 124,
+          "text": "* **NO Broken Unsplash Links:** Do not use Unsplash. Use absolute, reliable placeholders like `https://picsum.photos/seed/{random_string}/800/600` or SVG UI Avatars."
+        }
+      ]
+    },
+    {
+      "path": "skills/taste-skill-v2-experimental/SKILL.md",
+      "hits": [
+        {
+          "line": 269,
+          "text": "   * `https://picsum.photos/seed/{descriptive-seed}/{w}/{h}` for placeholder photography (seed should describe the section, e.g. `marrow-cookware-kitchen`)"
+        },
+        {
+          "line": 277,
+          "text": "* **Source: Simple Icons** (`https://cdn.simpleicons.org/{slug}/ffffff` for any color, or `simple-icons` npm package). Covers most known brands."
+        },
+        {
+          "line": 648,
+          "text": "* **NO broken Unsplash links.** Use `https://picsum.photos/seed/{descriptive-string}/{w}/{h}`, or generated photo placeholders, or actual assets."
+        },
+        {
+          "line": 1052,
+          "text": "#   <script src=\"https://cdn.shopify.com/shopifycloud/polaris.js\"></script>"
+        },
+        {
+          "line": 1058,
+          "text": "- https://github.com/material-components/material-web"
+        },
+        {
+          "line": 1059,
+          "text": "- https://material-web.dev/theming/material-theming/"
+        },
+        {
+          "line": 1060,
+          "text": "- https://m3.material.io/develop/web"
+        },
+        {
+          "line": 1063,
+          "text": "- https://fluent2.microsoft.design/get-started/develop"
+        },
+        {
+          "line": 1064,
+          "text": "- https://fluent2.microsoft.design/components/web/react/"
+        },
+        {
+          "line": 1065,
+          "text": "- https://github.com/microsoft/fluentui"
+        },
+        {
+          "line": 1066,
+          "text": "- https://learn.microsoft.com/en-us/fluent-ui/web-components/"
+        },
+        {
+          "line": 1069,
+          "text": "- https://carbondesignsystem.com/"
+        },
+        {
+          "line": 1070,
+          "text": "- https://github.com/carbon-design-system/carbon"
+        },
+        {
+          "line": 1071,
+          "text": "- https://carbondesignsystem.com/developing/react-tutorial/overview/"
+        },
+        {
+          "line": 1072,
+          "text": "- https://carbondesignsystem.com/developing/web-components-tutorial/overview/"
+        },
+        {
+          "line": 1075,
+          "text": "- https://shopify.dev/docs/api/app-home/web-components"
+        },
+        {
+          "line": 1076,
+          "text": "- https://github.com/Shopify/polaris-react"
+        },
+        {
+          "line": 1077,
+          "text": "- https://polaris-react.shopify.com/components"
+        },
+        {
+          "line": 1080,
+          "text": "- https://atlassian.design/get-started/develop"
+        },
+        {
+          "line": 1081,
+          "text": "- https://atlassian.design/components/button/examples"
+        },
+        {
+          "line": 1082,
+          "text": "- https://atlaskit.atlassian.com/packages/design-system/button/example/disabled"
+        },
+        {
+          "line": 1083,
+          "text": "- https://atlassian.design/tokens/design-tokens"
+        },
+        {
+          "line": 1086,
+          "text": "- https://primer.style/"
+        },
+        {
+          "line": 1087,
+          "text": "- https://github.com/primer/css"
+        },
+        {
+          "line": 1088,
+          "text": "- https://github.com/primer/brand"
+        },
+        {
+          "line": 1091,
+          "text": "- https://design-system.service.gov.uk/components/button/"
+        },
+        {
+          "line": 1092,
+          "text": "- https://design-system.service.gov.uk/styles/layout/"
+        },
+        {
+          "line": 1093,
+          "text": "- https://github.com/alphagov/govuk-frontend"
+        },
+        {
+          "line": 1096,
+          "text": "- https://designsystem.digital.gov/documentation/developers/"
+        },
+        {
+          "line": 1097,
+          "text": "- https://designsystem.digital.gov/components/button/"
+        },
+        {
+          "line": 1098,
+          "text": "- https://designsystem.digital.gov/components/card/"
+        },
+        {
+          "line": 1099,
+          "text": "- https://github.com/uswds/uswds"
+        },
+        {
+          "line": 1102,
+          "text": "- https://getbootstrap.com/docs/5.3/layout/grid/"
+        },
+        {
+          "line": 1103,
+          "text": "- https://getbootstrap.com/docs/5.3/components/card/"
+        },
+        {
+          "line": 1106,
+          "text": "- https://tailwindcss.com/docs/dark-mode"
+        },
+        {
+          "line": 1107,
+          "text": "- https://tailwindcss.com/blog/tailwindcss-v4"
+        },
+        {
+          "line": 1110,
+          "text": "- https://www.radix-ui.com/themes/docs/components/theme"
+        },
+        {
+          "line": 1111,
+          "text": "- https://www.radix-ui.com/themes/docs/components/card"
+        },
+        {
+          "line": 1112,
+          "text": "- https://github.com/radix-ui/themes"
+        },
+        {
+          "line": 1115,
+          "text": "- https://ui.shadcn.com/docs"
+        },
+        {
+          "line": 1116,
+          "text": "- https://ui.shadcn.com/docs/components/card"
+        },
+        {
+          "line": 1117,
+          "text": "- https://github.com/shadcn-ui/ui"
+        },
+        {
+          "line": 1120,
+          "text": "- https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/backdrop-filter"
+        },
+        {
+          "line": 1121,
+          "text": "- https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@media/prefers-color-scheme"
+        },
+        {
+          "line": 1122,
+          "text": "- https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@media/prefers-reduced-motion"
+        },
+        {
+          "line": 1123,
+          "text": "- https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Grid_layout"
+        },
+        {
+          "line": 1124,
+          "text": "- https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Scroll-driven_animations"
+        },
+        {
+          "line": 1125,
+          "text": "- https://drafts.csswg.org/scroll-animations-1/"
+        },
+        {
+          "line": 1128,
+          "text": "- https://developer.apple.com/design/human-interface-guidelines/materials"
+        },
+        {
+          "line": 1129,
+          "text": "- https://developer.apple.com/documentation/TechnologyOverviews/liquid-glass"
+        },
+        {
+          "line": 1130,
+          "text": "- https://developer.apple.com/documentation/TechnologyOverviews/adopting-liquid-glass"
+        },
+        {
+          "line": 1131,
+          "text": "- https://developer.apple.com/documentation/SwiftUI/Material"
+        }
+      ]
+    },
+    {
+      "path": "skills/taste-skill/library/photos.json",
+      "hits": [
+        {
+          "line": 2,
+          "text": " \"source\": \"Lorem Picsum (https://picsum.photos): photographs from Unsplash, used under the Unsplash licence\","
+        },
+        {
+          "line": 3,
+          "text": " \"url\": \"https://picsum.photos/id/{id}/{width}/{height}\","
+        },
+        {
+          "line": 54,
+          "text": "     \"page\": \"https://unsplash.com/photos/OokBLPrkCNk\""
+        },
+        {
+          "line": 69,
+          "text": "     \"page\": \"https://unsplash.com/photos/TQeX8khR54I\""
+        },
+        {
+          "line": 84,
+          "text": "     \"page\": \"https://unsplash.com/photos/hVOv8me9ue8\""
+        },
+        {
+          "line": 99,
+          "text": "     \"page\": \"https://unsplash.com/photos/0AbVUUorULU\""
+        },
+        {
+          "line": 114,
+          "text": "     \"page\": \"https://unsplash.com/photos/Xg1e5bR_bL4\""
+        },
+        {
+          "line": 129,
+          "text": "     \"page\": \"https://unsplash.com/photos/Vosp2wlY3Bs\""
+        },
+        {
+          "line": 145,
+          "text": "     \"page\": \"https://unsplash.com/photos/bbV7QzDUJus\""
+        },
+        {
+          "line": 160,
+          "text": "     \"page\": \"https://unsplash.com/photos/OHS0yA7OkrQ\""
+        },
+        {
+          "line": 175,
+          "text": "     \"page\": \"https://unsplash.com/photos/O3rmGgNYLKo\""
+        },
+        {
+          "line": 190,
+          "text": "     \"page\": \"https://unsplash.com/photos/qfmd9bu7IgA\""
+        },
+        {
+          "line": 206,
+          "text": "     \"page\": \"https://unsplash.com/photos/_f2m3mEkaaU\""
+        },
+        {
+          "line": 222,
+          "text": "     \"page\": \"https://unsplash.com/photos/4IPe3tnBKK0\""
+        },
+        {
+          "line": 238,
+          "text": "     \"page\": \"https://unsplash.com/photos/-HkuuUSY1pE\""
+        },
+        {
+          "line": 254,
+          "text": "     \"page\": \"https://unsplash.com/photos/Ke96snCJ1m0\""
+        },
+        {
+          "line": 270,
+          "text": "     \"page\": \"https://unsplash.com/photos/uoSEDUu8F-I\""
+        },
+        {
+          "line": 286,
+          "text": "     \"page\": \"https://unsplash.com/photos/TFyi0QOx08c\""
+        },
+        {
+          "line": 301,
+          "text": "     \"page\": \"https://unsplash.com/photos/rlX9J28Pd9g\""
+        },
+        {
+          "line": 317,
+          "text": "     \"page\": \"https://unsplash.com/photos/NbUokuw0BQI\""
+        },
+        {
+          "line": 333,
+          "text": "     \"page\": \"https://unsplash.com/photos/37ZuGYD3JOk\""
+        },
+        {
+          "line": 348,
+          "text": "     \"page\": \"https://unsplash.com/photos/mU_aX6JBYmg\""
+        },
+        {
+          "line": 364,
+          "text": "     \"page\": \"https://unsplash.com/photos/RdyMe8KQAV0\""
+        },
+        {
+          "line": 380,
+          "text": "     \"page\": \"https://unsplash.com/photos/eBDdgbM5dSo\""
+        },
+        {
+          "line": 396,
+          "text": "     \"page\": \"https://unsplash.com/photos/ywnnwzcdR5o\""
+        },
+        {
+          "line": 412,
+          "text": "     \"page\": \"https://unsplash.com/photos/Cm7oKel-X2Q\""
+        },
+        {
+          "line": 428,
+          "text": "     \"page\": \"https://unsplash.com/photos/r1XwWjI4PyE\""
+        },
+        {
+          "line": 443,
+          "text": "     \"page\": \"https://unsplash.com/photos/ywiAen4L4qA\""
+        },
+        {
+          "line": 458,
+          "text": "     \"page\": \"https://unsplash.com/photos/yPaskTQiNjA\""
+        },
+        {
+          "line": 473,
+          "text": "     \"page\": \"https://unsplash.com/photos/o4H20aIIAt8\""
+        },
+        {
+          "line": 488,
+          "text": "     \"page\": \"https://unsplash.com/photos/X7dy114KWs4\""
+        },
+        {
+          "line": 503,
+          "text": "     \"page\": \"https://unsplash.com/photos/1iP1dozVO8I\""
+        },
+        {
+          "line": 519,
+          "text": "     \"page\": \"https://unsplash.com/photos/XsPM2CBTTpI\""
+        },
+        {
+          "line": 535,
+          "text": "     \"page\": \"https://unsplash.com/photos/9dw0xLlxw1s\""
+        },
+        {
+          "line": 550,
+          "text": "     \"page\": \"https://unsplash.com/photos/zdjOYZeJj3w\""
+        },
+        {
+          "line": 565,
+          "text": "     \"page\": \"https://unsplash.com/photos/2f_CnEeZsVg\""
+        },
+        {
+          "line": 581,
+          "text": "     \"page\": \"https://unsplash.com/photos/4xYgBTYC2-Q\""
+        },
+        {
+          "line": 597,
+          "text": "     \"page\": \"https://unsplash.com/photos/7oS_26cb1Wo\""
+        },
+        {
+          "line": 613,
+          "text": "     \"page\": \"https://unsplash.com/photos/SmhN4FejPFs\""
+        },
+        {
+          "line": 629,
+          "text": "     \"page\": \"https://unsplash.com/photos/p3kpqGBRPok\""
+        },
+        {
+          "line": 644,
+          "text": "     \"page\": \"https://unsplash.com/photos/ccPpd02Spe0\""
+        },
+        {
+          "line": 660,
+          "text": "     \"page\": \"https://unsplash.com/photos/COE-CIGj8VA\""
+        },
+        {
+          "line": 676,
+          "text": "     \"page\": \"https://unsplash.com/photos/gR_zHJqbtzo\""
+        },
+        {
+          "line": 692,
+          "text": "     \"page\": \"https://unsplash.com/photos/RdF3apSExR0\""
+        },
+        {
+          "line": 708,
+          "text": "     \"page\": \"https://unsplash.com/photos/4yDg-dDX9uM\""
+        },
+        {
+          "line": 724,
+          "text": "     \"page\": \"https://unsplash.com/photos/HrUbyeQvL_w\""
+        },
+        {
+          "line": 740,
+          "text": "     \"page\": \"https://unsplash.com/photos/61XW8CMNX6A\""
+        },
+        {
+          "line": 755,
+          "text": "     \"page\": \"https://unsplash.com/photos/FtVQIQ9rDFI\""
+        },
+        {
+          "line": 770,
+          "text": "     \"page\": \"https://unsplash.com/photos/p62O--o1x-U\""
+        },
+        {
+          "line": 785,
+          "text": "     \"page\": \"https://unsplash.com/photos/vpAKO21abME\""
+        },
+        {
+          "line": 801,
+          "text": "     \"page\": \"https://unsplash.com/photos/c5uShPcKLAE\""
+        },
+        {
+          "line": 817,
+          "text": "     \"page\": \"https://unsplash.com/photos/kKrfPaKgE1c\""
+        },
+        {
+          "line": 833,
+          "text": "     \"page\": \"https://unsplash.com/photos/ooJi3CJQRa8\""
+        },
+        {
+          "line": 849,
+          "text": "     \"page\": \"https://unsplash.com/photos/zvf7cZ0PC20\""
+        },
+        {
+          "line": 904,
+          "text": "     \"page\": \"https://unsplash.com/photos/j9nfqTi5T5o\""
+        },
+        {
+          "line": 920,
+          "text": "     \"page\": \"https://unsplash.com/photos/jkPKQWK1sKU\""
+        },
+        {
+          "line": 936,
+          "text": "     \"page\": \"https://unsplash.com/photos/vigsqYux_-8\""
+        },
+        {
+          "line": 952,
+          "text": "     \"page\": \"https://unsplash.com/photos/2qLT_Rq-2tk\""
+        },
+        {
+          "line": 968,
+          "text": "     \"page\": \"https://unsplash.com/photos/674bDNKmnIk\""
+        },
+        {
+          "line": 984,
+          "text": "     \"page\": \"https://unsplash.com/photos/Sd8O2SgKDJA\""
+        },
+        {
+          "line": 1000,
+          "text": "     \"page\": \"https://unsplash.com/photos/x8R2oSWZRSE\""
+        },
+        {
+          "line": 1016,
+          "text": "     \"page\": \"https://unsplash.com/photos/I_9ILwtsl_k\""
+        },
+        {
+          "line": 1031,
+          "text": "     \"page\": \"https://unsplash.com/photos/IQ1kOQTJrOQ\""
+        },
+        {
+          "line": 1047,
+          "text": "     \"page\": \"https://unsplash.com/photos/gkT4FfgHO5o\""
+        },
+        {
+          "line": 1063,
+          "text": "     \"page\": \"https://unsplash.com/photos/iJnZwLBOB1I\""
+        },
+        {
+          "line": 1078,
+          "text": "     \"page\": \"https://unsplash.com/photos/uDUiRS8YroY\""
+        },
+        {
+          "line": 1093,
+          "text": "     \"page\": \"https://unsplash.com/photos/2SfRAWkinpU\""
+        },
+        {
+          "line": 1109,
+          "text": "     \"page\": \"https://unsplash.com/photos/t1mqA3V3-7g\""
+        },
+        {
+          "line": 1125,
+          "text": "     \"page\": \"https://unsplash.com/photos/TuOiIpkIea8\""
+        },
+        {
+          "line": 1141,
+          "text": "     \"page\": \"https://unsplash.com/photos/x_jTtMOOMd4\""
+        },
+        {
+          "line": 1157,
+          "text": "     \"page\": \"https://unsplash.com/photos/SlGVAKyP20U\""
+        },
+        {
+          "line": 1173,
+          "text": "     \"page\": \"https://unsplash.com/photos/lp0IFw6YqZg\""
+        },
+        {
+          "line": 1188,
+          "text": "     \"page\": \"https://unsplash.com/photos/04paG2PxKGs\""
+        },
+        {
+          "line": 1204,
+          "text": "     \"page\": \"https://unsplash.com/photos/Nq8LdWC7HnM\""
+        },
+        {
+          "line": 1220,
+          "text": "     \"page\": \"https://unsplash.com/photos/vc3ZOCf5BN8\""
+        },
+        {
+          "line": 1236,
+          "text": "     \"page\": \"https://unsplash.com/photos/cKYgt4K0g5w\""
+        },
+        {
+          "line": 1252,
+          "text": "     \"page\": \"https://unsplash.com/photos/QYAojSRu82c\""
+        },
+        {
+          "line": 1268,
+          "text": "     \"page\": \"https://unsplash.com/photos/umq-jgTjr28\""
+        },
+        {
+          "line": 1284,
+          "text": "     \"page\": \"https://unsplash.com/photos/fqtOAqbbnJg\""
+        },
+        {
+          "line": 1300,
+          "text": "     \"page\": \"https://unsplash.com/photos/KWkMiUIxcD0\""
+        },
+        {
+          "line": 1316,
+          "text": "     \"page\": \"https://unsplash.com/photos/TDahcrcPhhA\""
+        },
+        {
+          "line": 1332,
+          "text": "     \"page\": \"https://unsplash.com/photos/H28ODcp4EUk\""
+        },
+        {
+          "line": 1348,
+          "text": "     \"page\": \"https://unsplash.com/photos/0nv-h04oPhM\""
+        },
+        {
+          "line": 1364,
+          "text": "     \"page\": \"https://unsplash.com/photos/hrcRtexM7M0\""
+        },
+        {
+          "line": 1380,
+          "text": "     \"page\": \"https://unsplash.com/photos/DNXWtB33WWE\""
+        },
+        {
+          "line": 1396,
+          "text": "     \"page\": \"https://unsplash.com/photos/lVtlz3JRV6o\""
+        },
+        {
+          "line": 1412,
+          "text": "     \"page\": \"https://unsplash.com/photos/MS7KD9Ti7FQ\""
+        },
+        {
+          "line": 1428,
+          "text": "     \"page\": \"https://unsplash.com/photos/GnP5Kfg5ebU\""
+        },
+        {
+          "line": 1444,
+          "text": "     \"page\": \"https://unsplash.com/photos/ivieBAESVWM\""
+        },
+        {
+          "line": 1460,
+          "text": "     \"page\": \"https://unsplash.com/photos/uXzNVOZT5no\""
+        },
+        {
+          "line": 1476,
+          "text": "     \"page\": \"https://unsplash.com/photos/_rsGm7nob3w\""
+        },
+        {
+          "line": 1492,
+          "text": "     \"page\": \"https://unsplash.com/photos/GSzD6vGIWKM\""
+        },
+        {
+          "line": 1508,
+          "text": "     \"page\": \"https://unsplash.com/photos/12rzbJhQ89E\""
+        },
+        {
+          "line": 1553,
+          "text": "     \"page\": \"https://unsplash.com/photos/TI-B-TNYJMU\""
+        },
+        {
+          "line": 1569,
+          "text": "     \"page\": \"https://unsplash.com/photos/OdAqbedkfiA\""
+        },
+        {
+          "line": 1585,
+          "text": "     \"page\": \"https://unsplash.com/photos/X0OoHrPvgXE\""
+        },
+        {
+          "line": 1601,
+          "text": "     \"page\": \"https://unsplash.com/photos/E9CrQou9K0Y\""
+        },
+        {
+          "line": 1617,
+          "text": "     \"page\": \"https://unsplash.com/photos/xJ2tjuUHD9M\""
+        },
+        {
+          "line": 1633,
+          "text": "     \"page\": \"https://unsplash.com/photos/Kt5hRENuotI\""
+        },
+        {
+          "line": 1649,
+          "text": "     \"page\": \"https://unsplash.com/photos/V0yAek6BgGk\""
+        },
+        {
+          "line": 1664,
+          "text": "     \"page\": \"https://unsplash.com/photos/agnhLQWqr1Q\""
+        },
+        {
+          "line": 1680,
+          "text": "     \"page\": \"https://unsplash.com/photos/p-bkdO43shE\""
+        },
+        {
+          "line": 1695,
+          "text": "     \"page\": \"https://unsplash.com/photos/yD3PXDV7Sjc\""
+        },
+        {
+          "line": 1711,
+          "text": "     \"page\": \"https://unsplash.com/photos/Du30R57aCyM\""
+        },
+        {
+          "line": 1727,
+          "text": "     \"page\": \"https://unsplash.com/photos/Gg7uKdHFb_c\""
+        },
+        {
+          "line": 1743,
+          "text": "     \"page\": \"https://unsplash.com/photos/o-zOatT4kQw\""
+        },
+        {
+          "line": 1759,
+          "text": "     \"page\": \"https://unsplash.com/photos/8WClaa1CmZ0\""
+        },
+        {
+          "line": 1775,
+          "text": "     \"page\": \"https://unsplash.com/photos/UFskvng2OMU\""
+        },
+        {
+          "line": 1791,
+          "text": "     \"page\": \"https://unsplash.com/photos/01ZeHnK3F_4\""
+        },
+        {
+          "line": 1807,
+          "text": "     \"page\": \"https://unsplash.com/photos/OeC1wIsKNpk\""
+        },
+        {
+          "line": 1823,
+          "text": "     \"page\": \"https://unsplash.com/photos/WLUHO9A_xik\""
+        },
+        {
+          "line": 1839,
+          "text": "     \"page\": \"https://unsplash.com/photos/yypv2Tu-mxU\""
+        },
+        {
+          "line": 1855,
+          "text": "     \"page\": \"https://unsplash.com/photos/HzaT5l4Fzqc\""
+        },
+        {
+          "line": 1871,
+          "text": "     \"page\": \"https://unsplash.com/photos/_qGq1Z2Bk6c\""
+        },
+        {
+          "line": 1887,
+          "text": "     \"page\": \"https://unsplash.com/photos/dfZbts6B4yw\""
+        },
+        {
+          "line": 1903,
+          "text": "     \"page\": \"https://unsplash.com/photos/ZQeRH1XD4Tc\""
+        },
+        {
+          "line": 1919,
+          "text": "     \"page\": \"https://unsplash.com/photos/sP4UZnpSiN4\""
+        },
+        {
+          "line": 1935,
+          "text": "     \"page\": \"https://unsplash.com/photos/duoMdMm3aY0\""
+        },
+        {
+          "line": 1951,
+          "text": "     \"page\": \"https://unsplash.com/photos/2KXEb_8G5vo\""
+        },
+        {
+          "line": 1967,
+          "text": "     \"page\": \"https://unsplash.com/photos/9RqA6tnT0gA\""
+        },
+        {
+          "line": 1983,
+          "text": "     \"page\": \"https://unsplash.com/photos/lpjb_UMOyx8\""
+        },
+        {
+          "line": 1999,
+          "text": "     \"page\": \"https://unsplash.com/photos/CaQ_KITtnVY\""
+        },
+        {
+          "line": 2015,
+          "text": "     \"page\": \"https://unsplash.com/photos/1kEHpwZdmtc\""
+        },
+        {
+          "line": 2056,
+          "text": "     \"page\": \"https://unsplash.com/photos/7FLh300YONc\""
+        },
+        {
+          "line": 2071,
+          "text": "     \"page\": \"https://unsplash.com/photos/6J--NXulQCs\""
+        },
+        {
+          "line": 2086,
+          "text": "     \"page\": \"https://unsplash.com/photos/jrzvClypPq8\""
+        },
+        {
+          "line": 2101,
+          "text": "     \"page\": \"https://unsplash.com/photos/9702xTENR-M\""
+        },
+        {
+          "line": 2117,
+          "text": "     \"page\": \"https://unsplash.com/photos/DYW1s0AfLwo\""
+        },
+        {
+          "line": 2133,
+          "text": "     \"page\": \"https://unsplash.com/photos/pTgTMVxQE_k\""
+        },
+        {
+          "line": 2149,
+          "text": "     \"page\": \"https://unsplash.com/photos/QP1dUyQ8WsI\""
+        },
+        {
+          "line": 2164,
+          "text": "     \"page\": \"https://unsplash.com/photos/JsqAqevX6lg\""
+        },
+        {
+          "line": 2179,
+          "text": "     \"page\": \"https://unsplash.com/photos/yNaGxHqjOuw\""
+        },
+        {
+          "line": 2195,
+          "text": "     \"page\": \"https://unsplash.com/photos/eWBseWsTEpA\""
+        },
+        {
+          "line": 2211,
+          "text": "     \"page\": \"https://unsplash.com/photos/NUgw97CVdAk\""
+        },
+        {
+          "line": 2227,
+          "text": "     \"page\": \"https://unsplash.com/photos/W3V2tQAZxPA\""
+        },
+        {
+          "line": 2243,
+          "text": "     \"page\": \"https://unsplash.com/photos/GUneOBRhq9w\""
+        },
+        {
+          "line": 2259,
+          "text": "     \"page\": \"https://unsplash.com/photos/dJVU4jXV1Q8\""
+        },
+        {
+          "line": 2275,
+          "text": "     \"page\": \"https://unsplash.com/photos/qsEJGX4VqYU\""
+        },
+        {
+          "line": 2291,
+          "text": "     \"page\": \"https://unsplash.com/photos/xFjAftU8lMY\""
+        },
+        {
+          "line": 2307,
+          "text": "     \"page\": \"https://unsplash.com/photos/JU2MgHOHDsw\""
+        },
+        {
+          "line": 2323,
+          "text": "     \"page\": \"https://unsplash.com/photos/CoD2Q92UaEg\""
+        },
+        {
+          "line": 2338,
+          "text": "     \"page\": \"https://unsplash.com/photos/utqJcneoFjo\""
+        },
+        {
+          "line": 2354,
+          "text": "     \"page\": \"https://unsplash.com/photos/NQSWvyVRIJk\""
+        },
+        {
+          "line": 2370,
+          "text": "     \"page\": \"https://unsplash.com/photos/eOpewngf68w\""
+        },
+        {
+          "line": 2411,
+          "text": "     \"page\": \"https://unsplash.com/photos/fj0tFloTPGQ\""
+        },
+        {
+          "line": 2426,
+          "text": "     \"page\": \"https://unsplash.com/photos/AJqHzUbc1io\""
+        },
+        {
+          "line": 2442,
+          "text": "     \"page\": \"https://unsplash.com/photos/_IMinUHfUs0\""
+        },
+        {
+          "line": 2458,
+          "text": "     \"page\": \"https://unsplash.com/photos/upywS5QFwr8\""
+        },
+        {
+          "line": 2473,
+          "text": "     \"page\": \"https://unsplash.com/photos/YhZbnxqtooM\""
+        },
+        {
+          "line": 2488,
+          "text": "     \"page\": \"https://unsplash.com/photos/o697BgRH_-M\""
+        },
+        {
+          "line": 2503,
+          "text": "     \"page\": \"https://unsplash.com/photos/-mNvCsNlsSE\""
+        },
+        {
+          "line": 2519,
+          "text": "     \"page\": \"https://unsplash.com/photos/DgtRKZOOE0w\""
+        },
+        {
+          "line": 2535,
+          "text": "     \"page\": \"https://unsplash.com/photos/Xo3uIN_Q1Y0\""
+        },
+        {
+          "line": 2551,
+          "text": "     \"page\": \"https://unsplash.com/photos/SdSc4sWVMRU\""
+        },
+        {
+          "line": 2567,
+          "text": "     \"page\": \"https://unsplash.com/photos/4uCSqP5OKiI\""
+        },
+        {
+          "line": 2583,
+          "text": "     \"page\": \"https://unsplash.com/photos/leHDA08Lbpc\""
+        },
+        {
+          "line": 2598,
+          "text": "     \"page\": \"https://unsplash.com/photos/6btEyS3AJrI\""
+        },
+        {
+          "line": 2613,
+          "text": "     \"page\": \"https://unsplash.com/photos/BT_BUEwjeQg\""
+        },
+        {
+          "line": 2628,
+          "text": "     \"page\": \"https://unsplash.com/photos/5qlegaTwZpM\""
+        },
+        {
+          "line": 2632,
+          "text": "     \"alt\": \"Inside the curl of a breaking teal wave\","
+        },
+        {
+          "line": 2644,
+          "text": "     \"page\": \"https://unsplash.com/photos/l61smgU3Y7w\""
+        },
+        {
+          "line": 2660,
+          "text": "     \"page\": \"https://unsplash.com/photos/5Dga0T0x6GY\""
+        },
+        {
+          "line": 2676,
+          "text": "     \"page\": \"https://unsplash.com/photos/-YMhg0KYgVc\""
+        },
+        {
+          "line": 2692,
+          "text": "     \"page\": \"https://unsplash.com/photos/Nte-4RiRfwU\""
+        },
+        {
+          "line": 2708,
+          "text": "     \"page\": \"https://unsplash.com/photos/7x4dOkulU9E\""
+        },
+        {
+          "line": 2724,
+          "text": "     \"page\": \"https://unsplash.com/photos/VB-w_3dnyvI\""
+        },
+        {
+          "line": 2740,
+          "text": "     \"page\": \"https://unsplash.com/photos/Ixp4YhCKZkI\""
+        },
+        {
+          "line": 2756,
+          "text": "     \"page\": \"https://unsplash.com/photos/HkTMcmlMOUQ\""
+        },
+        {
+          "line": 2798,
+          "text": "     \"page\": \"https://unsplash.com/photos/HJSIZsC4te8\""
+        },
+        {
+          "line": 2814,
+          "text": "     \"page\": \"https://unsplash.com/photos/1rZcfdsjoR4\""
+        },
+        {
+          "line": 2829,
+          "text": "     \"page\": \"https://unsplash.com/photos/aViOQZzikVs\""
+        },
+        {
+          "line": 2845,
+          "text": "     \"page\": \"https://unsplash.com/photos/7RIm0GqvvkM\""
+        },
+        {
+          "line": 2861,
+          "text": "     \"page\": \"https://unsplash.com/photos/YD1uvthZwg4\""
+        },
+        {
+          "line": 2876,
+          "text": "     \"page\": \"https://unsplash.com/photos/Nzw3HHsNHYU\""
+        },
+        {
+          "line": 2891,
+          "text": "     \"page\": \"https://unsplash.com/photos/v9eNihIWh8k\""
+        },
+        {
+          "line": 2906,
+          "text": "     \"page\": \"https://unsplash.com/photos/yNGQ830uFB4\""
+        },
+        {
+          "line": 2921,
+          "text": "     \"page\": \"https://unsplash.com/photos/M_eB1UjE0do\""
+        },
+        {
+          "line": 2936,
+          "text": "     \"page\": \"https://unsplash.com/photos/mR_HR8NZwg8\""
+        },
+        {
+          "line": 2952,
+          "text": "     \"page\": \"https://unsplash.com/photos/2f5Ktwb8YXk\""
+        },
+        {
+          "line": 2968,
+          "text": "     \"page\": \"https://unsplash.com/photos/29SqSdfvN_A\""
+        },
+        {
+          "line": 2984,
+          "text": "     \"page\": \"https://unsplash.com/photos/_6xC5v5fLpU\""
+        },
+        {
+          "line": 3000,
+          "text": "     \"page\": \"https://unsplash.com/photos/EeEx8zpOESA\""
+        },
+        {
+          "line": 3016,
+          "text": "     \"page\": \"https://unsplash.com/photos/t7YycgAoVSw\""
+        },
+        {
+          "line": 3060,
+          "text": "     \"page\": \"https://unsplash.com/photos/YbgPWfWlvkE\""
+        },
+        {
+          "line": 3076,
+          "text": "     \"page\": \"https://unsplash.com/photos/1gBUXhf0PtA\""
+        },
+        {
+          "line": 3092,
+          "text": "     \"page\": \"https://unsplash.com/photos/xDrxJCdedcI\""
+        },
+        {
+          "line": 3107,
+          "text": "     \"page\": \"https://unsplash.com/photos/9VWOr22LhVI\""
+        },
+        {
+          "line": 3122,
+          "text": "     \"page\": \"https://unsplash.com/photos/kmF_Aq8gkp0\""
+        },
+        {
+          "line": 3138,
+          "text": "     \"page\": \"https://unsplash.com/photos/oSf8ePoG9NU\""
+        },
+        {
+          "line": 3154,
+          "text": "     \"page\": \"https://unsplash.com/photos/7eu-KaAJwks\""
+        },
+        {
+          "line": 3170,
+          "text": "     \"page\": \"https://unsplash.com/photos/8ZgJyLGbC7Y\""
+        },
+        {
+          "line": 3185,
+          "text": "     \"page\": \"https://unsplash.com/photos/19tQv51x4-A\""
+        },
+        {
+          "line": 3201,
+          "text": "     \"page\": \"https://unsplash.com/photos/vD3L-rN_qNw\""
+        },
+        {
+          "line": 3216,
+          "text": "     \"page\": \"https://unsplash.com/photos/24tsXm7qGQE\""
+        },
+        {
+          "line": 3232,
+          "text": "     \"page\": \"https://unsplash.com/photos/rHbob_bEsSs\""
+        },
+        {
+          "line": 3276,
+          "text": "     \"page\": \"https://unsplash.com/photos/_VTgctRg0tA\""
+        },
+        {
+          "line": 3291,
+          "text": "     \"page\": \"https://unsplash.com/photos/JabLtzJl8bc\""
+        },
+        {
+          "line": 3306,
+          "text": "     \"page\": \"https://unsplash.com/photos/llYg8Ni43fc\""
+        },
+        {
+          "line": 3322,
+          "text": "     \"page\": \"https://unsplash.com/photos/LJb0yZ7UD7o\""
+        },
+        {
+          "line": 3338,
+          "text": "     \"page\": \"https://unsplash.com/photos/_LLcIlMoUaE\""
+        },
+        {
+          "line": 3354,
+          "text": "     \"page\": \"https://unsplash.com/photos/trvELSvNZoY\""
+        },
+        {
+          "line": 3370,
+          "text": "     \"page\": \"https://unsplash.com/photos/cGe1PV_yEso\""
+        },
+        {
+          "line": 3386,
+          "text": "     \"page\": \"https://unsplash.com/photos/ZSMgNjYrHRM\""
+        },
+        {
+          "line": 3402,
+          "text": "     \"page\": \"https://unsplash.com/photos/pmUEwPKL5IE\""
+        },
+        {
+          "line": 3417,
+          "text": "     \"page\": \"https://unsplash.com/photos/OIbwHaG9NC8\""
+        },
+        {
+          "line": 3433,
+          "text": "     \"page\": \"https://unsplash.com/photos/uivWDK2Ifrg\""
+        },
+        {
+          "line": 3449,
+          "text": "     \"page\": \"https://unsplash.com/photos/6hxvm0NzYP8\""
+        },
+        {
+          "line": 3465,
+          "text": "     \"page\": \"https://unsplash.com/photos/R3pUGn5YiTg\""
+        },
+        {
+          "line": 3481,
+          "text": "     \"page\": \"https://unsplash.com/photos/NuE8Nu3otjo\""
+        },
+        {
+          "line": 3497,
+          "text": "     \"page\": \"https://unsplash.com/photos/0LU4vO5iFpM\""
+        },
+        {
+          "line": 3558,
+          "text": "     \"page\": \"https://unsplash.com/photos/u3gES0SUsnI\""
+        },
+        {
+          "line": 3574,
+          "text": "     \"page\": \"https://unsplash.com/photos/ypVM8PnygUo\""
+        },
+        {
+          "line": 3590,
+          "text": "     \"page\": \"https://unsplash.com/photos/HeVd38MWnw4\""
+        },
+        {
+          "line": 3606,
+          "text": "     \"page\": \"https://unsplash.com/photos/bopC0sTGu-E\""
+        },
+        {
+          "line": 3621,
+          "text": "     \"page\": \"https://unsplash.com/photos/IJ25m7fXqtk\""
+        },
+        {
+          "line": 3637,
+          "text": "     \"page\": \"https://unsplash.com/photos/7sMHTVJ0OTA\""
+        },
+        {
+          "line": 3653,
+          "text": "     \"page\": \"https://unsplash.com/photos/busqfOj6i80\""
+        },
+        {
+          "line": 3668,
+          "text": "     \"page\": \"https://unsplash.com/photos/JJB_K8aCPU4\""
+        },
+        {
+          "line": 3684,
+          "text": "     \"page\": \"https://unsplash.com/photos/688Fna1pwOQ\""
+        },
+        {
+          "line": 3700,
+          "text": "     \"page\": \"https://unsplash.com/photos/eG3k60PrTGY\""
+        },
+        {
+          "line": 3716,
+          "text": "     \"page\": \"https://unsplash.com/photos/OxzhYtL-00Y\""
+        },
+        {
+          "line": 3731,
+          "text": "     \"page\": \"https://unsplash.com/photos/CtkDsu4w-Rs\""
+        },
+        {
+          "line": 3746,
+          "text": "     \"page\": \"https://unsplash.com/photos/63qfL0TciY8\""
+        },
+        {
+          "line": 3761,
+          "text": "     \"page\": \"https://unsplash.com/photos/8lMhzUjD1Wk\""
+        },
+        {
+          "line": 3777,
+          "text": "     \"page\": \"https://unsplash.com/photos/Osl4I3IS9Cw\""
+        },
+        {
+          "line": 3793,
+          "text": "     \"page\": \"https://unsplash.com/photos/d6ebY-faOO0\""
+        },
+        {
+          "line": 3808,
+          "text": "     \"page\": \"https://unsplash.com/photos/dFkCXUMB4r4\""
+        },
+        {
+          "line": 3824,
+          "text": "     \"page\": \"https://unsplash.com/photos/sM3lniBo2LY\""
+        },
+        {
+          "line": 3840,
+          "text": "     \"page\": \"https://unsplash.com/photos/W7CopGaHkEM\""
+        },
+        {
+          "line": 3856,
+          "text": "     \"page\": \"https://unsplash.com/photos/g28MgVK85bQ\""
+        },
+        {
+          "line": 3872,
+          "text": "     \"page\": \"https://unsplash.com/photos/MNyW4STma6g\""
+        },
+        {
+          "line": 3888,
+          "text": "     \"page\": \"https://unsplash.com/photos/3fPXt37X6UQ\""
+        },
+        {
+          "line": 3904,
+          "text": "     \"page\": \"https://unsplash.com/photos/n7n-nkadHRM\""
+        },
+        {
+          "line": 3920,
+          "text": "     \"page\": \"https://unsplash.com/photos/ko-wCySsj-I\""
+        },
+        {
+          "line": 3936,
+          "text": "     \"page\": \"https://unsplash.com/photos/JV4Ic7fSZbw\""
+        },
+        {
+          "line": 3952,
+          "text": "     \"page\": \"https://unsplash.com/photos/4vPPtrfLRcs\""
+        },
+        {
+          "line": 3968,
+          "text": "     \"page\": \"https://unsplash.com/photos/1ak3Z7ZmtQA\""
+        },
+        {
+          "line": 3984,
+          "text": "     \"page\": \"https://unsplash.com/photos/O9TEKuI1Icw\""
+        },
+        {
+          "line": 4000,
+          "text": "     \"page\": \"https://unsplash.com/photos/0G1r-Cg0zS8\""
+        },
+        {
+          "line": 4016,
+          "text": "     \"page\": \"https://unsplash.com/photos/v99lFTVp_ws\""
+        },
+        {
+          "line": 4032,
+          "text": "     \"page\": \"https://unsplash.com/photos/6asyCyR0K1Q\""
+        },
+        {
+          "line": 4048,
+          "text": "     \"page\": \"https://unsplash.com/photos/-tXkzUEuheU\""
+        },
+        {
+          "line": 4063,
+          "text": "     \"page\": \"https://unsplash.com/photos/D62hQefhteg\""
+        },
+        {
+          "line": 4079,
+          "text": "     \"page\": \"https://unsplash.com/photos/tY1QwoLAJQ4\""
+        },
+        {
+          "line": 4095,
+          "text": "     \"page\": \"https://unsplash.com/photos/slgtMF8EjYE\""
+        },
+        {
+          "line": 4111,
+          "text": "     \"page\": \"https://unsplash.com/photos/ScEKf8u7y-c\""
+        },
+        {
+          "line": 4126,
+          "text": "     \"page\": \"https://unsplash.com/photos/DsQmBlbywJ8\""
+        },
+        {
+          "line": 4142,
+          "text": "     \"page\": \"https://unsplash.com/photos/2Qm47LI0W1c\""
+        },
+        {
+          "line": 4158,
+          "text": "     \"page\": \"https://unsplash.com/photos/VedK8_UlmkY\""
+        },
+        {
+          "line": 4174,
+          "text": "     \"page\": \"https://unsplash.com/photos/jN_VbffJHlI\""
+        },
+        {
+          "line": 4190,
+          "text": "     \"page\": \"https://unsplash.com/photos/Aa8_X_YgrO4\""
+        },
+        {
+          "line": 4206,
+          "text": "     \"page\": \"https://unsplash.com/photos/vj_9l20fzj0\""
+        },
+        {
+          "line": 4222,
+          "text": "     \"page\": \"https://unsplash.com/photos/azkWKhyr54U\""
+        },
+        {
+          "line": 4238,
+          "text": "     \"page\": \"https://unsplash.com/photos/aB7g_LMJhRs\""
+        },
+        {
+          "line": 4253,
+          "text": "     \"page\": \"https://unsplash.com/photos/HALe2SmkWAI\""
+        },
+        {
+          "line": 4269,
+          "text": "     \"page\": \"https://unsplash.com/photos/ISHD1ovpJ-k\""
+        },
+        {
+          "line": 4285,
+          "text": "     \"page\": \"https://unsplash.com/photos/Pn6iimgM-wo\""
+        },
+        {
+          "line": 4301,
+          "text": "     \"page\": \"https://unsplash.com/photos/j0g8taxHZa0\""
+        },
+        {
+          "line": 4317,
+          "text": "     \"page\": \"https://unsplash.com/photos/Sfn8f32ZIj0\""
+        },
+        {
+          "line": 4333,
+          "text": "     \"page\": \"https://unsplash.com/photos/2UE1givDiPM\""
+        },
+        {
+          "line": 4349,
+          "text": "     \"page\": \"https://unsplash.com/photos/vNAZubsDWMg\""
+        },
+        {
+          "line": 4365,
+          "text": "     \"page\": \"https://unsplash.com/photos/VjmlDjePHjE\""
+        },
+        {
+          "line": 4380,
+          "text": "     \"page\": \"https://unsplash.com/photos/VLT62-JzddA\""
+        },
+        {
+          "line": 4396,
+          "text": "     \"page\": \"https://unsplash.com/photos/4aQY2CrXsa8\""
+        },
+        {
+          "line": 4412,
+          "text": "     \"page\": \"https://unsplash.com/photos/VviFtDJakYk\""
+        },
+        {
+          "line": 4428,
+          "text": "     \"page\": \"https://unsplash.com/photos/ZKBQmgMyf8s\""
+        },
+        {
+          "line": 4444,
+          "text": "     \"page\": \"https://unsplash.com/photos/rM7B4DheQc0\""
+        },
+        {
+          "line": 4460,
+          "text": "     \"page\": \"https://unsplash.com/photos/KqVHRmHVwwM\""
+        },
+        {
+          "line": 4476,
+          "text": "     \"page\": \"https://unsplash.com/photos/B1amIgaNkwA\""
+        },
+        {
+          "line": 4520,
+          "text": "     \"page\": \"https://unsplash.com/photos/Qo51KwK1dKg\""
+        },
+        {
+          "line": 4536,
+          "text": "     \"page\": \"https://unsplash.com/photos/SyBYM8R6VU4\""
+        },
+        {
+          "line": 4552,
+          "text": "     \"page\": \"https://unsplash.com/photos/1fpyA_z2woY\""
+        },
+        {
+          "line": 4568,
+          "text": "     \"page\": \"https://unsplash.com/photos/eDDQRAYKo7k\""
+        },
+        {
+          "line": 4584,
+          "text": "     \"page\": \"https://unsplash.com/photos/yb0Qs65aZmc\""
+        },
+        {
+          "line": 4600,
+          "text": "     \"page\": \"https://unsplash.com/photos/hfIheOEJp9M\""
+        },
+        {
+          "line": 4616,
+          "text": "     \"page\": \"https://unsplash.com/photos/eVBg7A07NGg\""
+        },
+        {
+          "line": 4632,
+          "text": "     \"page\": \"https://unsplash.com/photos/nOhUx3tiaQQ\""
+        },
+        {
+          "line": 4648,
+          "text": "     \"page\": \"https://unsplash.com/photos/5z8CIELxW1Y\""
+        },
+        {
+          "line": 4664,
+          "text": "     \"page\": \"https://unsplash.com/photos/dSyWD7oRns8\""
+        },
+        {
+          "line": 4680,
+          "text": "     \"page\": \"https://unsplash.com/photos/ifpBOcQlhoY\""
+        },
+        {
+          "line": 4696,
+          "text": "     \"page\": \"https://unsplash.com/photos/Gk6YgzmrLgM\""
+        },
+        {
+          "line": 4712,
+          "text": "     \"page\": \"https://unsplash.com/photos/VQIbwDaqJKc\""
+        },
+        {
+          "line": 4728,
+          "text": "     \"page\": \"https://unsplash.com/photos/QmemudqzrXQ\""
+        },
+        {
+          "line": 4744,
+          "text": "     \"page\": \"https://unsplash.com/photos/T72-kQyQxtA\""
+        },
+        {
+          "line": 4760,
+          "text": "     \"page\": \"https://unsplash.com/photos/utwYoEu9SU8\""
+        },
+        {
+          "line": 4776,
+          "text": "     \"page\": \"https://unsplash.com/photos/Uax2bg5EizU\""
+        },
+        {
+          "line": 4792,
+          "text": "     \"page\": \"https://unsplash.com/photos/-icmOdYWXuQ\""
+        },
+        {
+          "line": 4839,
+          "text": "     \"page\": \"https://unsplash.com/photos/IoCWq07GaG4\""
+        },
+        {
+          "line": 4854,
+          "text": "     \"page\": \"https://unsplash.com/photos/xS_RzdD5CFE\""
+        },
+        {
+          "line": 4870,
+          "text": "     \"page\": \"https://unsplash.com/photos/cSe3oKQ03OQ\""
+        },
+        {
+          "line": 4886,
+          "text": "     \"page\": \"https://unsplash.com/photos/t05kfHeygbE\""
+        },
+        {
+          "line": 4901,
+          "text": "     \"page\": \"https://unsplash.com/photos/qUToqliACNA\""
+        },
+        {
+          "line": 4916,
+          "text": "     \"page\": \"https://unsplash.com/photos/Qh6wsKk1HWg\""
+        },
+        {
+          "line": 4932,
+          "text": "     \"page\": \"https://unsplash.com/photos/mOPCiXScx08\""
+        },
+        {
+          "line": 4948,
+          "text": "     \"page\": \"https://unsplash.com/photos/BYu8ITUWMfc\""
+        },
+        {
+          "line": 4964,
+          "text": "     \"page\": \"https://unsplash.com/photos/1vYkQVDWXl0\""
+        },
+        {
+          "line": 4980,
+          "text": "     \"page\": \"https://unsplash.com/photos/2p1HOcpi14U\""
+        },
+        {
+          "line": 4996,
+          "text": "     \"page\": \"https://unsplash.com/photos/KBX9XHk266s\""
+        },
+        {
+          "line": 5061,
+          "text": "     \"page\": \"https://unsplash.com/photos/JYFmYif4n70\""
+        },
+        {
+          "line": 5077,
+          "text": "     \"page\": \"https://unsplash.com/photos/DEdM9Vs6s8w\""
+        },
+        {
+          "line": 5093,
+          "text": "     \"page\": \"https://unsplash.com/photos/iNmouRApXYM\""
+        },
+        {
+          "line": 5108,
+          "text": "     \"page\": \"https://unsplash.com/photos/KR2mdHJ5qMg\""
+        },
+        {
+          "line": 5124,
+          "text": "     \"page\": \"https://unsplash.com/photos/pJILiyPdrXI\""
+        },
+        {
+          "line": 5140,
+          "text": "     \"page\": \"https://unsplash.com/photos/umchkHwkdyM\""
+        },
+        {
+          "line": 5155,
+          "text": "     \"page\": \"https://unsplash.com/photos/NYxxuBSQzp4\""
+        },
+        {
+          "line": 5171,
+          "text": "     \"page\": \"https://unsplash.com/photos/hGO27G5tZJ8\""
+        },
+        {
+          "line": 5187,
+          "text": "     \"page\": \"https://unsplash.com/photos/hv1MrBzGGNY\""
+        },
+        {
+          "line": 5203,
+          "text": "     \"page\": \"https://unsplash.com/photos/B6uUPYt7wz4\""
+        },
+        {
+          "line": 5219,
+          "text": "     \"page\": \"https://unsplash.com/photos/VkF8pVVoFg0\""
+        },
+        {
+          "line": 5234,
+          "text": "     \"page\": \"https://unsplash.com/photos/RQHzRELE2Ss\""
+        },
+        {
+          "line": 5250,
+          "text": "     \"page\": \"https://unsplash.com/photos/FjjUVn_KHLU\""
+        },
+        {
+          "line": 5266,
+          "text": "     \"page\": \"https://unsplash.com/photos/lQy6mHZ7fYk\""
+        },
+        {
+          "line": 5282,
+          "text": "     \"page\": \"https://unsplash.com/photos/x5SRhkFajrA\""
+        },
+        {
+          "line": 5298,
+          "text": "     \"page\": \"https://unsplash.com/photos/uu5PfAzu0s4\""
+        },
+        {
+          "line": 5314,
+          "text": "     \"page\": \"https://unsplash.com/photos/m0l5J8Lqnzo\""
+        },
+        {
+          "line": 5330,
+          "text": "     \"page\": \"https://unsplash.com/photos/6hgsktgpfIE\""
+        },
+        {
+          "line": 5346,
+          "text": "     \"page\": \"https://unsplash.com/photos/X5ChCOu8CQg\""
+        },
+        {
+          "line": 5362,
+          "text": "     \"page\": \"https://unsplash.com/photos/R3LcfTvcGWY\""
+        },
+        {
+          "line": 5378,
+          "text": "     \"page\": \"https://unsplash.com/photos/OJJIaFZOeX4\""
+        },
+        {
+          "line": 5422,
+          "text": "     \"page\": \"https://unsplash.com/photos/ZJsseAxEcqM\""
+        },
+        {
+          "line": 5438,
+          "text": "     \"page\": \"https://unsplash.com/photos/8yqds_91OLw\""
+        },
+        {
+          "line": 5453,
+          "text": "     \"page\": \"https://unsplash.com/photos/cZhUxIQjILg\""
+        },
+        {
+          "line": 5469,
+          "text": "     \"page\": \"https://unsplash.com/photos/pFqrYbhIAXs\""
+        },
+        {
+          "line": 5484,
+          "text": "     \"page\": \"https://unsplash.com/photos/Y2PYfopoz-k\""
+        },
+        {
+          "line": 5500,
+          "text": "     \"page\": \"https://unsplash.com/photos/yZf1quatKCA\""
+        },
+        {
+          "line": 5516,
+          "text": "     \"page\": \"https://unsplash.com/photos/8hgm6mKK04U\""
+        },
+        {
+          "line": 5531,
+          "text": "     \"page\": \"https://unsplash.com/photos/mk7D-4UCfmg\""
+        },
+        {
+          "line": 5547,
+          "text": "     \"page\": \"https://unsplash.com/photos/Lj1S1_KD61k\""
+        },
+        {
+          "line": 5563,
+          "text": "     \"page\": \"https://unsplash.com/photos/3WbWLC6QHBg\""
+        },
+        {
+          "line": 5622,
+          "text": "     \"page\": \"https://unsplash.com/photos/_o6AAx9dl_Y\""
+        },
+        {
+          "line": 5638,
+          "text": "     \"page\": \"https://unsplash.com/photos/3V6ZTpZS-ag\""
+        },
+        {
+          "line": 5654,
+          "text": "     \"page\": \"https://unsplash.com/photos/n6vS3xlnsCc\""
+        },
+        {
+          "line": 5670,
+          "text": "     \"page\": \"https://unsplash.com/photos/IClZBVw5W5A\""
+        },
+        {
+          "line": 5686,
+          "text": "     \"page\": \"https://unsplash.com/photos/vGQ49l9I4EE\""
+        },
+        {
+          "line": 5702,
+          "text": "     \"page\": \"https://unsplash.com/photos/N9yFjkDc0vA\""
+        },
+        {
+          "line": 5718,
+          "text": "     \"page\": \"https://unsplash.com/photos/TYIzeCiZ_60\""
+        },
+        {
+          "line": 5770,
+          "text": "     \"page\": \"https://unsplash.com/photos/tvicgTdh7Fg\""
+        },
+        {
+          "line": 5786,
+          "text": "     \"page\": \"https://unsplash.com/photos/9VPtNW84vGI\""
+        },
+        {
+          "line": 5802,
+          "text": "     \"page\": \"https://unsplash.com/photos/oUhr-qMTJoc\""
+        },
+        {
+          "line": 5818,
+          "text": "     \"page\": \"https://unsplash.com/photos/Dwheufds6kQ\""
+        },
+        {
+          "line": 5833,
+          "text": "     \"page\": \"https://unsplash.com/photos/du_OrQAA4r0\""
+        },
+        {
+          "line": 5848,
+          "text": "     \"page\": \"https://unsplash.com/photos/baRYCsjO6z4\""
+        },
+        {
+          "line": 5864,
+          "text": "     \"page\": \"https://unsplash.com/photos/_poRbNNfcE8\""
+        },
+        {
+          "line": 5880,
+          "text": "     \"page\": \"https://unsplash.com/photos/ERSauUNQ3ag\""
+        },
+        {
+          "line": 5896,
+          "text": "     \"page\": \"https://unsplash.com/photos/FmMivfgHCiM\""
+        },
+        {
+          "line": 5912,
+          "text": "     \"page\": \"https://unsplash.com/photos/3jUTmrmdNVg\""
+        },
+        {
+          "line": 5927,
+          "text": "     \"page\": \"https://unsplash.com/photos/yxvKH7N8aso\""
+        },
+        {
+          "line": 5943,
+          "text": "     \"page\": \"https://unsplash.com/photos/YxJ5AfKFgFE\""
+        },
+        {
+          "line": 5959,
+          "text": "     \"page\": \"https://unsplash.com/photos/Nk5rSNq13sM\""
+        },
+        {
+          "line": 5974,
+          "text": "     \"page\": \"https://unsplash.com/photos/wESKMSgZJDo\""
+        },
+        {
+          "line": 5990,
+          "text": "     \"page\": \"https://unsplash.com/photos/CMOa3H1SXG0\""
+        },
+        {
+          "line": 6006,
+          "text": "     \"page\": \"https://unsplash.com/photos/YIN4xUBaqnk\""
+        },
+        {
+          "line": 6022,
+          "text": "     \"page\": \"https://unsplash.com/photos/CND1MBxLA6M\""
+        },
+        {
+          "line": 6038,
+          "text": "     \"page\": \"https://unsplash.com/photos/BrXiun04yr4\""
+        },
+        {
+          "line": 6054,
+          "text": "     \"page\": \"https://unsplash.com/photos/3f4sQIums6k\""
+        },
+        {
+          "line": 6070,
+          "text": "     \"page\": \"https://unsplash.com/photos/2TlAsvhqiL0\""
+        },
+        {
+          "line": 6086,
+          "text": "     \"page\": \"https://unsplash.com/photos/SrkuyPb3aUk\""
+        },
+        {
+          "line": 6102,
+          "text": "     \"page\": \"https://unsplash.com/photos/E9PJO_vL3E8\""
+        },
+        {
+          "line": 6118,
+          "text": "     \"page\": \"https://unsplash.com/photos/tBtuxtLvAZs\""
+        },
+        {
+          "line": 6134,
+          "text": "     \"page\": \"https://unsplash.com/photos/-wWRHIUklxM\""
+        },
+        {
+          "line": 6150,
+          "text": "     \"page\": \"https://unsplash.com/photos/CMWRIzyMKZk\""
+        },
+        {
+          "line": 6166,
+          "text": "     \"page\": \"https://unsplash.com/photos/7BjmDICVloE\""
+        },
+        {
+          "line": 6182,
+          "text": "     \"page\": \"https://unsplash.com/photos/AmPRUnRb6N0\""
+        },
+        {
+          "line": 6223,
+          "text": "     \"page\": \"https://unsplash.com/photos/wSb8d-ke5-4\""
+        },
+        {
+          "line": 6238,
+          "text": "     \"page\": \"https://unsplash.com/photos/7iB4OZDlRok\""
+        },
+        {
+          "line": 6253,
+          "text": "     \"page\": \"https://unsplash.com/photos/8wTPqxlnKM4\""
+        },
+        {
+          "line": 6268,
+          "text": "     \"page\": \"https://unsplash.com/photos/ATutAPqj4zw\""
+        },
+        {
+          "line": 6284,
+          "text": "     \"page\": \"https://unsplash.com/photos/bviex5lwf3s\""
+        },
+        {
+          "line": 6300,
+          "text": "     \"page\": \"https://unsplash.com/photos/l98YXp1X8dA\""
+        },
+        {
+          "line": 6316,
+          "text": "     \"page\": \"https://unsplash.com/photos/GYumuBnTqKc\""
+        },
+        {
+          "line": 6331,
+          "text": "     \"page\": \"https://unsplash.com/photos/wpTWYBll4_w\""
+        },
+        {
+          "line": 6347,
+          "text": "     \"page\": \"https://unsplash.com/photos/sseiVD2XsOk\""
+        },
+        {
+          "line": 6363,
+          "text": "     \"page\": \"https://unsplash.com/photos/N-1XGL54pQg\""
+        },
+        {
+          "line": 6378,
+          "text": "     \"page\": \"https://unsplash.com/photos/BjelfpszQDw\""
+        },
+        {
+          "line": 6394,
+          "text": "     \"page\": \"https://unsplash.com/photos/Y-eIZ3g8_ko\""
+        },
+        {
+          "line": 6409,
+          "text": "     \"page\": \"https://unsplash.com/photos/liiqOto_Dw8\""
+        },
+        {
+          "line": 6425,
+          "text": "     \"page\": \"https://unsplash.com/photos/aRXPJnXQ9lU\""
+        },
+        {
+          "line": 6441,
+          "text": "     \"page\": \"https://unsplash.com/photos/34mvN5nt1ls\""
+        },
+        {
+          "line": 6457,
+          "text": "     \"page\": \"https://unsplash.com/photos/2Q8zDWkj0Yw\""
+        },
+        {
+          "line": 6473,
+          "text": "     \"page\": \"https://unsplash.com/photos/NUMlxTPsznM\""
+        },
+        {
+          "line": 6489,
+          "text": "     \"page\": \"https://unsplash.com/photos/wJYricpDGM0\""
+        },
+        {
+          "line": 6505,
+          "text": "     \"page\": \"https://unsplash.com/photos/KGy1GFeKBu4\""
+        },
+        {
+          "line": 6521,
+          "text": "     \"page\": \"https://unsplash.com/photos/mblYxasm0nk\""
+        },
+        {
+          "line": 6536,
+          "text": "     \"page\": \"https://unsplash.com/photos/cSQw4uqF_Hc\""
+        },
+        {
+          "line": 6552,
+          "text": "     \"page\": \"https://unsplash.com/photos/nuRYwOJryyk\""
+        },
+        {
+          "line": 6567,
+          "text": "     \"page\": \"https://unsplash.com/photos/xorjaMB8W70\""
+        },
+        {
+          "line": 6583,
+          "text": "     \"page\": \"https://unsplash.com/photos/_snqARKTgoc\""
+        },
+        {
+          "line": 6599,
+          "text": "     \"page\": \"https://nikovirtanen.com\""
+        },
+        {
+          "line": 6615,
+          "text": "     \"page\": \"https://unsplash.com/photos/2Ts5HnA67k8\""
+        },
+        {
+          "line": 6660,
+          "text": "     \"page\": \"https://unsplash.com/photos/6T7kfc3VitU\""
+        },
+        {
+          "line": 6676,
+          "text": "     \"page\": \"https://unsplash.com/photos/yqmlajPxR3Y\""
+        },
+        {
+          "line": 6692,
+          "text": "     \"page\": \"https://unsplash.com/photos/UvRMcIeXq9Y\""
+        },
+        {
+          "line": 6708,
+          "text": "     \"page\": \"https://unsplash.com/photos/8mqOw4DBBSg\""
+        },
+        {
+          "line": 6723,
+          "text": "     \"page\": \"https://unsplash.com/photos/tVIqMgGlAG0\""
+        },
+        {
+          "line": 6738,
+          "text": "     \"page\": \"https://unsplash.com/photos/kxqvE41_07k\""
+        },
+        {
+          "line": 6753,
+          "text": "     \"page\": \"https://unsplash.com/photos/pHM4a_RZSLE\""
+        },
+        {
+          "line": 6769,
+          "text": "     \"page\": \"https://unsplash.com/photos/GyvMk5pPDXI\""
+        },
+        {
+          "line": 6785,
+          "text": "     \"page\": \"https://unsplash.com/photos/tZrrWkQT9MM\""
+        },
+        {
+          "line": 6800,
+          "text": "     \"page\": \"https://unsplash.com/photos/SNW4DWZEy8I\""
+        },
+        {
+          "line": 6816,
+          "text": "     \"page\": \"https://unsplash.com/photos/FOeDIUwYiSw\""
+        },
+        {
+          "line": 6832,
+          "text": "     \"page\": \"https://unsplash.com/photos/ch-mPpglKjQ\""
+        },
+        {
+          "line": 6847,
+          "text": "     \"page\": \"https://unsplash.com/photos/C_-DQF-x-N0\""
+        },
+        {
+          "line": 6863,
+          "text": "     \"page\": \"https://unsplash.com/photos/LVdiXyu2eTc\""
+        },
+        {
+          "line": 6879,
+          "text": "     \"page\": \"https://unsplash.com/photos/hLxqYJspAkE\""
+        },
+        {
+          "line": 6895,
+          "text": "     \"page\": \"https://unsplash.com/photos/M9F8VR0jEPM\""
+        },
+        {
+          "line": 6938,
+          "text": "     \"page\": \"https://unsplash.com/photos/fTKetYpEKNQ\""
+        },
+        {
+          "line": 6953,
+          "text": "     \"page\": \"https://unsplash.com/photos/A6S-q3D67Ss\""
+        },
+        {
+          "line": 6969,
+          "text": "     \"page\": \"https://unsplash.com/photos/sX4lxBWV0-A\""
+        },
+        {
+          "line": 6985,
+          "text": "     \"page\": \"https://unsplash.com/photos/YG_Fxyqz9xg\""
+        },
+        {
+          "line": 7001,
+          "text": "     \"page\": \"https://unsplash.com/photos/mnF75FoPBWY\""
+        },
+        {
+          "line": 7017,
+          "text": "     \"page\": \"https://unsplash.com/photos/aQoOdWdYpis\""
+        },
+        {
+          "line": 7033,
+          "text": "     \"page\": \"https://unsplash.com/photos/6-jTZysYY_U\""
+        },
+        {
+          "line": 7049,
+          "text": "     \"page\": \"https://unsplash.com/photos/mqyMjCTWJyQ\""
+        },
+        {
+          "line": 7092,
+          "text": "     \"page\": \"https://unsplash.com/photos/8Zt0xOOK4nI\""
+        },
+        {
+          "line": 7107,
+          "text": "     \"page\": \"https://unsplash.com/photos/muC_6gTMLR4\""
+        },
+        {
+          "line": 7123,
+          "text": "     \"page\": \"https://unsplash.com/photos/hSeq6sn2HeE\""
+        },
+        {
+          "line": 7139,
+          "text": "     \"page\": \"https://unsplash.com/photos/S_mEIfXRzIk\""
+        },
+        {
+          "line": 7155,
+          "text": "     \"page\": \"https://unsplash.com/photos/0fjGQmYCRW8\""
+        },
+        {
+          "line": 7171,
+          "text": "     \"page\": \"https://unsplash.com/photos/uWwN03Mg4Wg\""
+        },
+        {
+          "line": 7187,
+          "text": "     \"page\": \"https://unsplash.com/photos/tRQfEwP5P_0\""
+        },
+        {
+          "line": 7203,
+          "text": "     \"page\": \"https://unsplash.com/photos/11Q8ApbwkVI\""
+        },
+        {
+          "line": 7219,
+          "text": "     \"page\": \"https://unsplash.com/photos/5Qwz2KyfIBE\""
+        },
+        {
+          "line": 7235,
+          "text": "     \"page\": \"https://unsplash.com/photos/SJWPKMb9u-k\""
+        }
+      ]
+    },
+    {
+      "path": "skills/taste-skill/library/sites.json",
+      "hits": [
+        {
+          "line": 5,
+          "text": "  \"url\": \"https://neuemontreal.com/\","
+        },
+        {
+          "line": 50,
+          "text": "  \"url\": \"https://www.seasats.com/\","
+        },
+        {
+          "line": 90,
+          "text": "  \"url\": \"https://stateofaidesign.com/\","
+        },
+        {
+          "line": 135,
+          "text": "  \"url\": \"https://www.houseofhoney.com/\","
+        },
+        {
+          "line": 180,
+          "text": "  \"url\": \"https://white-desert.com/\","
+        },
+        {
+          "line": 225,
+          "text": "  \"url\": \"https://applied-imagination.gpc.consulting\","
+        },
+        {
+          "line": 265,
+          "text": "  \"url\": \"https://cursor.com/compile\","
+        },
+        {
+          "line": 310,
+          "text": "  \"url\": \"https://thenewindustrials.com/\","
+        },
+        {
+          "line": 355,
+          "text": "  \"url\": \"https://craft.wild.as\","
+        },
+        {
+          "line": 400,
+          "text": "  \"url\": \"https://www.hildenkaira.fi/\","
+        },
+        {
+          "line": 444,
+          "text": "  \"url\": \"https://pxpush.com/\","
+        },
+        {
+          "line": 489,
+          "text": "  \"url\": \"https://illoca.unseen.co/\","
+        },
+        {
+          "line": 526,
+          "text": "  \"url\": \"https://www.aspensearch.com/\","
+        },
+        {
+          "line": 571,
+          "text": "  \"url\": \"https://dragonfly2.studiofreight.dev/\","
+        },
+        {
+          "line": 612,
+          "text": "  \"url\": \"https://bymonolog.com/\","
+        },
+        {
+          "line": 657,
+          "text": "  \"url\": \"https://sheets.works/data-viz/the-queue/\","
+        },
+        {
+          "line": 697,
+          "text": "  \"url\": \"https://www.paulkalkbrenner.net/\","
+        },
+        {
+          "line": 742,
+          "text": "  \"url\": \"https://verostudio.com/\","
+        },
+        {
+          "line": 787,
+          "text": "  \"url\": \"https://depoluxe.xyz/\","
+        },
+        {
+          "line": 824,
+          "text": "  \"url\": \"https://db-longbow.webflow.io/\","
+        },
+        {
+          "line": 869,
+          "text": "  \"url\": \"https://www.mosbyfiles.com/\","
+        },
+        {
+          "line": 906,
+          "text": "  \"url\": \"https://sarahandmatt.wedding\","
+        },
+        {
+          "line": 951,
+          "text": "  \"url\": \"https://zperinatal.com\","
+        },
+        {
+          "line": 995,
+          "text": "  \"url\": \"https://noho.ink\","
+        },
+        {
+          "line": 1040,
+          "text": "  \"url\": \"https://www.joinjuggle.com\","
+        },
+        {
+          "line": 1084,
+          "text": "  \"url\": \"https://serotoninn.com/\","
+        },
+        {
+          "line": 1128,
+          "text": "  \"url\": \"https://www.alethia.earth/\","
+        },
+        {
+          "line": 1173,
+          "text": "  \"url\": \"https://madewithgsap.com/\","
+        },
+        {
+          "line": 1218,
+          "text": "  \"url\": \"https://www.dialkit.dev/\","
+        },
+        {
+          "line": 1259,
+          "text": "  \"url\": \"https://www.heyclicky.com\","
+        },
+        {
+          "line": 1304,
+          "text": "  \"url\": \"https://www.contentarchitecture.dev/\","
+        },
+        {
+          "line": 1344,
+          "text": "  \"url\": \"https://www.trevornoah.com/\","
+        },
+        {
+          "line": 1385,
+          "text": "  \"url\": \"https://select.supabase.com\","
+        },
+        {
+          "line": 1426,
+          "text": "  \"url\": \"https://www.lepetitbleucafe.com/\","
+        },
+        {
+          "line": 1467,
+          "text": "  \"url\": \"https://dabbit.app\","
+        },
+        {
+          "line": 1511,
+          "text": "  \"url\": \"https://decathlonyestalgia.com/\","
+        },
+        {
+          "line": 1556,
+          "text": "  \"url\": \"https://vessa.design\","
+        },
+        {
+          "line": 1601,
+          "text": "  \"url\": \"https://poetry.camera/\","
+        },
+        {
+          "line": 1641,
+          "text": "  \"url\": \"https://sstr.tech/en/\","
+        },
+        {
+          "line": 1681,
+          "text": "  \"url\": \"https://www.noartmusic.com/\","
+        },
+        {
+          "line": 1725,
+          "text": "  \"url\": \"https://cerebrium.ai/\","
+        },
+        {
+          "line": 1765,
+          "text": "  \"url\": \"https://spatial-festival.com/\","
+        },
+        {
+          "line": 1805,
+          "text": "  \"url\": \"https://aardvarkbookclub.com\","
+        },
+        {
+          "line": 1849,
+          "text": "  \"url\": \"https://rendez-vous.franceclat.fr\","
+        },
+        {
+          "line": 1889,
+          "text": "  \"url\": \"https://lilguy.net/\","
+        },
+        {
+          "line": 1930,
+          "text": "  \"url\": \"https://www.warmnfuzzy.tv/\","
+        },
+        {
+          "line": 1970,
+          "text": "  \"url\": \"https://sapphicindex.com\","
+        },
+        {
+          "line": 2015,
+          "text": "  \"url\": \"https://extension.textmode.art\","
+        },
+        {
+          "line": 2060,
+          "text": "  \"url\": \"https://design.hebbia.com\","
+        },
+        {
+          "line": 2105,
+          "text": "  \"url\": \"https://revelatio.studio/\","
+        },
+        {
+          "line": 2149,
+          "text": "  \"url\": \"https://haoqi.design\","
+        },
+        {
+          "line": 2189,
+          "text": "  \"url\": \"https://pensatori-irrazionali.com/\","
+        },
+        {
+          "line": 2233,
+          "text": "  \"url\": \"https://belgrade.klmln.com\","
+        },
+        {
+          "line": 2273,
+          "text": "  \"url\": \"https://tengilemalamala.com/\","
+        },
+        {
+          "line": 2313,
+          "text": "  \"url\": \"https://boc.studio/\","
+        },
+        {
+          "line": 2349,
+          "text": "  \"url\": \"https://gilhuybrecht.com/\","
+        },
+        {
+          "line": 2389,
+          "text": "  \"url\": \"https://cityxofxangels.com\","
+        },
+        {
+          "line": 2426,
+          "text": "  \"url\": \"https://www.era-residence.com/\","
+        },
+        {
+          "line": 2462,
+          "text": "  \"url\": \"https://www.sharplink.com/\","
+        },
+        {
+          "line": 2506,
+          "text": "  \"url\": \"https://leoparpeix.com/\","
+        },
+        {
+          "line": 2551,
+          "text": "  \"url\": \"https://anidachi.com\","
+        },
+        {
+          "line": 2596,
+          "text": "  \"url\": \"https://www.butter.video/\","
+        },
+        {
+          "line": 2637,
+          "text": "  \"url\": \"https://www.lxlcreative.co.uk/\","
+        },
+        {
+          "line": 2678,
+          "text": "  \"url\": \"https://screentune.app\","
+        },
+        {
+          "line": 2718,
+          "text": "  \"url\": \"https://www.adamho.com/\","
+        },
+        {
+          "line": 2762,
+          "text": "  \"url\": \"https://www.postaway.space\","
+        },
+        {
+          "line": 2795,
+          "text": "  \"url\": \"https://honest.fi/\","
+        },
+        {
+          "line": 2827,
+          "text": "  \"url\": \"https://www.lovably.com\","
+        },
+        {
+          "line": 2863,
+          "text": "  \"url\": \"https://www.marinarachello.com\","
+        },
+        {
+          "line": 2899,
+          "text": "  \"url\": \"https://www.21hrs.space/\","
+        },
+        {
+          "line": 2936,
+          "text": "  \"url\": \"https://usb.club/transport\","
+        },
+        {
+          "line": 2980,
+          "text": "  \"url\": \"https://thedeepend.space\","
+        },
+        {
+          "line": 3016,
+          "text": "  \"url\": \"http://jesperlandberg.com\","
+        },
+        {
+          "line": 3052,
+          "text": "  \"url\": \"https://eaglesnest.webflow.io/\","
+        },
+        {
+          "line": 3092,
+          "text": "  \"url\": \"https://glitchandgrit.com/\","
+        },
+        {
+          "line": 3128,
+          "text": "  \"url\": \"https://bleibtgleich.dev\","
+        },
+        {
+          "line": 3172,
+          "text": "  \"url\": \"https://shotoniphone.lorenzobocchi.com\","
+        },
+        {
+          "line": 3208,
+          "text": "  \"url\": \"https://experiment.obys.agency/\","
+        },
+        {
+          "line": 3244,
+          "text": "  \"url\": \"https://brand.squarespace.com/\","
+        },
+        {
+          "line": 3280,
+          "text": "  \"url\": \"https://milledollars.fr/\","
+        },
+        {
+          "line": 3316,
+          "text": "  \"url\": \"https://2xa.studio/\","
+        },
+        {
+          "line": 3361,
+          "text": "  \"url\": \"https://www.lockerland.com.au/\","
+        },
+        {
+          "line": 3406,
+          "text": "  \"url\": \"https://rows.gg/\","
+        },
+        {
+          "line": 3443,
+          "text": "  \"url\": \"https://shawngolden.org/\","
+        },
+        {
+          "line": 3484,
+          "text": "  \"url\": \"https://www.mediumrare.site\","
+        },
+        {
+          "line": 3520,
+          "text": "  \"url\": \"https://berd.xyz/\","
+        },
+        {
+          "line": 3560,
+          "text": "  \"url\": \"https://davesocozy.com\","
+        },
+        {
+          "line": 3596,
+          "text": "  \"url\": \"https://www.nodeck.online\","
+        },
+        {
+          "line": 3633,
+          "text": "  \"url\": \"https://vestris.ai\","
+        },
+        {
+          "line": 3678,
+          "text": "  \"url\": \"https://rsquad.io\","
+        },
+        {
+          "line": 3723,
+          "text": "  \"url\": \"https://niacreative.co\","
+        },
+        {
+          "line": 3767,
+          "text": "  \"url\": \"https://ugly.cash/\","
+        },
+        {
+          "line": 3811,
+          "text": "  \"url\": \"https://unitedcarriers.com/\","
+        },
+        {
+          "line": 3851,
+          "text": "  \"url\": \"https://lisa.locomotive.ca/en\","
+        },
+        {
+          "line": 3887,
+          "text": "  \"url\": \"https://www.risk.film\","
+        },
+        {
+          "line": 3923,
+          "text": "  \"url\": \"https://proooof.app\","
+        },
+        {
+          "line": 3963,
+          "text": "  \"url\": \"https://artemartemartem.com/\","
+        },
+        {
+          "line": 4004,
+          "text": "  \"url\": \"https://builderstable.net\","
+        },
+        {
+          "line": 4044,
+          "text": "  \"url\": \"https://www.noth.in\","
+        },
+        {
+          "line": 4084,
+          "text": "  \"url\": \"https://www.superlocaldesign.com/\","
+        },
+        {
+          "line": 4124,
+          "text": "  \"url\": \"https://www.produx.design\","
+        },
+        {
+          "line": 4160,
+          "text": "  \"url\": \"https://kononenkogroup.com\","
+        },
+        {
+          "line": 4205,
+          "text": "  \"url\": \"https://k95.it\","
+        },
+        {
+          "line": 4241,
+          "text": "  \"url\": \"https://www.juliencalot.com\","
+        },
+        {
+          "line": 4277,
+          "text": "  \"url\": \"https://www.cominvi.com.mx/\","
+        },
+        {
+          "line": 4317,
+          "text": "  \"url\": \"https://kereliott.com/\","
+        },
+        {
+          "line": 4361,
+          "text": "  \"url\": \"https://normalisboring.es/\","
+        },
+        {
+          "line": 4405,
+          "text": "  \"url\": \"https://derolez.dev/\","
+        },
+        {
+          "line": 4441,
+          "text": "  \"url\": \"https://www.moto-card.com/\","
+        },
+        {
+          "line": 4481,
+          "text": "  \"url\": \"https://mesh3d.gallery/the-state-of-the-gallery\","
+        },
+        {
+          "line": 4517,
+          "text": "  \"url\": \"https://drone.riotters.com\","
+        },
+        {
+          "line": 4561,
+          "text": "  \"url\": \"https://www.hirotos.com\","
+        },
+        {
+          "line": 4594,
+          "text": "  \"url\": \"https://specia1ne.com\","
+        },
+        {
+          "line": 4638,
+          "text": "  \"url\": \"https://fynza.com\","
+        },
+        {
+          "line": 4682,
+          "text": "  \"url\": \"https://coloniazacamil.com/\","
+        },
+        {
+          "line": 4709,
+          "text": "  \"url\": \"https://otsuka-air.jp/\","
+        },
+        {
+          "line": 4749,
+          "text": "  \"url\": \"https://elvalabs.ai/\","
+        },
+        {
+          "line": 4785,
+          "text": "  \"url\": \"https://tara.com\","
+        },
+        {
+          "line": 4829,
+          "text": "  \"url\": \"https://realevate.agency/\","
+        },
+        {
+          "line": 4865,
+          "text": "  \"url\": \"https://typewave.blendmodes.com\","
+        },
+        {
+          "line": 4905,
+          "text": "  \"url\": \"https://humanoid-index.com/\","
+        },
+        {
+          "line": 4941,
+          "text": "  \"url\": \"https://www.getuni.co/\","
+        },
+        {
+          "line": 4977,
+          "text": "  \"url\": \"https://smallbits.design\","
+        },
+        {
+          "line": 5009,
+          "text": "  \"url\": \"https://madie.es\","
+        },
+        {
+          "line": 5053,
+          "text": "  \"url\": \"https://www.archiv.systems/\","
+        },
+        {
+          "line": 5090,
+          "text": "  \"url\": \"https://beigeforce.com/\","
+        },
+        {
+          "line": 5126,
+          "text": "  \"url\": \"https://www.matwidget.com\","
+        },
+        {
+          "line": 5166,
+          "text": "  \"url\": \"https://ohhmydesign.com\","
+        },
+        {
+          "line": 5210,
+          "text": "  \"url\": \"https://blode.co/glide\","
+        },
+        {
+          "line": 5250,
+          "text": "  \"url\": \"https://www.belenjones.com\","
+        },
+        {
+          "line": 5286,
+          "text": "  \"url\": \"https://tinycomputer.co\","
+        },
+        {
+          "line": 5326,
+          "text": "  \"url\": \"https://weeksync.app/\","
+        },
+        {
+          "line": 5366,
+          "text": "  \"url\": \"https://weekend-mm-2026-pasticcino-bag-master.monogrid.io/en/\","
+        },
+        {
+          "line": 5393,
+          "text": "  \"url\": \"https://www.oimachi.co\","
+        },
+        {
+          "line": 5437,
+          "text": "  \"url\": \"https://taradash.me/\","
+        },
+        {
+          "line": 5481,
+          "text": "  \"url\": \"https://sobha-privy-collection.com/\","
+        },
+        {
+          "line": 5521,
+          "text": "  \"url\": \"https://coffee-tech.com/\","
+        },
+        {
+          "line": 5561,
+          "text": "  \"url\": \"https://www.savetoshelf.com\","
+        },
+        {
+          "line": 5601,
+          "text": "  \"url\": \"https://www.askmidnight.com\","
+        },
+        {
+          "line": 5646,
+          "text": "  \"url\": \"https://myplastic.app\","
+        },
+        {
+          "line": 5686,
+          "text": "  \"url\": \"https://www.brikken.co\","
+        },
+        {
+          "line": 5730,
+          "text": "  \"url\": \"https://thoughtbot.com/healthcare-software-delivery-report\","
+        },
+        {
+          "line": 5770,
+          "text": "  \"url\": \"https://michaelpumo.com\","
+        },
+        {
+          "line": 5810,
+          "text": "  \"url\": \"https://neuropelvicsurgery.com\","
+        },
+        {
+          "line": 5854,
+          "text": "  \"url\": \"https://www.mammutstudios.com\","
+        },
+        {
+          "line": 5898,
+          "text": "  \"url\": \"https://workos.com/atlas\","
+        },
+        {
+          "line": 5942,
+          "text": "  \"url\": \"https://cipher.tv/\","
+        },
+        {
+          "line": 5969,
+          "text": "  \"url\": \"https://viewport.theresonance.studio\","
+        },
+        {
+          "line": 6009,
+          "text": "  \"url\": \"https://www.unclerudy.app\","
+        },
+        {
+          "line": 6049,
+          "text": "  \"url\": \"https://aprilleihuanani.com\","
+        },
+        {
+          "line": 6090,
+          "text": "  \"url\": \"https://izanami-official.com/\","
+        },
+        {
+          "line": 6131,
+          "text": "  \"url\": \"https://deeo.studio\","
+        },
+        {
+          "line": 6171,
+          "text": "  \"url\": \"https://estacionvenenta.com\","
+        },
+        {
+          "line": 6203,
+          "text": "  \"url\": \"https://leedlime.com\","
+        },
+        {
+          "line": 6243,
+          "text": "  \"url\": \"https://readymag.website/u2492934797/isthatpigeonafed/\","
+        },
+        {
+          "line": 6279,
+          "text": "  \"url\": \"https://altergresources.com\","
+        },
+        {
+          "line": 6323,
+          "text": "  \"url\": \"https://byamandaguo.com\","
+        },
+        {
+          "line": 6359,
+          "text": "  \"url\": \"https://www.sandstudio.shop/\","
+        },
+        {
+          "line": 6399,
+          "text": "  \"url\": \"https://desktop.fm/\","
+        },
+        {
+          "line": 6432,
+          "text": "  \"url\": \"https://depobudget.com\","
+        },
+        {
+          "line": 6472,
+          "text": "  \"url\": \"https://wrapped-party.activetheory.dev\","
+        },
+        {
+          "line": 6499,
+          "text": "  \"url\": \"https://lamalama.com/\","
+        },
+        {
+          "line": 6543,
+          "text": "  \"url\": \"https://likova.space\","
+        },
+        {
+          "line": 6579,
+          "text": "  \"url\": \"https://www.btay.ca\","
+        },
+        {
+          "line": 6623,
+          "text": "  \"url\": \"https://www.billow.so\","
+        },
+        {
+          "line": 6663,
+          "text": "  \"url\": \"https://www.thoughtsofayush.com\","
+        },
+        {
+          "line": 6703,
+          "text": "  \"url\": \"https://digitaloriginal.app/xr\","
+        },
+        {
+          "line": 6743,
+          "text": "  \"url\": \"https://woblo.in\","
+        },
+        {
+          "line": 6783,
+          "text": "  \"url\": \"https://protipmarketing.com\","
+        },
+        {
+          "line": 6823,
+          "text": "  \"url\": \"https://goodgoodgreat.studio\","
+        },
+        {
+          "line": 6859,
+          "text": "  \"url\": \"https://www.georgewood.me\","
+        },
+        {
+          "line": 6899,
+          "text": "  \"url\": \"https://near.com\","
+        },
+        {
+          "line": 6939,
+          "text": "  \"url\": \"https://trionn.com\","
+        },
+        {
+          "line": 6983,
+          "text": "  \"url\": \"https://flowjam.com\","
+        },
+        {
+          "line": 7023,
+          "text": "  \"url\": \"https://thewatch.60fps.fr/\","
+        },
+        {
+          "line": 7064,
+          "text": "  \"url\": \"https://jlern.com\","
+        },
+        {
+          "line": 7100,
+          "text": "  \"url\": \"https://montecafe.com.au/\","
+        },
+        {
+          "line": 7140,
+          "text": "  \"url\": \"https://tabkitchenbakery.com/\","
+        },
+        {
+          "line": 7181,
+          "text": "  \"url\": \"https://members-play.lacoste.com/ace-breaker-rg\","
+        },
+        {
+          "line": 7214,
+          "text": "  \"url\": \"https://thetiebreak.merci-michel.com/\","
+        },
+        {
+          "line": 7241,
+          "text": "  \"url\": \"https://www.lennysproductpass.com\","
+        }
+      ]
+    },
+    {
+      "path": "skills/taste-skill/library/type.json",
+      "hits": [
+        {
+          "line": 15,
+          "text": "   \"css\": \"<link rel=\\\"preconnect\\\" href=\\\"https://api.fontshare.com\\\">\\n<link rel=\\\"preconnect\\\" href=\\\"https://cdn.fontshare.com\\\" crossorigin>\\n<link href=\\\"https://api.fontshare.com/v2/css?f[]=switzer@400,500,600&display=swap\\\" rel=\\\"stylesheet\\\">\""
+        },
+        {
+          "line": 27,
+          "text": "   \"css\": \"<link rel=\\\"preconnect\\\" href=\\\"https://api.fontshare.com\\\">\\n<link rel=\\\"preconnect\\\" href=\\\"https://cdn.fontshare.com\\\" crossorigin>\\n<link href=\\\"https://api.fontshare.com/v2/css?f[]=switzer@400,500,600&display=swap\\\" rel=\\\"stylesheet\\\">\""
+        },
+        {
+          "line": 41,
+          "text": "   \"https://api.fontshare.com/v2/css?f[]=switzer@400,500,600&display=swap\""
+        },
+        {
+          "line": 63,
+          "text": "   \"css\": \"<link rel=\\\"preconnect\\\" href=\\\"https://api.fontshare.com\\\">\\n<link rel=\\\"preconnect\\\" href=\\\"https://cdn.fontshare.com\\\" crossorigin>\\n<link href=\\\"https://api.fontshare.com/v2/css?f[]=general-sans@400,500,700&display=swap\\\" rel=\\\"stylesheet\\\">\""
+        },
+        {
+          "line": 75,
+          "text": "   \"css\": \"<link rel=\\\"preconnect\\\" href=\\\"https://api.fontshare.com\\\">\\n<link rel=\\\"preconnect\\\" href=\\\"https://cdn.fontshare.com\\\" crossorigin>\\n<link href=\\\"https://api.fontshare.com/v2/css?f[]=general-sans@400,500,700&display=swap\\\" rel=\\\"stylesheet\\\">\""
+        },
+        {
+          "line": 89,
+          "text": "   \"https://api.fontshare.com/v2/css?f[]=general-sans@400,500,700&display=swap\""
+        },
+        {
+          "line": 110,
+          "text": "   \"css\": \"<link rel=\\\"preconnect\\\" href=\\\"https://fonts.googleapis.com\\\">\\n<link rel=\\\"preconnect\\\" href=\\\"https://fonts.gstatic.com\\\" crossorigin>\\n<link href=\\\"https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;600;800&display=swap\\\" rel=\\\"stylesheet\\\">\""
+        },
+        {
+          "line": 121,
+          "text": "   \"css\": \"<link rel=\\\"preconnect\\\" href=\\\"https://fonts.googleapis.com\\\">\\n<link rel=\\\"preconnect\\\" href=\\\"https://fonts.gstatic.com\\\" crossorigin>\\n<link href=\\\"https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;600;800&display=swap\\\" rel=\\\"stylesheet\\\">\""
+        },
+        {
+          "line": 134,
+          "text": "   \"https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;600;800&display=swap\""
+        },
+        {
+          "line": 155,
+          "text": "   \"css\": \"<link rel=\\\"preconnect\\\" href=\\\"https://fonts.googleapis.com\\\">\\n<link rel=\\\"preconnect\\\" href=\\\"https://fonts.gstatic.com\\\" crossorigin>\\n<link href=\\\"https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500&display=swap\\\" rel=\\\"stylesheet\\\">\""
+        },
+        {
+          "line": 166,
+          "text": "   \"css\": \"<link rel=\\\"preconnect\\\" href=\\\"https://fonts.googleapis.com\\\">\\n<link rel=\\\"preconnect\\\" href=\\\"https://fonts.gstatic.com\\\" crossorigin>\\n<link href=\\\"https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500&display=swap\\\" rel=\\\"stylesheet\\\">\""
+        },
+        {
+          "line": 180,
+          "text": "   \"https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500&display=swap\""
+        },
+        {
+          "line": 201,
+          "text": "   \"css\": \"<link rel=\\\"preconnect\\\" href=\\\"https://fonts.googleapis.com\\\">\\n<link rel=\\\"preconnect\\\" href=\\\"https://fonts.gstatic.com\\\" crossorigin>\\n<link href=\\\"https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;500;600&display=swap\\\" rel=\\\"stylesheet\\\">\""
+        },
+        {
+          "line": 212,
+          "text": "   \"css\": \"<link rel=\\\"preconnect\\\" href=\\\"https://fonts.googleapis.com\\\">\\n<link rel=\\\"preconnect\\\" href=\\\"https://fonts.gstatic.com\\\" crossorigin>\\n<link href=\\\"https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;500;600&display=swap\\\" rel=\\\"stylesheet\\\">\""
+        },
+        {
+          "line": 225,
+          "text": "   \"https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;500;600&display=swap\""
+        },
+        {
+          "line": 246,
+          "text": "   \"css\": \"<link rel=\\\"preconnect\\\" href=\\\"https://fonts.googleapis.com\\\">\\n<link rel=\\\"preconnect\\\" href=\\\"https://fonts.gstatic.com\\\" crossorigin>\\n<link href=\\\"https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@700&family=Source+Serif+4:ital,wght@0,400;0,600;1,400;1,600&display=swap\\\" rel=\\\"stylesheet\\\">\""
+        },
+        {
+          "line": 257,
+          "text": "   \"css\": \"<link rel=\\\"preconnect\\\" href=\\\"https://fonts.googleapis.com\\\">\\n<link rel=\\\"preconnect\\\" href=\\\"https://fonts.gstatic.com\\\" crossorigin>\\n<link href=\\\"https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@700&family=Source+Serif+4:ital,wght@0,400;0,600;1,400;1,600&display=swap\\\" rel=\\\"stylesheet\\\">\""
+        },
+        {
+          "line": 271,
+          "text": "   \"https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@700&family=Source+Serif+4:ital,wght@0,400;0,600;1,400;1,600&display=swap\""
+        },
+        {
+          "line": 293,
+          "text": "   \"css\": \"<link rel=\\\"preconnect\\\" href=\\\"https://api.fontshare.com\\\">\\n<link rel=\\\"preconnect\\\" href=\\\"https://cdn.fontshare.com\\\" crossorigin>\\n<link href=\\\"https://api.fontshare.com/v2/css?f[]=switzer@400,500&display=swap\\\" rel=\\\"stylesheet\\\">\""
+        },
+        {
+          "line": 305,
+          "text": "   \"css\": \"<link rel=\\\"preconnect\\\" href=\\\"https://api.fontshare.com\\\">\\n<link rel=\\\"preconnect\\\" href=\\\"https://cdn.fontshare.com\\\" crossorigin>\\n<link href=\\\"https://api.fontshare.com/v2/css?f[]=switzer@400,500&display=swap\\\" rel=\\\"stylesheet\\\">\""
+        },
+        {
+          "line": 319,
+          "text": "   \"https://api.fontshare.com/v2/css?f[]=switzer@400,500&display=swap\""
+        },
+        {
+          "line": 340,
+          "text": "   \"css\": \"<link rel=\\\"preconnect\\\" href=\\\"https://fonts.googleapis.com\\\">\\n<link rel=\\\"preconnect\\\" href=\\\"https://fonts.gstatic.com\\\" crossorigin>\\n<link href=\\\"https://fonts.googleapis.com/css2?family=Archivo:wght@400;600&display=swap\\\" rel=\\\"stylesheet\\\">\""
+        },
+        {
+          "line": 351,
+          "text": "   \"css\": \"<link rel=\\\"preconnect\\\" href=\\\"https://fonts.googleapis.com\\\">\\n<link rel=\\\"preconnect\\\" href=\\\"https://fonts.gstatic.com\\\" crossorigin>\\n<link href=\\\"https://fonts.googleapis.com/css2?family=Archivo:wght@400;600&display=swap\\\" rel=\\\"stylesheet\\\">\""
+        },
+        {
+          "line": 365,
+          "text": "   \"https://fonts.googleapis.com/css2?family=Archivo:wght@400;600&display=swap\""
+        },
+        {
+          "line": 387,
+          "text": "   \"css\": \"<link rel=\\\"preconnect\\\" href=\\\"https://api.fontshare.com\\\">\\n<link rel=\\\"preconnect\\\" href=\\\"https://cdn.fontshare.com\\\" crossorigin>\\n<link href=\\\"https://api.fontshare.com/v2/css?f[]=clash-grotesk@400,500&display=swap\\\" rel=\\\"stylesheet\\\">\""
+        },
+        {
+          "line": 399,
+          "text": "   \"css\": \"<link rel=\\\"preconnect\\\" href=\\\"https://api.fontshare.com\\\">\\n<link rel=\\\"preconnect\\\" href=\\\"https://cdn.fontshare.com\\\" crossorigin>\\n<link href=\\\"https://api.fontshare.com/v2/css?f[]=clash-grotesk@400,500&display=swap\\\" rel=\\\"stylesheet\\\">\""
+        },
+        {
+          "line": 412,
+          "text": "   \"https://api.fontshare.com/v2/css?f[]=clash-grotesk@400,500&display=swap\""
+        },
+        {
+          "line": 433,
+          "text": "   \"css\": \"<link rel=\\\"preconnect\\\" href=\\\"https://fonts.googleapis.com\\\">\\n<link rel=\\\"preconnect\\\" href=\\\"https://fonts.gstatic.com\\\" crossorigin>\\n<link href=\\\"https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500&display=swap\\\" rel=\\\"stylesheet\\\">\""
+        },
+        {
+          "line": 444,
+          "text": "   \"css\": \"<link rel=\\\"preconnect\\\" href=\\\"https://fonts.googleapis.com\\\">\\n<link rel=\\\"preconnect\\\" href=\\\"https://fonts.gstatic.com\\\" crossorigin>\\n<link href=\\\"https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500&display=swap\\\" rel=\\\"stylesheet\\\">\""
+        },
+        {
+          "line": 458,
+          "text": "   \"https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500&display=swap\""
+        },
+        {
+          "line": 479,
+          "text": "   \"css\": \"<link rel=\\\"preconnect\\\" href=\\\"https://fonts.googleapis.com\\\">\\n<link rel=\\\"preconnect\\\" href=\\\"https://fonts.gstatic.com\\\" crossorigin>\\n<link href=\\\"https://fonts.googleapis.com/css2?family=Anton:wght@400&family=Work+Sans:wght@400;600&display=swap\\\" rel=\\\"stylesheet\\\">\""
+        },
+        {
+          "line": 490,
+          "text": "   \"css\": \"<link rel=\\\"preconnect\\\" href=\\\"https://fonts.googleapis.com\\\">\\n<link rel=\\\"preconnect\\\" href=\\\"https://fonts.gstatic.com\\\" crossorigin>\\n<link href=\\\"https://fonts.googleapis.com/css2?family=Anton:wght@400&family=Work+Sans:wght@400;600&display=swap\\\" rel=\\\"stylesheet\\\">\""
+        },
+        {
+          "line": 504,
+          "text": "   \"https://fonts.googleapis.com/css2?family=Anton:wght@400&family=Work+Sans:wght@400;600&display=swap\""
+        },
+        {
+          "line": 525,
+          "text": "   \"css\": \"<link rel=\\\"preconnect\\\" href=\\\"https://fonts.googleapis.com\\\">\\n<link rel=\\\"preconnect\\\" href=\\\"https://fonts.gstatic.com\\\" crossorigin>\\n<link href=\\\"https://fonts.googleapis.com/css2?family=Big+Shoulders:wght@800&family=Public+Sans:wght@400;600&display=swap\\\" rel=\\\"stylesheet\\\">\""
+        },
+        {
+          "line": 536,
+          "text": "   \"css\": \"<link rel=\\\"preconnect\\\" href=\\\"https://fonts.googleapis.com\\\">\\n<link rel=\\\"preconnect\\\" href=\\\"https://fonts.gstatic.com\\\" crossorigin>\\n<link href=\\\"https://fonts.googleapis.com/css2?family=Big+Shoulders:wght@800&family=Public+Sans:wght@400;600&display=swap\\\" rel=\\\"stylesheet\\\">\""
+        },
+        {
+          "line": 551,
+          "text": "   \"https://fonts.googleapis.com/css2?family=Big+Shoulders:wght@800&family=Public+Sans:wght@400;600&display=swap\""
+        },
+        {
+          "line": 572,
+          "text": "   \"css\": \"<link rel=\\\"preconnect\\\" href=\\\"https://fonts.googleapis.com\\\">\\n<link rel=\\\"preconnect\\\" href=\\\"https://fonts.gstatic.com\\\" crossorigin>\\n<link href=\\\"https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap\\\" rel=\\\"stylesheet\\\">\""
+        },
+        {
+          "line": 583,
+          "text": "   \"css\": \"<link rel=\\\"preconnect\\\" href=\\\"https://fonts.googleapis.com\\\">\\n<link rel=\\\"preconnect\\\" href=\\\"https://fonts.gstatic.com\\\" crossorigin>\\n<link href=\\\"https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap\\\" rel=\\\"stylesheet\\\">\""
+        },
+        {
+          "line": 595,
+          "text": "   \"https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap\""
+        },
+        {
+          "line": 616,
+          "text": "   \"css\": \"<link rel=\\\"preconnect\\\" href=\\\"https://fonts.googleapis.com\\\">\\n<link rel=\\\"preconnect\\\" href=\\\"https://fonts.gstatic.com\\\" crossorigin>\\n<link href=\\\"https://fonts.googleapis.com/css2?family=Bebas+Neue:wght@400&family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&display=swap\\\" rel=\\\"stylesheet\\\">\""
+        },
+        {
+          "line": 627,
+          "text": "   \"css\": \"<link rel=\\\"preconnect\\\" href=\\\"https://fonts.googleapis.com\\\">\\n<link rel=\\\"preconnect\\\" href=\\\"https://fonts.gstatic.com\\\" crossorigin>\\n<link href=\\\"https://fonts.googleapis.com/css2?family=Bebas+Neue:wght@400&family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&display=swap\\\" rel=\\\"stylesheet\\\">\""
+        },
+        {
+          "line": 641,
+          "text": "   \"https://fonts.googleapis.com/css2?family=Bebas+Neue:wght@400&family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&display=swap\""
+        },
+        {
+          "line": 662,
+          "text": "   \"css\": \"<link rel=\\\"preconnect\\\" href=\\\"https://fonts.googleapis.com\\\">\\n<link rel=\\\"preconnect\\\" href=\\\"https://fonts.gstatic.com\\\" crossorigin>\\n<link href=\\\"https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700&family=Barlow:wght@400;500&display=swap\\\" rel=\\\"stylesheet\\\">\""
+        },
+        {
+          "line": 673,
+          "text": "   \"css\": \"<link rel=\\\"preconnect\\\" href=\\\"https://fonts.googleapis.com\\\">\\n<link rel=\\\"preconnect\\\" href=\\\"https://fonts.gstatic.com\\\" crossorigin>\\n<link href=\\\"https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700&family=Barlow:wght@400;500&display=swap\\\" rel=\\\"stylesheet\\\">\""
+        },
+        {
+          "line": 686,
+          "text": "   \"https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700&family=Barlow:wght@400;500&display=swap\""
+        },
+        {
+          "line": 708,
+          "text": "   \"css\": \"<link rel=\\\"preconnect\\\" href=\\\"https://api.fontshare.com\\\">\\n<link rel=\\\"preconnect\\\" href=\\\"https://cdn.fontshare.com\\\" crossorigin>\\n<link href=\\\"https://api.fontshare.com/v2/css?f[]=panchang@700&display=swap\\\" rel=\\\"stylesheet\\\">\\n<link href=\\\"https://api.fontshare.com/v2/css?f[]=switzer@400,500&display=swap\\\" rel=\\\"stylesheet\\\">\""
+        },
+        {
+          "line": 720,
+          "text": "   \"css\": \"<link rel=\\\"preconnect\\\" href=\\\"https://api.fontshare.com\\\">\\n<link rel=\\\"preconnect\\\" href=\\\"https://cdn.fontshare.com\\\" crossorigin>\\n<link href=\\\"https://api.fontshare.com/v2/css?f[]=panchang@700&display=swap\\\" rel=\\\"stylesheet\\\">\\n<link href=\\\"https://api.fontshare.com/v2/css?f[]=switzer@400,500&display=swap\\\" rel=\\\"stylesheet\\\">\""
+        },
+        {
+          "line": 735,
+          "text": "   \"https://api.fontshare.com/v2/css?f[]=panchang@700&display=swap\","
+        },
+        {
+          "line": 736,
+          "text": "   \"https://api.fontshare.com/v2/css?f[]=switzer@400,500&display=swap\""
+        },
+        {
+          "line": 757,
+          "text": "   \"css\": \"<link rel=\\\"preconnect\\\" href=\\\"https://fonts.googleapis.com\\\">\\n<link rel=\\\"preconnect\\\" href=\\\"https://fonts.gstatic.com\\\" crossorigin>\\n<link href=\\\"https://fonts.googleapis.com/css2?family=TikTok+Sans:wdth,wght@75..150,300..900&display=swap\\\" rel=\\\"stylesheet\\\">\""
+        },
+        {
+          "line": 768,
+          "text": "   \"css\": \"<link rel=\\\"preconnect\\\" href=\\\"https://fonts.googleapis.com\\\">\\n<link rel=\\\"preconnect\\\" href=\\\"https://fonts.gstatic.com\\\" crossorigin>\\n<link href=\\\"https://fonts.googleapis.com/css2?family=TikTok+Sans:wdth,wght@75..150,300..900&display=swap\\\" rel=\\\"stylesheet\\\">\""
+        },
+        {
+          "line": 783,
+          "text": "   \"https://fonts.googleapis.com/css2?family=TikTok+Sans:wdth,wght@75..150,300..900&display=swap\""
+        },
+        {
+          "line": 804,
+          "text": "   \"css\": \"<link rel=\\\"preconnect\\\" href=\\\"https://fonts.googleapis.com\\\">\\n<link rel=\\\"preconnect\\\" href=\\\"https://fonts.gstatic.com\\\" crossorigin>\\n<link href=\\\"https://fonts.googleapis.com/css2?family=Unbounded:wght@800&family=Onest:wght@400;500&display=swap\\\" rel=\\\"stylesheet\\\">\""
+        },
+        {
+          "line": 815,
+          "text": "   \"css\": \"<link rel=\\\"preconnect\\\" href=\\\"https://fonts.googleapis.com\\\">\\n<link rel=\\\"preconnect\\\" href=\\\"https://fonts.gstatic.com\\\" crossorigin>\\n<link href=\\\"https://fonts.googleapis.com/css2?family=Unbounded:wght@800&family=Onest:wght@400;500&display=swap\\\" rel=\\\"stylesheet\\\">\""
+        },
+        {
+          "line": 830,
+          "text": "   \"https://fonts.googleapis.com/css2?family=Unbounded:wght@800&family=Onest:wght@400;500&display=swap\""
+        },
+        {
+          "line": 851,
+          "text": "   \"css\": \"<link rel=\\\"preconnect\\\" href=\\\"https://fonts.googleapis.com\\\">\\n<link rel=\\\"preconnect\\\" href=\\\"https://fonts.gstatic.com\\\" crossorigin>\\n<link href=\\\"https://fonts.googleapis.com/css2?family=Chivo:wght@400;700;900&display=swap\\\" rel=\\\"stylesheet\\\">\""
+        },
+        {
+          "line": 862,
+          "text": "   \"css\": \"<link rel=\\\"preconnect\\\" href=\\\"https://fonts.googleapis.com\\\">\\n<link rel=\\\"preconnect\\\" href=\\\"https://fonts.gstatic.com\\\" crossorigin>\\n<link href=\\\"https://fonts.googleapis.com/css2?family=Chivo:wght@400;700;900&display=swap\\\" rel=\\\"stylesheet\\\">\""
+        },
+        {
+          "line": 876,
+          "text": "   \"https://fonts.googleapis.com/css2?family=Chivo:wght@400;700;900&display=swap\""
+        },
+        {
+          "line": 898,
+          "text": "   \"css\": \"<link rel=\\\"preconnect\\\" href=\\\"https://api.fontshare.com\\\">\\n<link rel=\\\"preconnect\\\" href=\\\"https://cdn.fontshare.com\\\" crossorigin>\\n<link href=\\\"https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@400,500,800&display=swap\\\" rel=\\\"stylesheet\\\">\""
+        },
+        {
+          "line": 910,
+          "text": "   \"css\": \"<link rel=\\\"preconnect\\\" href=\\\"https://api.fontshare.com\\\">\\n<link rel=\\\"preconnect\\\" href=\\\"https://cdn.fontshare.com\\\" crossorigin>\\n<link href=\\\"https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@400,500,800&display=swap\\\" rel=\\\"stylesheet\\\">\""
+        },
+        {
+          "line": 923,
+          "text": "   \"https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@400,500,800&display=swap\""
+        },
+        {
+          "line": 944,
+          "text": "   \"css\": \"<link rel=\\\"preconnect\\\" href=\\\"https://fonts.googleapis.com\\\">\\n<link rel=\\\"preconnect\\\" href=\\\"https://fonts.gstatic.com\\\" crossorigin>\\n<link href=\\\"https://fonts.googleapis.com/css2?family=Epilogue:wght@400;500;900&display=swap\\\" rel=\\\"stylesheet\\\">\""
+        },
+        {
+          "line": 955,
+          "text": "   \"css\": \"<link rel=\\\"preconnect\\\" href=\\\"https://fonts.googleapis.com\\\">\\n<link rel=\\\"preconnect\\\" href=\\\"https://fonts.gstatic.com\\\" crossorigin>\\n<link href=\\\"https://fonts.googleapis.com/css2?family=Epilogue:wght@400;500;900&display=swap\\\" rel=\\\"stylesheet\\\">\""
+        },
+        {
+          "line": 968,
+          "text": "   \"https://fonts.googleapis.com/css2?family=Epilogue:wght@400;500;900&display=swap\""
+        },
+        {
+          "line": 989,
+          "text": "   \"css\": \"<link rel=\\\"preconnect\\\" href=\\\"https://fonts.googleapis.com\\\">\\n<link rel=\\\"preconnect\\\" href=\\\"https://fonts.gstatic.com\\\" crossorigin>\\n<link href=\\\"https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@900&family=Red+Hat+Text:wght@400;500&display=swap\\\" rel=\\\"stylesheet\\\">\""
+        },
+        {
+          "line": 1000,
+          "text": "   \"css\": \"<link rel=\\\"preconnect\\\" href=\\\"https://fonts.googleapis.com\\\">\\n<link rel=\\\"preconnect\\\" href=\\\"https://fonts.gstatic.com\\\" crossorigin>\\n<link href=\\\"https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@900&family=Red+Hat+Text:wght@400;500&display=swap\\\" rel=\\\"stylesheet\\\">\""
+        },
+        {
+          "line": 1012,
+          "text": "   \"https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@900&family=Red+Hat+Text:wght@400;500&display=swap\""
+        },
+        {
+          "line": 1033,
+          "text": "   \"css\": \"<link rel=\\\"preconnect\\\" href=\\\"https://fonts.googleapis.com\\\">\\n<link rel=\\\"preconnect\\\" href=\\\"https://fonts.gstatic.com\\\" crossorigin>\\n<link href=\\\"https://fonts.googleapis.com/css2?family=Jost:wght@400;500;700&display=swap\\\" rel=\\\"stylesheet\\\">\""
+        },
+        {
+          "line": 1044,
+          "text": "   \"css\": \"<link rel=\\\"preconnect\\\" href=\\\"https://fonts.googleapis.com\\\">\\n<link rel=\\\"preconnect\\\" href=\\\"https://fonts.gstatic.com\\\" crossorigin>\\n<link href=\\\"https://fonts.googleapis.com/css2?family=Jost:wght@400;500;700&display=swap\\\" rel=\\\"stylesheet\\\">\""
+        },
+        {
+          "line": 1056,
+          "text": "   \"https://fonts.googleapis.com/css2?family=Jost:wght@400;500;700&display=swap\""
+        },
+        {
+          "line": 1077,
+          "text": "   \"css\": \"<link rel=\\\"preconnect\\\" href=\\\"https://fonts.googleapis.com\\\">\\n<link rel=\\\"preconnect\\\" href=\\\"https://fonts.gstatic.com\\\" crossorigin>\\n<link href=\\\"https://fonts.googleapis.com/css2?family=Stack+Sans+Headline:wght@300&family=Stack+Sans+Text:wght@400;500&display=swap\\\" rel=\\\"stylesheet\\\">\""
+        },
+        {
+          "line": 1088,
+          "text": "   \"css\": \"<link rel=\\\"preconnect\\\" href=\\\"https://fonts.googleapis.com\\\">\\n<link rel=\\\"preconnect\\\" href=\\\"https://fonts.gstatic.com\\\" crossorigin>\\n<link href=\\\"https://fonts.googleapis.com/css2?family=Stack+Sans+Headline:wght@300&family=Stack+Sans+Text:wght@400;500&display=swap\\\" rel=\\\"stylesheet\\\">\""
+        },
+        {
+          "line": 1101,
+          "text": "   \"https://fonts.googleapis.com/css2?family=Stack+Sans+Headline:wght@300&family=Stack+Sans+Text:wght@400;500&display=swap\""
+        },
+        {
+          "line": 1122,
+          "text": "   \"css\": \"<link rel=\\\"preconnect\\\" href=\\\"https://fonts.googleapis.com\\\">\\n<link rel=\\\"preconnect\\\" href=\\\"https://fonts.gstatic.com\\\" crossorigin>\\n<link href=\\\"https://fonts.googleapis.com/css2?family=Albert+Sans:wght@400;500;600&display=swap\\\" rel=\\\"stylesheet\\\">\""
+        },
+        {
+          "line": 1133,
+          "text": "   \"css\": \"<link rel=\\\"preconnect\\\" href=\\\"https://fonts.googleapis.com\\\">\\n<link rel=\\\"preconnect\\\" href=\\\"https://fonts.gstatic.com\\\" crossorigin>\\n<link href=\\\"https://fonts.googleapis.com/css2?family=Albert+Sans:wght@400;500;600&display=swap\\\" rel=\\\"stylesheet\\\">\""
+        },
+        {
+          "line": 1146,
+          "text": "   \"https://fonts.googleapis.com/css2?family=Albert+Sans:wght@400;500;600&display=swap\""
+        },
+        {
+          "line": 1167,
+          "text": "   \"css\": \"<link rel=\\\"preconnect\\\" href=\\\"https://fonts.googleapis.com\\\">\\n<link rel=\\\"preconnect\\\" href=\\\"https://fonts.gstatic.com\\\" crossorigin>\\n<link href=\\\"https://fonts.googleapis.com/css2?family=League+Spartan:wght@700&family=Figtree:wght@400;600&display=swap\\\" rel=\\\"stylesheet\\\">\""
+        },
+        {
+          "line": 1178,
+          "text": "   \"css\": \"<link rel=\\\"preconnect\\\" href=\\\"https://fonts.googleapis.com\\\">\\n<link rel=\\\"preconnect\\\" href=\\\"https://fonts.gstatic.com\\\" crossorigin>\\n<link href=\\\"https://fonts.googleapis.com/css2?family=League+Spartan:wght@700&family=Figtree:wght@400;600&display=swap\\\" rel=\\\"stylesheet\\\">\""
+        },
+        {
+          "line": 1192,
+          "text": "   \"https://fonts.googleapis.com/css2?family=League+Spartan:wght@700&family=Figtree:wght@400;600&display=swap\""
+        },
+        {
+          "line": 1214,
+          "text": "   \"css\": \"<link rel=\\\"preconnect\\\" href=\\\"https://api.fontshare.com\\\">\\n<link rel=\\\"preconnect\\\" href=\\\"https://cdn.fontshare.com\\\" crossorigin>\\n<link href=\\\"https://api.fontshare.com/v2/css?f[]=pilcrow-rounded@400,500,700&display=swap\\\" rel=\\\"stylesheet\\\">\""
+        },
+        {
+          "line": 1226,
+          "text": "   \"css\": \"<link rel=\\\"preconnect\\\" href=\\\"https://api.fontshare.com\\\">\\n<link rel=\\\"preconnect\\\" href=\\\"https://cdn.fontshare.com\\\" crossorigin>\\n<link href=\\\"https://api.fontshare.com/v2/css?f[]=pilcrow-rounded@400,500,700&display=swap\\\" rel=\\\"stylesheet\\\">\""
+        },
+        {
+          "line": 1239,
+          "text": "   \"https://api.fontshare.com/v2/css?f[]=pilcrow-rounded@400,500,700&display=swap\""
+        },
+        {
+          "line": 1261,
+          "text": "   \"css\": \"<link rel=\\\"preconnect\\\" href=\\\"https://api.fontshare.com\\\">\\n<link rel=\\\"preconnect\\\" href=\\\"https://cdn.fontshare.com\\\" crossorigin>\\n<link href=\\\"https://api.fontshare.com/v2/css?f[]=roundo@400,500,600&display=swap\\\" rel=\\\"stylesheet\\\">\""
+        },
+        {
+          "line": 1273,
+          "text": "   \"css\": \"<link rel=\\\"preconnect\\\" href=\\\"https://api.fontshare.com\\\">\\n<link rel=\\\"preconnect\\\" href=\\\"https://cdn.fontshare.com\\\" crossorigin>\\n<link href=\\\"https://api.fontshare.com/v2/css?f[]=roundo@400,500,600&display=swap\\\" rel=\\\"stylesheet\\\">\""
+        },
+        {
+          "line": 1285,
+          "text": "   \"https://api.fontshare.com/v2/css?f[]=roundo@400,500,600&display=swap\""
+        },
+        {
+          "line": 1307,
+          "text": "   \"css\": \"<link rel=\\\"preconnect\\\" href=\\\"https://api.fontshare.com\\\">\\n<link rel=\\\"preconnect\\\" href=\\\"https://cdn.fontshare.com\\\" crossorigin>\\n<link href=\\\"https://api.fontshare.com/v2/css?f[]=chillax@400,500,600&display=swap\\\" rel=\\\"stylesheet\\\">\""
+        },
+        {
+          "line": 1319,
+          "text": "   \"css\": \"<link rel=\\\"preconnect\\\" href=\\\"https://api.fontshare.com\\\">\\n<link rel=\\\"preconnect\\\" href=\\\"https://cdn.fontshare.com\\\" crossorigin>\\n<link href=\\\"https://api.fontshare.com/v2/css?f[]=chillax@400,500,600&display=swap\\\" rel=\\\"stylesheet\\\">\""
+        },
+        {
+          "line": 1331,
+          "text": "   \"https://api.fontshare.com/v2/css?f[]=chillax@400,500,600&display=swap\""
+        },
+        {
+          "line": 1353,
+          "text": "   \"css\": \"<link rel=\\\"preconnect\\\" href=\\\"https://api.fontshare.com\\\">\\n<link rel=\\\"preconnect\\\" href=\\\"https://cdn.fontshare.com\\\" crossorigin>\\n<link href=\\\"https://api.fontshare.com/v2/css?f[]=gambarino@400&display=swap\\\" rel=\\\"stylesheet\\\">\\n<link href=\\\"https://api.fontshare.com/v2/css?f[]=general-sans@400,500&display=swap\\\" rel=\\\"stylesheet\\\">\""
+        },
+        {
+          "line": 1365,
+          "text": "   \"css\": \"<link rel=\\\"preconnect\\\" href=\\\"https://api.fontshare.com\\\">\\n<link rel=\\\"preconnect\\\" href=\\\"https://cdn.fontshare.com\\\" crossorigin>\\n<link href=\\\"https://api.fontshare.com/v2/css?f[]=gambarino@400&display=swap\\\" rel=\\\"stylesheet\\\">\\n<link href=\\\"https://api.fontshare.com/v2/css?f[]=general-sans@400,500&display=swap\\\" rel=\\\"stylesheet\\\">\""
+        },
+        {
+          "line": 1379,
+          "text": "   \"https://api.fontshare.com/v2/css?f[]=gambarino@400&display=swap\","
+        },
+        {
+          "line": 1380,
+          "text": "   \"https://api.fontshare.com/v2/css?f[]=general-sans@400,500&display=swap\""
+        },
+        {
+          "line": 1401,
+          "text": "   \"css\": \"<link rel=\\\"preconnect\\\" href=\\\"https://fonts.googleapis.com\\\">\\n<link rel=\\\"preconnect\\\" href=\\\"https://fonts.gstatic.com\\\" crossorigin>\\n<link href=\\\"https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,wght@0,500;1,500&family=Jost:wght@400;500&display=swap\\\" rel=\\\"stylesheet\\\">\""
+        },
+        {
+          "line": 1412,
+          "text": "   \"css\": \"<link rel=\\\"preconnect\\\" href=\\\"https://fonts.googleapis.com\\\">\\n<link rel=\\\"preconnect\\\" href=\\\"https://fonts.gstatic.com\\\" crossorigin>\\n<link href=\\\"https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,wght@0,500;1,500&family=Jost:wght@400;500&display=swap\\\" rel=\\\"stylesheet\\\">\""
+        },
+        {
+          "line": 1424,
+          "text": "   \"https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,wght@0,500;1,500&family=Jost:wght@400;500&display=swap\""
+        },
+        {
+          "line": 1445,
+          "text": "   \"css\": \"<link rel=\\\"preconnect\\\" href=\\\"https://fonts.googleapis.com\\\">\\n<link rel=\\\"preconnect\\\" href=\\\"https://fonts.gstatic.com\\\" crossorigin>\\n<link href=\\\"https://fonts.googleapis.com/css2?family=Imbue:wght@400&family=Albert+Sans:wght@400;500&display=swap\\\" rel=\\\"stylesheet\\\">\""
+        },
+        {
+          "line": 1456,
+          "text": "   \"css\": \"<link rel=\\\"preconnect\\\" href=\\\"https://fonts.googleapis.com\\\">\\n<link rel=\\\"preconnect\\\" href=\\\"https://fonts.gstatic.com\\\" crossorigin>\\n<link href=\\\"https://fonts.googleapis.com/css2?family=Imbue:wght@400&family=Albert+Sans:wght@400;500&display=swap\\\" rel=\\\"stylesheet\\\">\""
+        },
+        {
+          "line": 1467,
+          "text": "   \"https://fonts.googleapis.com/css2?family=Imbue:wght@400&family=Albert+Sans:wght@400;500&display=swap\""
+        },
+        {
+          "line": 1489,
+          "text": "   \"css\": \"<link rel=\\\"preconnect\\\" href=\\\"https://api.fontshare.com\\\">\\n<link rel=\\\"preconnect\\\" href=\\\"https://cdn.fontshare.com\\\" crossorigin>\\n<link href=\\\"https://api.fontshare.com/v2/css?f[]=erode@400,500,600&display=swap\\\" rel=\\\"stylesheet\\\">\""
+        },
+        {
+          "line": 1501,
+          "text": "   \"css\": \"<link rel=\\\"preconnect\\\" href=\\\"https://api.fontshare.com\\\">\\n<link rel=\\\"preconnect\\\" href=\\\"https://cdn.fontshare.com\\\" crossorigin>\\n<link href=\\\"https://api.fontshare.com/v2/css?f[]=erode@400,500,600&display=swap\\\" rel=\\\"stylesheet\\\">\""
+        },
+        {
+          "line": 1515,
+          "text": "   \"https://api.fontshare.com/v2/css?f[]=erode@400,500,600&display=swap\""
+        },
+        {
+          "line": 1537,
+          "text": "   \"css\": \"<link rel=\\\"preconnect\\\" href=\\\"https://api.fontshare.com\\\">\\n<link rel=\\\"preconnect\\\" href=\\\"https://cdn.fontshare.com\\\" crossorigin>\\n<link href=\\\"https://api.fontshare.com/v2/css?f[]=boska@400,500&display=swap\\\" rel=\\\"stylesheet\\\">\""
+        },
+        {
+          "line": 1549,
+          "text": "   \"css\": \"<link rel=\\\"preconnect\\\" href=\\\"https://api.fontshare.com\\\">\\n<link rel=\\\"preconnect\\\" href=\\\"https://cdn.fontshare.com\\\" crossorigin>\\n<link href=\\\"https://api.fontshare.com/v2/css?f[]=boska@400,500&display=swap\\\" rel=\\\"stylesheet\\\">\""
+        },
+        {
+          "line": 1562,
+          "text": "   \"https://api.fontshare.com/v2/css?f[]=boska@400,500&display=swap\""
+        },
+        {
+          "line": 1583,
+          "text": "   \"css\": \"<link rel=\\\"preconnect\\\" href=\\\"https://fonts.googleapis.com\\\">\\n<link rel=\\\"preconnect\\\" href=\\\"https://fonts.gstatic.com\\\" crossorigin>\\n<link href=\\\"https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&display=swap\\\" rel=\\\"stylesheet\\\">\""
+        },
+        {
+          "line": 1594,
+          "text": "   \"css\": \"<link rel=\\\"preconnect\\\" href=\\\"https://fonts.googleapis.com\\\">\\n<link rel=\\\"preconnect\\\" href=\\\"https://fonts.gstatic.com\\\" crossorigin>\\n<link href=\\\"https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&display=swap\\\" rel=\\\"stylesheet\\\">\""
+        },
+        {
+          "line": 1607,
+          "text": "   \"https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&display=swap\""
+        },
+        {
+          "line": 1630,
+          "text": "   \"css\": \"<link rel=\\\"preconnect\\\" href=\\\"https://fonts.googleapis.com\\\">\\n<link rel=\\\"preconnect\\\" href=\\\"https://fonts.gstatic.com\\\" crossorigin>\\n<link rel=\\\"preconnect\\\" href=\\\"https://api.fontshare.com\\\">\\n<link rel=\\\"preconnect\\\" href=\\\"https://cdn.fontshare.com\\\" crossorigin>\\n<link href=\\\"https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500&display=swap\\\" rel=\\\"stylesheet\\"
+        },
+        {
+          "line": 1641,
+          "text": "   \"css\": \"<link rel=\\\"preconnect\\\" href=\\\"https://fonts.googleapis.com\\\">\\n<link rel=\\\"preconnect\\\" href=\\\"https://fonts.gstatic.com\\\" crossorigin>\\n<link rel=\\\"preconnect\\\" href=\\\"https://api.fontshare.com\\\">\\n<link rel=\\\"preconnect\\\" href=\\\"https://cdn.fontshare.com\\\" crossorigin>\\n<link href=\\\"https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500&display=swap\\\" rel=\\\"stylesheet\\"
+        },
+        {
+          "line": 1656,
+          "text": "   \"https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500&display=swap\","
+        },
+        {
+          "line": 1657,
+          "text": "   \"https://api.fontshare.com/v2/css?f[]=zodiak@100,300&display=swap\""
+        },
+        {
+          "line": 1679,
+          "text": "   \"css\": \"<link rel=\\\"preconnect\\\" href=\\\"https://api.fontshare.com\\\">\\n<link rel=\\\"preconnect\\\" href=\\\"https://cdn.fontshare.com\\\" crossorigin>\\n<link href=\\\"https://api.fontshare.com/v2/css?f[]=sentient@300,400,500&display=swap\\\" rel=\\\"stylesheet\\\">\""
+        },
+        {
+          "line": 1691,
+          "text": "   \"css\": \"<link rel=\\\"preconnect\\\" href=\\\"https://api.fontshare.com\\\">\\n<link rel=\\\"preconnect\\\" href=\\\"https://cdn.fontshare.com\\\" crossorigin>\\n<link href=\\\"https://api.fontshare.com/v2/css?f[]=sentient@300,400,500&display=swap\\\" rel=\\\"stylesheet\\\">\""
+        },
+        {
+          "line": 1705,
+          "text": "   \"https://api.fontshare.com/v2/css?f[]=sentient@300,400,500&display=swap\""
+        },
+        {
+          "line": 1726,
+          "text": "   \"css\": \"<link rel=\\\"preconnect\\\" href=\\\"https://fonts.googleapis.com\\\">\\n<link rel=\\\"preconnect\\\" href=\\\"https://fonts.gstatic.com\\\" crossorigin>\\n<link href=\\\"https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&display=swap\\\" rel=\\\"stylesheet\\\">\""
+        },
+        {
+          "line": 1737,
+          "text": "   \"css\": \"<link rel=\\\"preconnect\\\" href=\\\"https://fonts.googleapis.com\\\">\\n<link rel=\\\"preconnect\\\" href=\\\"https://fonts.gstatic.com\\\" crossorigin>\\n<link href=\\\"https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&display=swap\\\" rel=\\\"stylesheet\\\">\""
+        },
+        {
+          "line": 1749,
+          "text": "   \"https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&display=swap\""
+        },
+        {
+          "line": 1770,
+          "text": "   \"css\": \"<link rel=\\\"preconnect\\\" href=\\\"https://fonts.googleapis.com\\\">\\n<link rel=\\\"preconnect\\\" href=\\\"https://fonts.gstatic.com\\\" crossorigin>\\n<link href=\\\"https://fonts.googleapis.com/css2?family=Literata:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&display=swap\\\" rel=\\\"stylesheet\\\">\""
+        },
+        {
+          "line": 1781,
+          "text": "   \"css\": \"<link rel=\\\"preconnect\\\" href=\\\"https://fonts.googleapis.com\\\">\\n<link rel=\\\"preconnect\\\" href=\\\"https://fonts.gstatic.com\\\" crossorigin>\\n<link href=\\\"https://fonts.googleapis.com/css2?family=Literata:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&display=swap\\\" rel=\\\"stylesheet\\\">\""
+        },
+        {
+          "line": 1795,
+          "text": "   \"https://fonts.googleapis.com/css2?family=Literata:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&display=swap\""
+        },
+        {
+          "line": 1816,
+          "text": "   \"css\": \"<link rel=\\\"preconnect\\\" href=\\\"https://fonts.googleapis.com\\\">\\n<link rel=\\\"preconnect\\\" href=\\\"https://fonts.gstatic.com\\\" crossorigin>\\n<link href=\\\"https://fonts.googleapis.com/css2?family=STIX+Two+Text:ital,wght@0,400;0,600;1,400;1,600&display=swap\\\" rel=\\\"stylesheet\\\">\""
+        },
+        {
+          "line": 1827,
+          "text": "   \"css\": \"<link rel=\\\"preconnect\\\" href=\\\"https://fonts.googleapis.com\\\">\\n<link rel=\\\"preconnect\\\" href=\\\"https://fonts.gstatic.com\\\" crossorigin>\\n<link href=\\\"https://fonts.googleapis.com/css2?family=STIX+Two+Text:ital,wght@0,400;0,600;1,400;1,600&display=swap\\\" rel=\\\"stylesheet\\\">\""
+        },
+        {
+          "line": 1841,
+          "text": "   \"https://fonts.googleapis.com/css2?family=STIX+Two+Text:ital,wght@0,400;0,600;1,400;1,600&display=swap\""
+        },
+        {
+          "line": 1862,
+          "text": "   \"css\": \"<link rel=\\\"preconnect\\\" href=\\\"https://fonts.googleapis.com\\\">\\n<link rel=\\\"preconnect\\\" href=\\\"https://fonts.gstatic.com\\\" crossorigin>\\n<link href=\\\"https://fonts.googleapis.com/css2?family=Young+Serif:wght@400&family=Source+Serif+4:ital,wght@0,400;0,600;1,400;1,600&display=swap\\\" rel=\\\"stylesheet\\\">\""
+        },
+        {
+          "line": 1873,
+          "text": "   \"css\": \"<link rel=\\\"preconnect\\\" href=\\\"https://fonts.googleapis.com\\\">\\n<link rel=\\\"preconnect\\\" href=\\\"https://fonts.gstatic.com\\\" crossorigin>\\n<link href=\\\"https://fonts.googleapis.com/css2?family=Young+Serif:wght@400&family=Source+Serif+4:ital,wght@0,400;0,600;1,400;1,600&display=swap\\\" rel=\\\"stylesheet\\\">\""
+        },
+        {
+          "line": 1887,
+          "text": "   \"https://fonts.googleapis.com/css2?family=Young+Serif:wght@400&family=Source+Serif+4:ital,wght@0,400;0,600;1,400;1,600&display=swap\""
+        },
+        {
+          "line": 1908,
+          "text": "   \"css\": \"<link rel=\\\"preconnect\\\" href=\\\"https://fonts.googleapis.com\\\">\\n<link rel=\\\"preconnect\\\" href=\\\"https://fonts.gstatic.com\\\" crossorigin>\\n<link href=\\\"https://fonts.googleapis.com/css2?family=Zilla+Slab:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&display=swap\\\" rel=\\\"stylesheet\\\">\""
+        },
+        {
+          "line": 1919,
+          "text": "   \"css\": \"<link rel=\\\"preconnect\\\" href=\\\"https://fonts.googleapis.com\\\">\\n<link rel=\\\"preconnect\\\" href=\\\"https://fonts.gstatic.com\\\" crossorigin>\\n<link href=\\\"https://fonts.googleapis.com/css2?family=Zilla+Slab:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&display=swap\\\" rel=\\\"stylesheet\\\">\""
+        },
+        {
+          "line": 1929,
+          "text": "   \"https://fonts.googleapis.com/css2?family=Zilla+Slab:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&display=swap\""
+        },
+        {
+          "line": 1950,
+          "text": "   \"css\": \"<link rel=\\\"preconnect\\\" href=\\\"https://fonts.googleapis.com\\\">\\n<link rel=\\\"preconnect\\\" href=\\\"https://fonts.gstatic.com\\\" crossorigin>\\n<link href=\\\"https://fonts.googleapis.com/css2?family=Besley:wght@800&family=Libre+Franklin:wght@400;600&display=swap\\\" rel=\\\"stylesheet\\\">\""
+        },
+        {
+          "line": 1961,
+          "text": "   \"css\": \"<link rel=\\\"preconnect\\\" href=\\\"https://fonts.googleapis.com\\\">\\n<link rel=\\\"preconnect\\\" href=\\\"https://fonts.gstatic.com\\\" crossorigin>\\n<link href=\\\"https://fonts.googleapis.com/css2?family=Besley:wght@800&family=Libre+Franklin:wght@400;600&display=swap\\\" rel=\\\"stylesheet\\\">\""
+        },
+        {
+          "line": 1973,
+          "text": "   \"https://fonts.googleapis.com/css2?family=Besley:wght@800&family=Libre+Franklin:wght@400;600&display=swap\""
+        },
+        {
+          "line": 1994,
+          "text": "   \"css\": \"<link rel=\\\"preconnect\\\" href=\\\"https://fonts.googleapis.com\\\">\\n<link rel=\\\"preconnect\\\" href=\\\"https://fonts.gstatic.com\\\" crossorigin>\\n<link href=\\\"https://fonts.googleapis.com/css2?family=Rokkitt:wght@800&family=Literata:ital,wght@0,400;0,600;1,400;1,600&display=swap\\\" rel=\\\"stylesheet\\\">\""
+        },
+        {
+          "line": 2005,
+          "text": "   \"css\": \"<link rel=\\\"preconnect\\\" href=\\\"https://fonts.googleapis.com\\\">\\n<link rel=\\\"preconnect\\\" href=\\\"https://fonts.gstatic.com\\\" crossorigin>\\n<link href=\\\"https://fonts.googleapis.com/css2?family=Rokkitt:wght@800&family=Literata:ital,wght@0,400;0,600;1,400;1,600&display=swap\\\" rel=\\\"stylesheet\\\">\""
+        },
+        {
+          "line": 2015,
+          "text": "   \"https://fonts.googleapis.com/css2?family=Rokkitt:wght@800&family=Literata:ital,wght@0,400;0,600;1,400;1,600&display=swap\""
+        }
+      ]
+    },
+    {
+      "path": "skills/taste-skill/references/imagery.md",
+      "hits": [
+        {
+          "line": 178,
+          "text": "- URLs have the form `https://picsum.photos/id/<id>/<width>/<height>`. Request the exact pixel size you"
+        },
+        {
+          "line": 292,
+          "text": "<img src=\"https://picsum.photos/id/626/2400/1500\" width=\"2400\" height=\"1500\""
+        },
+        {
+          "line": 299,
+          "text": "<p class=\"credits\">Pictures: <a href=\"https://commons.wikimedia.org/wiki/File:Fig_(Ficus_carica_L.);_57_segments_of_flowers_and_fruits_at_Wellcome_V0043000.jpg\">“Fig (Ficus carica L.): 57 segments of flowers and fruits”</a>, <a href=\"https://creativecommons.org/publicdomain/mark/1.0/\">public domain</a>, via Wikimedia Commons.</p>"
+        }
+      ]
+    },
+    {
+      "path": "skills/taste-skill/references/type.md",
+      "hits": [
+        {
+          "line": 119,
+          "text": "<link rel=\"preconnect\" href=\"https://fonts.googleapis.com\">"
+        },
+        {
+          "line": 120,
+          "text": "<link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin>"
+        }
+      ]
+    },
+    {
+      "path": "skills/taste-skill/scripts/assets.mjs",
+      "hits": [
+        {
+          "line": 33,
+          "text": "const UA = 'taste-skill-assets/2.0 (+https://github.com/Leonxlnx/taste-skill)';"
+        },
+        {
+          "line": 187,
+          "text": "    try { r = await fetch(url, { headers: { 'User-Agent': UA, Accept: 'application/json', ...headers }, signal: AbortSignal.timeout(ms) }); }"
+        },
+        {
+          "line": 248,
+          "text": "    const r = await fetch(url, { headers: { ...headers, Range: `bytes=0-${want - 1}` }, signal: ac.signal, redirect: 'follow' });"
+        },
+        {
+          "line": 277,
+          "text": "  if (it.license === 'cc0') return 'https://creativecommons.org/publicdomain/zero/1.0/';"
+        },
+        {
+          "line": 278,
+          "text": "  if (it.license === 'pd') return 'https://creativecommons.org/publicdomain/mark/1.0/';"
+        },
+        {
+          "line": 279,
+          "text": "  if (it.license.startsWith('by')) return `https://creativecommons.org/licenses/${it.license}/${it.licenseVersion || '4.0'}/`;"
+        },
+        {
+          "line": 329,
+          "text": "    return getJson(`https://api.openverse.org/v1/images/?${p}`, 30000);"
+        },
+        {
+          "line": 368,
+          "text": "function commonsApi(params) { return `https://commons.wikimedia.org/w/api.php?${new URLSearchParams({ action: 'query', format: 'json', formatversion: '2', origin: '*', ...params })}`; }"
+        },
+        {
+          "line": 422,
+          "text": "  const run = (match) => getJson(`https://api.artic.edu/api/v1/artworks/search?params=${encodeURIComponent(JSON.stringify({"
+        },
+        {
+          "line": 433,
+          "text": "  const iiif = j.config?.iiif_url || 'https://www.artic.edu/iiif/2';"
+        },
+        {
+          "line": 444,
+          "text": "    license: 'cc0', licenseVersion: '1.0', licenseName: 'public domain (CC0)', licenseUrl: 'https://creativecommons.org/publicdomain/zero/1.0/',"
+        },
+        {
+          "line": 445,
+          "text": "    page: `https://www.artic.edu/artworks/${d.id}`, image: `${iiif}/${d.image_id}/full/${w},/0/default.jpg`, original: `${iiif}/${d.image_id}/full/${cap},/0/default.jpg`,"
+        },
+        {
+          "line": 449,
+          "text": "  it.hint = 'Download it with --get: the museum\\'s image server answers browsers and this script, and refuses plain curl or wget.';"
+        },
+        {
+          "line": 455,
+          "text": "  const s = await getJson(`https://collectionapi.metmuseum.org/public/collection/v1.1/search?${new URLSearchParams({ q, hasImages: 'true', limit: String(Math.min(40, opts.limit * 4 + 8)), offset: '0' })}`);"
+        },
+        {
+          "line": 457,
+          "text": "  const objects = await mapLimit(ids, 8, (id) => getJson(`https://collectionapi.metmuseum.org/public/collection/v1/objects/${id}`, 15000).catch(() => null));"
+        },
+        {
+          "line": 471,
+          "text": "    license: 'cc0', licenseVersion: '1.0', licenseName: 'public domain (CC0)', licenseUrl: 'https://creativecommons.org/publicdomain/zero/1.0/',"
+        },
+        {
+          "line": 472,
+          "text": "    page: x.objectURL || `https://www.metmuseum.org/art/collection/search/${x.objectID}`,"
+        },
+        {
+          "line": 516,
+          "text": "  const j = await getJson(`https://archive.org/advancedsearch.php?${p}`, 30000);"
+        },
+        {
+          "line": 520,
+          "text": "  const metas = await mapLimit(allowed.slice(0, opts.limit * 2 + 4), 6, (d) => getJson(`https://archive.org/metadata/${encodeURIComponent(d.identifier)}`, 20000).catch(() => null));"
+        },
+        {
+          "line": 526,
+          "text": "  const fileUrl = (name) => `https://archive.org/download/${encodeURIComponent(id)}/${String(name).split('/').map(encodeURIComponent).join('/')}`;"
+        },
+        {
+          "line": 539,
+          "text": "    license: lic.code, licenseVersion: lic.version, licenseUrl: first(md.licenseurl) || null, page: `https://archive.org/details/${id}`,"
+        },
+        {
+          "line": 552,
+          "text": "  const j = await getJson(`https://images-api.nasa.gov/search?${new URLSearchParams({ q, media_type: 'video', page_size: String(Math.min(100, opts.limit * 3 + 6)) })}`);"
+        },
+        {
+          "line": 570,
+          "text": "    license: 'pd', licenseName: 'public domain (NASA)', licenseUrl: 'https://www.nasa.gov/nasa-brand-center/images-and-media/',"
+        },
+        {
+          "line": 571,
+          "text": "    page: `https://images.nasa.gov/details/${encodeURIComponent(d.nasa_id)}`, original: nasaUrl(find('~orig.mp4')) || pick.url,"
+        },
+        {
+          "line": 720,
+          "text": "  if (src === 'openverse') { it = fromOpenverse(await getJson(`https://api.openverse.org/v1/images/${encodeURIComponent(id)}/`, 30000)); await wikimediaSizes([it], opts.width); }"
+        },
+        {
+          "line": 727,
+          "text": "  else if (src === 'aic') { const j = await getJson(`https://api.artic.edu/api/v1/artworks/${encodeURIComponent(id)}?fields=${AIC_FIELDS.join(',')}`, 20000, AIC_HEADERS); it = fromAic(j.data, j.config?.iiif_url || 'https://www.artic.edu/iiif/2', opts.width); }"
+        },
+        {
+          "line": 728,
+          "text": "  else if (src === 'archive') it = fromArchive(await getJson(`https://archive.org/metadata/${encodeURIComponent(id)}`, 30000), opts);"
+        },
+        {
+          "line": 730,
+          "text": "    const j = await getJson(`https://images-api.nasa.gov/search?${new URLSearchParams({ nasa_id: decodeURIComponent(id), media_type: 'video' })}`);"
+        },
+        {
+          "line": 735,
+          "text": "    it = fromMet(await getJson(`https://collectionapi.metmuseum.org/public/collection/v1/objects/${encodeURIComponent(id)}`));"
+        },
+        {
+          "line": 742,
+          "text": "  try { r = await fetch(it.image, { headers: imageHeaders(it.image), signal: AbortSignal.timeout(90000) }); }"
+        },
+        {
+          "line": 784,
+          "text": "  try { r = await fetch(it.image, { headers: { 'User-Agent': UA, Accept: 'video/*' }, signal: AbortSignal.timeout(600000) }); }"
+        },
+        {
+          "line": 805,
+          "text": "      const pr = await fetch(it.poster, { headers: imageHeaders(it.poster), signal: AbortSignal.timeout(60000) });"
+        }
+      ]
+    },
+    {
+      "path": "skills/taste-skill/scripts/draw.mjs",
+      "hits": [
+        {
+          "line": 78,
+          "text": "  const line = (ph) => `- https://picsum.photos/id/${ph.id}/1600/1000 — ${ph.alt} · ${ph.tone} tone · ${(ph.colours || []).join(', ')}${ph.mono ? ' · black-and-white' : ''}${ph.calm && ph.calm !== 'none' ? ` · calm area: ${ph.calm}` : ''} · photo: ${ph.by}`;"
+        },
+        {
+          "line": 490,
+          "text": "    for (const ph of s.photos.photos) p(`- \\`https://picsum.photos/id/${ph.id}/1600/1000\\` — ${ph.alt} · ${ph.tone} tone · ${(ph.colours || []).join(', ')}${ph.mono ? ' · black-and-white' : ''}${ph.lookalike ? ' · **could be taken for the product: never use it as the product**' : ''}${ph.calm && ph.calm !== 'none' ? ` · calm area: ${ph.calm}` : ''} · native ${ph.ratio >= 1.15 ? 'landscape' : ph.ra"
+        }
+      ]
+    },
+    {
+      "path": "skills/taste-skill/scripts/inspect.mjs",
+      "hits": [
+        {
+          "line": 33,
+          "text": "// assets, fetch() and module scripts behave as they will when the page is hosted."
+        },
+        {
+          "line": 43,
+          "text": "      let f = resolve(join(root, decodeURIComponent(new URL(req.url, 'http://x').pathname)));"
+        },
+        {
+          "line": 51,
+          "text": "  url = `http://127.0.0.1:${server.address().port}/${relative(root, file).split(sep).map(encodeURIComponent).join('/')}`;"
+        }
+      ]
+    }
+  ],
+  "subprocess": [
+    {
+      "path": "skills/taste-skill/scripts/lib/cdp.mjs",
+      "hits": [
+        {
+          "line": 4,
+          "text": "import { spawn } from 'node:child_process';"
+        },
+        {
+          "line": 58,
+          "text": "    const proc = spawn(exe, args, { stdio: ['ignore', 'ignore', 'pipe'] });"
+        }
+      ]
+    }
+  ],
+  "filesystem_write": [
+    {
+      "path": "install.sh",
+      "hits": [
+        {
+          "line": 81,
+          "text": "        rm \"$link\"; echo \"removed  $link\""
+        },
+        {
+          "line": 109,
+          "text": "    mkdir -p \"$target\""
+        },
+        {
+          "line": 113,
+          "text": "        rm \"$link\""
+        }
+      ]
+    },
+    {
+      "path": "skills/taste-skill/scripts/assets.mjs",
+      "hits": [
+        {
+          "line": 29,
+          "text": "import { readFileSync, writeFileSync, existsSync, mkdirSync, createWriteStream, unlinkSync } from 'node:fs';"
+        },
+        {
+          "line": 714,
+          "text": "function recordCredit(opts, credits, entry) { writeFileSync(creditsPath(opts), JSON.stringify([...credits.filter((c) => c.file !== entry.file), entry], null, 1)); }"
+        },
+        {
+          "line": 755,
+          "text": "  writeFileSync(file, buf);"
+        },
+        {
+          "line": 798,
+          "text": "  } catch (e) { out.destroy(); try { unlinkSync(file); } catch {} throw e; }"
+        },
+        {
+          "line": 799,
+          "text": "  if (!n) { try { unlinkSync(file); } catch {} throw new Error('the video was empty.'); }"
+        },
+        {
+          "line": 807,
+          "text": "      if (pr.ok && WEB_TYPES[pt]) { poster = file.replace(/\\.[^.]+$/, `-poster.${WEB_TYPES[pt]}`); writeFileSync(poster, Buffer.from(await pr.arrayBuffer())); }"
+        }
+      ]
+    },
+    {
+      "path": "skills/taste-skill/scripts/draw.mjs",
+      "hits": [
+        {
+          "line": 21,
+          "text": "import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'node:fs';"
+        },
+        {
+          "line": 107,
+          "text": "const writeHist = (entry) => { try { mkdirSync(dirname(userHist), { recursive: true }); const h = readHist(); h.unshift(entry); writeFileSync(userHist, JSON.stringify(h.slice(0, 24), null, 1)); } catch {} };"
+        },
+        {
+          "line": 200,
+          "text": "writeFileSync(sheetPath, JSON.stringify(sheet, null, 1));"
+        }
+      ]
+    },
+    {
+      "path": "skills/taste-skill/scripts/inspect.mjs",
+      "hits": [
+        {
+          "line": 8,
+          "text": "import { existsSync, mkdirSync, readFileSync, writeFileSync, statSync, createReadStream, readdirSync, unlinkSync } from 'node:fs';"
+        },
+        {
+          "line": 58,
+          "text": "for (const f of readdirSync(outDir)) if (/^(desktop|tablet|mobile)-(fold|page-\\d+)\\.jpg$/.test(f)) unlinkSync(join(outDir, f));"
+        },
+        {
+          "line": 171,
+          "text": "writeFileSync(join(outDir, 'report.json'), JSON.stringify(report, null, 1));"
+        }
+      ]
+    },
+    {
+      "path": "skills/taste-skill/scripts/lib/cdp.mjs",
+      "hits": [
+        {
+          "line": 5,
+          "text": "import { existsSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';"
+        },
+        {
+          "line": 183,
+          "text": "    if (path) writeFileSync(path, Buffer.from(data, 'base64'));"
+        }
+      ]
+    }
+  ],
+  "env_or_credentials": [
+    {
+      "path": "research/laziness/findings/references.md",
+      "hits": [
+        {
+          "line": 18,
+          "text": "- Anthropic MCP (Model Context Protocol) specification and integration guides"
+        },
+        {
+          "line": 19,
+          "text": "- OpenAI API reference for temperature and Top-p parameter tuning"
+        }
+      ]
+    },
+    {
+      "path": "research/laziness/remediation/architectural-patterns.md",
+      "hits": [
+        {
+          "line": 21,
+          "text": "MCP is an open standard (pioneered by Anthropic, adopted by Google and OpenAI) that enables real-time, bidirectional connections between LLMs and external data sources."
+        }
+      ]
+    },
+    {
+      "path": "research/laziness/root-causes/output-limits.md",
+      "hits": [
+        {
+          "line": 21,
+          "text": "Direct API access and developer platforms (Google AI Studio, OpenAI API Playground) bypass consumer middleware entirely. These environments provide:"
+        }
+      ]
+    },
+    {
+      "path": "skills/taste-skill-v2-experimental/SKILL.md",
+      "hits": [
+        {
+          "line": 267,
+          "text": "1. **Image-generation tool first.** If ANY image-gen tool is available in the environment (`generate_image`, MCP image tool, IDE-integrated gen, OpenAI image tools, etc.) you MUST use it to create section-specific assets: hero photography, product shots, texture backgrounds, mood images. Generate at the right aspect ratio for the section. Do not skip this step because hand-rolled CSS feels faster."
+        },
+        {
+          "line": 1051,
+          "text": "#   <meta name=\"shopify-api-key\" content=\"%SHOPIFY_API_KEY%\" />"
+        }
+      ]
+    },
+    {
+      "path": "skills/taste-skill/scripts/draw.mjs",
+      "hits": [
+        {
+          "line": 105,
+          "text": "const userHist = process.env.TASTE_SKILL_HISTORY || join(homedir(), '.taste-skill', 'history.json');"
+        }
+      ]
+    },
+    {
+      "path": "skills/taste-skill/scripts/lib/cdp.mjs",
+      "hits": [
+        {
+          "line": 12,
+          "text": "  const env = process.env.CHROME_PATH || process.env.PUPPETEER_EXECUTABLE_PATH;"
+        },
+        {
+          "line": 14,
+          "text": "  const home = process.env.HOME || process.env.USERPROFILE || '';"
+        },
+        {
+          "line": 15,
+          "text": "  const local = process.env.LOCALAPPDATA || '';"
+        },
+        {
+          "line": 16,
+          "text": "  const pf = process.env.PROGRAMFILES || 'C:\\\\Program Files';"
+        },
+        {
+          "line": 17,
+          "text": "  const pf86 = process.env['PROGRAMFILES(X86)'] || 'C:\\\\Program Files (x86)';"
+        }
+      ]
+    }
+  ],
+  "hooks_or_persistence": [
+    {
+      "path": "research/laziness/remediation/reference-prompts.md",
+      "hits": [
+        {
+          "line": 17,
+          "text": "If you approach your output limit, stop at a clean breakpoint and indicate"
+        },
+        {
+          "line": 75,
+          "text": "- Stop at a natural breakpoint (end of a function, end of a section)"
+        }
+      ]
+    },
+    {
+      "path": "skills/imagegen-frontend-web/SKILL.md",
+      "hits": [
+        {
+          "line": 931,
+          "text": "16. **generate every per-section horizontal image, labeled \"Section X of N: <name>\"**, until the full set is delivered. Do not stop early. Do not summarize. Do not return only one image."
+        }
+      ]
+    },
+    {
+      "path": "skills/redesign-skill/SKILL.md",
+      "hits": [
+        {
+          "line": 117,
+          "text": "- **Collapsed navigation is inert or hidden.** Keep the rail and collapse/expand control outside hidden or `inert` ancestors, exposed to assistive technology and operable by pointer and keyboard, with visible focus indicators. Suppress focus and interaction in inactive expanded sidebar content with `inert`, `hidden`, or `display: none`; use explicit tab-stop and interaction management if a visual "
+        }
+      ]
+    },
+    {
+      "path": "skills/taste-skill-v1/SKILL.md",
+      "hits": [
+        {
+          "line": 132,
+          "text": "* Stop doing centered text over a dark image. Try asymmetric Hero sections: Text cleanly aligned to the left or right. The background should feature a high-quality, relevant image with a subtle stylistic fade (darkening or lightening gracefully into the background color depending on if it is Light or Dark mode)."
+        }
+      ]
+    },
+    {
+      "path": "skills/taste-skill-v2-experimental/SKILL.md",
+      "hits": [
+        {
+          "line": 834,
+          "text": "Apply in order - stop when the brief is satisfied:"
+        }
+      ]
+    },
+    {
+      "path": "skills/taste-skill/library/sections.json",
+      "hits": [
+        {
+          "line": 1314,
+          "text": "  \"blueprint\": \"Client, press or partner names are written out as one run-on sentence and set large: clamp(40px, 5vw, 76px), leading 1.0, flush left across all twelve columns, wrapping naturally over five to seven lines. Names are separated by commas and the list ends with a full stop. All names are set in a dimmed ink (still at least 3:1 against the ground), so the block reads as texture; one nam"
+        }
+      ]
+    },
+    {
+      "path": "skills/taste-skill/library/sites.json",
+      "hits": [
+        {
+          "line": 335,
+          "text": "    \"description\": \"Pull quote: a full-viewport interruption where the grid lines stop. The background becomes a vertical gradient from orange through dusty lilac to sky blue. Centred, five lines of a narrow, widely tracked typewriter-style face at about 48px in dark olive-brown, each letter trailing a soft red vertical smear downward like wet ink. The next cell resumes on the blue that the gradie"
+        },
+        {
+          "line": 2073,
+          "text": "  \"hero\": \"Near-black viewport, roughly 90% empty. A tiny sans wordmark sits top-centre and one text link top-right; there is no other navigation. The statement is three centred lines of white serif capitals stacked in the middle of the screen: a seven-letter word, a two-letter word, then a long word in italic with a full stop, giving a wide, narrow, wider silhouette about 55% of the viewport acro"
+        },
+        {
+          "line": 3112,
+          "text": "    \"description\": \"Each scroll stop is a project slide. Two half-width media columns fill the viewport edge to edge and travel vertically at different offsets, so their top and bottom seams never align. Centred over the join: a two-line 11vw uppercase title in one flat pastel, with two or three 12px tag lines stacked above and a 12px 'view full project' or 'coming soon' line beneath. Title colour"
+        },
+        {
+          "line": 5955,
+          "text": "  \"type\": \"Favorit only, and only at about 11px: uppercase nav links with slight tracking. The custom wordmark, with a macron and a schwa among its letters, is the sole large letterform. No headline and no body copy; one type size on the page.\","
+        },
+        {
+          "line": 6255,
+          "text": "  \"hero\": \"Black viewport. A header strip above a full-width hairline holds a bird logo with an acronym, a two-line agency name in tiny mono caps, and a classification label at far right. A cut-out pigeon stands dead centre, 20% of the width and 65% of the height. The bold mono uppercase headline at 5.6vw is split around it: two words left and one right on line one, a single letter left and the fi"
+        }
+      ]
+    },
+    {
+      "path": "skills/taste-skill/references/copy.md",
+      "hits": [
+        {
+          "line": 112,
+          "text": "Sentence case. No full stop unless the direction's voice uses them everywhere."
+        },
+        {
+          "line": 163,
+          "text": "- The em dash as a habit. One or two on a page read as writing; ten read as a model. Use a full stop."
+        }
+      ]
+    },
+    {
+      "path": "skills/taste-skill/references/critique.md",
+      "hits": [
+        {
+          "line": 14,
+          "text": "6. When to stop"
+        },
+        {
+          "line": 167,
+          "text": "## 6. When to stop"
+        },
+        {
+          "line": 169,
+          "text": "Run at most three rounds: critique → fix the top three → re-inspect → critique. Stop early when a round"
+        }
+      ]
+    },
+    {
+      "path": "skills/taste-skill/references/imagery.md",
+      "hits": [
+        {
+          "line": 359,
+          "text": "- Under `prefers-reduced-motion: reduce`, stop it and show the poster:"
+        }
+      ]
+    },
+    {
+      "path": "skills/taste-skill/references/layout.md",
+      "hits": [
+        {
+          "line": 55,
+          "text": "- On very wide screens cap the layout at about 1760–1920px, or let type sized in `vw` stop growing with"
+        }
+      ]
+    },
+    {
+      "path": "skills/taste-skill/scripts/draw.mjs",
+      "hits": [
+        {
+          "line": 312,
+          "text": "  const stop = briefStop();"
+        },
+        {
+          "line": 313,
+          "text": "  return [...new Set(String(brief || '').toLowerCase().split(/[^a-z]+/).filter((w) => w.length >= 4 && !stop.has(w)).map((w) => w.replace(/(ies|es|s)$/, '')))].filter((w) => w.length >= 4);"
+        },
+        {
+          "line": 323,
+          "text": "  const stop = briefStop();"
+        },
+        {
+          "line": 332,
+          "text": "  const plain = phrase.filter((w) => /^\\p{Ll}{3,}$/u.test(w) && !stop.has(w) && !generic.has(w));"
+        }
+      ]
+    },
+    {
+      "path": "skills/taste-skill/scripts/lint.mjs",
+      "hits": [
+        {
+          "line": 86,
+          "text": "if (emDashes > 4) findings.push({ level: 'WARN', id: 'em-dash', file: '(all files)', line: 0, match: `${emDashes} em dashes`, message: 'Em-dash habit. Use a full stop or a comma; keep at most one or two on a page.' });"
+        }
+      ]
+    }
+  ],
+  "dynamic_code": [
+    {
+      "path": "skills/taste-skill/scripts/inspect.mjs",
+      "hits": [
+        {
+          "line": 82,
+          "text": "  await helper.eval((a) => {"
+        },
+        {
+          "line": 97,
+          "text": "    await page.eval('document.fonts.ready.then(() => true)').catch(() => {});"
+        },
+        {
+          "line": 101,
+          "text": "    const metrics = await page.eval(probe);"
+        },
+        {
+          "line": 105,
+          "text": "    const frameChecks = [await page.eval(frame).catch(() => null)];"
+        },
+        {
+          "line": 108,
+          "text": "      await page.eval(`window.scrollTo({ top: ${i * h}, behavior: 'instant' })`).catch(() => {});"
+        },
+        {
+          "line": 112,
+          "text": "      frameChecks.push(await page.eval(frame).catch(() => null));"
+        },
+        {
+          "line": 113,
+          "text": "      await page.eval('window.__motionSample && window.__motionSample()').catch(() => {});"
+        },
+        {
+          "line": 115,
+          "text": "    const motion = await page.eval('window.__motion ? window.__motion() : null').catch(() => null);"
+        },
+        {
+          "line": 117,
+          "text": "    await page.eval(`window.scrollTo({ top: 0, behavior: 'instant' })`).catch(() => {});"
+        },
+        {
+          "line": 119,
+          "text": "    const after = await page.eval(probe).catch(() => metrics);"
+        }
+      ]
+    },
+    {
+      "path": "skills/taste-skill/scripts/lib/cdp.mjs",
+      "hits": [
+        {
+          "line": 161,
+          "text": "  async eval(fnOrExpr, arg) {"
+        }
+      ]
+    }
+  ],
+  "telemetry": [
+    {
+      "path": "skills/brutalist-skill/SKILL.md",
+      "hits": [
+        {
+          "line": 6,
+          "text": "# SKILL: Industrial Brutalism & Tactical Telemetry UI"
+        },
+        {
+          "line": 9,
+          "text": "**Name:** Industrial Brutalism & Tactical Telemetry Interface Engineering"
+        },
+        {
+          "line": 19,
+          "text": "### 2.2 Tactical Telemetry & CRT Terminal"
+        },
+        {
+          "line": 35,
+          "text": "### 3.2 Micro-Typography (Data & Telemetry)"
+        },
+        {
+          "line": 59,
+          "text": "### If Tactical Telemetry (Dark):"
+        },
+        {
+          "line": 91,
+          "text": "2.  **Semantic Rigidity:** Construct the DOM using precise semantic tags (`<data>`, `<samp>`, `<kbd>`, `<output>`, `<dl>`) to accurately reflect the technical nature of the telemetry."
+        }
+      ]
+    },
+    {
+      "path": "skills/imagegen-frontend-web/SKILL.md",
+      "hits": [
+        {
+          "line": 886,
+          "text": "Charts, sparklines, and graphs appear only when the site type logically needs them (analytics, pricing, infra, observability brands). Else keep proof human (quotes, receipts, timelines, screenshots of real workflows)."
+        }
+      ]
+    },
+    {
+      "path": "skills/taste-skill-v2-experimental/SKILL.md",
+      "hits": [
+        {
+          "line": 91,
+          "text": "| IBM-style B2B / enterprise analytics | `@carbon/react` + `@carbon/styles` | Official Carbon, mature data-density patterns |"
+        },
+        {
+          "line": 831,
+          "text": "* **Respect existing analytics events.** Do not rename buttons, form fields, section IDs that downstream tracking depends on."
+        },
+        {
+          "line": 851,
+          "text": "* Form field names or order (breaks analytics + autofill)."
+        }
+      ]
+    }
+  ],
+  "server": [
+    {
+      "path": "skills/taste-skill/README.md",
+      "hits": [
+        {
+          "line": 56,
+          "text": "over the DevTools protocol with Node's built-in WebSocket; nothing is installed). `draw.mjs`,"
+        }
+      ]
+    },
+    {
+      "path": "skills/taste-skill/scripts/inspect.mjs",
+      "hits": [
+        {
+          "line": 31,
+          "text": "// A local file is served over http from a throwaway server on 127.0.0.1, so the browser never has to"
+        },
+        {
+          "line": 50,
+          "text": "  await new Promise((r) => server.listen(0, '127.0.0.1', r));"
+        },
+        {
+          "line": 51,
+          "text": "  url = `http://127.0.0.1:${server.address().port}/${relative(root, file).split(sep).map(encodeURIComponent).join('/')}`;"
+        }
+      ]
+    },
+    {
+      "path": "skills/taste-skill/scripts/lib/cdp.mjs",
+      "hits": [
+        {
+          "line": 2,
+          "text": "// Drives an installed Chrome / Edge / Chromium in headless mode over Node's built-in WebSocket."
+        },
+        {
+          "line": 42,
+          "text": "    if (typeof WebSocket === 'undefined') {"
+        },
+        {
+          "line": 43,
+          "text": "      throw new Error('Node 22+ is required (built-in WebSocket missing). Current: ' + process.version);"
+        },
+        {
+          "line": 71,
+          "text": "    b.ws = new WebSocket(wsUrl);"
+        }
+      ]
+    }
+  ]
+}

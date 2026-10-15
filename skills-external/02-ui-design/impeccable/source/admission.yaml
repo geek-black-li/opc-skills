@@ -1,0 +1,32 @@
+schema_version: '1.0'
+result: approved-original
+action: approve-original
+inbox_id: 20261015T134511Z-impeccable-8bfee216
+confirmation:
+  confirmed: true
+  action: approve-original
+  inbox_id: 20261015T134511Z-impeccable-8bfee216
+  user_request: Impeccable 和 Taste Skill 都按刚才评估的受限方案正式入库，自动 hooks 继续禁用，验证没问题后提交推送一下。
+  scope: 此确认绑定本条assessment.yaml及proposed-adapter.yaml；仅正式入库和发布仓库，不授权运行上游工具。
+category_assessment:
+  result: confirmed-existing
+  matched_category: 02-ui-design
+source_record:
+  resolved_commit: abf5779cabc20147fd9c013fa4705088c200bf8a
+  archive_sha256: 8bfee216ffccbf414d25af93fc41d2992c245f2a38e3dbbeefdae5cb2981ffa3
+  inventory: file-inventory.json
+  assessment: assessment.yaml
+runtime_policy:
+  mode: text-guidance-only
+  automatic_hooks: disabled
+  binary_execution: disabled
+  upstream_launcher: disabled
+  telemetry: disabled-by-no-runtime-execution
+  live: disabled
+  installers_and_updates: disabled
+  raw_sources: preserved-as-data-not-native-plugin-installation
+validation:
+  - 下载归档与3984个原始文件的哈希复核一致；原件、LICENSE及NOTICE未改写。
+  - 正式入口可由manifest发现，许可、assessment和admission均有实际文件落点。
+  - source中的hooks和配置仅为原始证据，未复制到项目根目录或任何用户工具配置中。
+  - 未执行上游脚本、二进制、安装器、生命周期或构建；动态运行能力未验证。

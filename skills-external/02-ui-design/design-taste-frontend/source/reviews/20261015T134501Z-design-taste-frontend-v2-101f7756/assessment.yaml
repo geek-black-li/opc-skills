@@ -1,0 +1,79 @@
+schema_version: '1.0'
+result: staged-awaiting-confirmation
+action: stage
+inbox_id: 20261015T134501Z-design-taste-frontend-v2-101f7756
+source_record:
+  type: url
+  repository: https://github.com/Leonxlnx/taste-skill
+  original_locator: https://github.com/Leonxlnx/taste-skill/archive/f624f37a8c650b9cc550253104925efe4c8de246.tar.gz
+  final_url: https://codeload.github.com/Leonxlnx/taste-skill/tar.gz/f624f37a8c650b9cc550253104925efe4c8de246
+  resolved_commit: f624f37a8c650b9cc550253104925efe4c8de246
+  latest_main_checked: f624f37a8c650b9cc550253104925efe4c8de246
+  fetched_at: '2026-10-15T13:45:01.350802+00:00'
+  upstream_version: 2.0.0 from .codex-plugin/plugin.json; pinned commit is authoritative
+  archive_path: source/design-taste-frontend-v2-f624f37a.tar.gz
+  archive_sha256: 101f7756231e954cb1f668d014cb6d0eea443e846bf8515749b64f657ea68b07
+  extracted_root: source/taste-skill-f624f37a8c650b9cc550253104925efe4c8de246
+  intended_skill: source/taste-skill-f624f37a8c650b9cc550253104925efe4c8de246/skills/taste-skill
+  regular_files: 89
+  text_files_scanned: 75
+  binary_or_unknown_files: 14
+  intended_skill_files: 29
+  inventory: file-inventory.json
+  machine_scan: static-scan.json
+upgrade:
+  target_id: design-taste-frontend
+  previous_commit: 3c7017d636c3a4aad378433ea6d0cfa6c921da4a
+  previous_adapter_version: 1.0.0
+  proposed_adapter_version: 1.1.0
+  previous_target_files: 1
+  new_target_files: 29
+  preserve_previous_source: true
+  global_installation: not-authorized-in-this-stage
+  source_merge_destination: skills-external/02-ui-design/design-taste-frontend/source/source
+  review_destination: skills-external/02-ui-design/design-taste-frontend/source/reviews/20261015T134501Z-design-taste-frontend-v2-101f7756
+  previous_adapter_backup: source/reviews/20261015T134501Z-design-taste-frontend-v2-101f7756/previous-adapter.yaml
+  collision_policy: 逐文件检查目标不存在或哈希一致，不覆盖旧assessment.yaml、旧归档或旧源码；有冲突则停止升级。
+  changes:
+    - 从三档参数驱动的单文件指导变为20种方向库、脚本抽选、图片搜索、静态检查和真实浏览器修正流程。
+    - 同名design-taste-frontend仍仅面向公开网站；不是管理后台、数据表或多步骤产品界面的通用升级。
+purpose_summary: 为官网、营销落地页、作品集提供视觉方向、文案结构、参考素材和看图修正指导；执行脚本会产生新的网络和文件系统行为。
+license:
+  result: allowed
+  identifier: MIT
+  files: [LICENSE]
+  obligations: [保留Copyright 2026 Leonxlnx及MIT全文；外部图片许可需要逐项核实，不能由代码MIT许可代替。]
+category_assessment:
+  result: matched-existing
+  matched_category: 02-ui-design
+  rationale: 仍属于公开网站的前端设计与视觉交付。
+risk_assessment:
+  overall: medium
+  scope: 原生inspect及安装器禁止执行；其他脚本仅为候选，运行须另有任务授权。
+  findings:
+    - inspect.mjs第33至51行可能将cwd项目根目录作为静态服务根；仅有词法路径前缀检查，没有隐藏文件拒绝、realpath符号链接边界和访问认证。静态推断可请求根下.env或.git内容；符号链接可指向根外。虽绑定127.0.0.1仍不能把loopback等同安全证明。原生本地文件服务模式禁止执行。
+    - inspect.mjs会删除输出目录中匹配命名的旧截图，写入report.json并启动Chrome；--out可指定路径。候选运行必须约束输出在授权项目，且不得清理用户已有截图；本次不执行。
+    - scripts/lib/cdp.mjs会spawn浏览器、创建临时profile、开放调试端口并在正常关闭时递归移除临时profile。不是纯提示词；启动失败后的资源清理也未实测。
+    - draw.mjs默认读写用户级~/.taste-skill/history.json并输出项目方向文件；候选使用时必须将TASTE_SKILL_HISTORY指向授权项目的.taste-skill/history.json，不能悄悄产生跨项目用户画像。
+    - lint.mjs默认遍历当前目录，statSync跟随符号链接且未见循环检测；应只传入明确、已验证不越界的授权文件列表，不扫描任意目录树。
+    - assets.mjs访问Openverse、Wikimedia、博物馆及视频库并下载文件、写来源许可记录；查询会发送给第三方，不能包含客户私有资料、密钥、未公开业务或本地文件。下载与素材许可须按实际任务授权和逐项核验。
+    - 新版有至少4张真实图片和至少8个动态元素等硬偏好；不是通用产品质量门禁。既有品牌、用户要求和无障碍优先，无法满足原件门禁时如实披露，不伪造检查通过；若需系统性改变这些规则应走custom改造。
+    - 根install.sh支持删除重建旧链接；不运行它，不安装整仓库兄弟Skill，不修改现有全局安装。
+    - 全部75份UTF-8文本已模式扫描；重点检查主Skill、draw、lint、assets、inspect、CDP和安装器。14份图片等非文本不在目标Skill的可执行范围；未执行任何第三方代码，不证明运行时安全。
+  compatibility:
+    - 原样保留完整来源，正式external入口只加载skills/taste-skill及其最少必要资源；不会自动加载兄弟Skill。
+    - 指令阅读及library查询可离线进行；draw和lint需按范围授权后才运行，assets联网另需许可；inspect一律禁用，用当前已有浏览器能力检查并明确原生gate未运行。
+    - 建议更新现有external入口至1.1.0并保留旧source目录和提交记录；全局Codex副本仍保持旧版，是否同步另按明确范围执行。
+  license: MIT；保留原件和许可，素材许可单独核对。
+  recommendation: 可批准受限的原样来源升级，禁止原生inspect服务和安装器，隔离history及输出并按需授权脚本；如需完整自动浏览器工作流，先修复服务边界后以custom方式接入。
+planned_destination: skills-external/02-ui-design/design-taste-frontend
+proposed_adapter: proposed-adapter.yaml
+validation:
+  - 固定提交下载成功且与检查时main一致；归档SHA-256及逐文件哈希已记录。
+  - 解包前检查路径、成员类型和体积，归档无链接；未运行或导入任何上游模块。
+  - stage只修改skills-temp-inbox；原有external入口、源码、全局安装及manifest未修改。
+  - 安全问题来自源码静态分析，尚无动态复现；禁用相关执行路径，不将未运行写成通过。
+next_actions:
+  - $opc-skills 确认原样入库 20261015T134501Z-design-taste-frontend-v2-101f7756，升级现有design-taste-frontend并保留旧源码，禁用inspect和安装器，隔离history
+  - $opc-skills 确认改造入库 20261015T134501Z-design-taste-frontend-v2-101f7756，要求：修复静态服务路径及敏感文件边界，隔离history，保留旧external版本
+  - $opc-skills 丢弃 20261015T134501Z-design-taste-frontend-v2-101f7756

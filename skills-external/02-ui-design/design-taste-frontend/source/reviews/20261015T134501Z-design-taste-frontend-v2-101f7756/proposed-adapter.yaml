@@ -1,0 +1,63 @@
+schema_version: '1.0'
+id: design-taste-frontend
+name: Design Taste Frontend
+version: 1.1.0
+description: 使用Taste Skill v2的方向库和文本指导设计官网、营销落地页与作品集；保留原件，限制联网和写入，禁用未放行的浏览器服务与安装器。
+category: 02-ui-design
+origin: external
+status: active
+triggers:
+  intents: [设计具有明确视觉方向的营销落地页, 设计或改进作品集网站, 审计并重设计现有营销网站或品牌页面]
+  keywords: [design-taste-frontend, 落地页设计, 作品集设计, 网站重设计, 反模板化]
+input_schema:
+  type: object
+  properties:
+    context: {type: string}
+    mode: {type: string, enum: [landing-page, portfolio, redesign]}
+    artifacts: {type: array, items: {type: string}}
+    requirements: {type: array, items: {type: string}}
+  required: [context]
+  additionalProperties: false
+output_schema:
+  type: object
+  properties:
+    summary: {type: string}
+    design_read: {type: string}
+    recommendations: {type: array, items: {type: string}}
+    deliverables: {type: array, items: {type: string}}
+    validation: {type: array, items: {type: string}}
+    follow_ups: {type: array, items: {type: string}}
+  required: [summary, design_read, recommendations, validation]
+  additionalProperties: false
+constraints:
+  - 只加载source/source/taste-skill-f624f37a8c650b9cc550253104925efe4c8de246/skills/taste-skill及最少必要资源；排除兄弟Skill、根install.sh、skill.sh与插件安装配置。
+  - 只用于公开网站、落地页、作品集和对应重设计，不用于仪表盘、数据表格或多步骤业务产品界面。
+  - 不执行inspect.mjs或其原生静态服务/CDP路径；改用环境已有获授权的浏览器能力并披露原生gate未运行，不因只监听本机而豁免安全边界。
+  - draw.mjs和lint.mjs只有在用户任务授权运行本地脚本时才可调用；draw必须将TASTE_SKILL_HISTORY设置到授权项目内.taste-skill/history.json并将--out限制在该项目，保留已有内容。
+  - lint只接收明确授权且已核验realpath不越界的文件列表，不递归扫描未知目录或符号链接树。
+  - assets.mjs的联网搜索、下载和输出均须符合当前用户明确授权；仅发送公开关键词，不上传私有素材、凭据或代码，素材逐项核实许可及署名。
+  - 既有品牌、用户目标、无障碍和项目规则优先；原件审美阈值不是所有产品的验收标准，未运行或未通过的原件门禁如实报告。
+  - 保留MIT许可、新旧来源归档与哈希；本入口升级不自动覆盖全局Skill副本或安装其他Skill。
+prompt: |-
+  完整读取source/source/taste-skill-f624f37a8c650b9cc550253104925efe4c8de246/skills/taste-skill/SKILL.md。
+  先判断context是否在公开网站设计范围内，给出一句design_read；任务为后台或多步骤业务界面时转用更合适的正式Skill，不扩大原件范围。
+  按原文梳理品牌真实内容、页面论点、方向、文案、布局与视觉检查；示例数据不伪装为客户事实，图片不伪称为客户产品或团队。
+  所有脚本均默认不执行；只有当前任务明确授权本地脚本时才按constraints考虑draw、lint。资产搜索另核对联网、下载和项目写入范围。
+  原生inspect及安装器始终不在本入口放行范围，用当前可用且获授权的浏览器工具检查；没有工具时提供未验证项。不能用文本自评冒充原生gate或实际截图验证。
+  用户授权设计实施时保留现有工作，不覆盖旧源码归档，不自动修改全局安装；根据原文限定修正轮数，报告采用方向、素材来源和限制。
+  按output_schema返回结果；无法执行的上游步骤明确列出，不把受限接入称为完整运行时已验证。
+metadata:
+  author: Leonxlnx
+  source:
+    type: external-original
+    repository: https://github.com/Leonxlnx/taste-skill
+    previous_commit: 3c7017d636c3a4aad378433ea6d0cfa6c921da4a
+    resolved_commit: f624f37a8c650b9cc550253104925efe4c8de246
+    upstream_version: 2.0.0
+    license: MIT
+    archive_sha256: 101f7756231e954cb1f668d014cb6d0eea443e846bf8515749b64f657ea68b07
+    assessment: source/reviews/20261015T134501Z-design-taste-frontend-v2-101f7756/assessment.yaml
+    original_skill: source/source/taste-skill-f624f37a8c650b9cc550253104925efe4c8de246/skills/taste-skill/SKILL.md
+  adapter_version_note: 1.1.0为适配入口版本，上游以固定提交为准。
+  automatic_hooks: disabled
+  native_inspector: disabled

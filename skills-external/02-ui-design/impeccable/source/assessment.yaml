@@ -1,0 +1,65 @@
+schema_version: '1.0'
+result: staged-awaiting-confirmation
+action: stage
+inbox_id: 20261015T134511Z-impeccable-8bfee216
+source_record:
+  type: url
+  repository: https://github.com/pbakaus/impeccable
+  original_locator: https://github.com/pbakaus/impeccable/archive/abf5779cabc20147fd9c013fa4705088c200bf8a.tar.gz
+  final_url: https://codeload.github.com/pbakaus/impeccable/tar.gz/abf5779cabc20147fd9c013fa4705088c200bf8a
+  resolved_commit: abf5779cabc20147fd9c013fa4705088c200bf8a
+  latest_main_checked: abf5779cabc20147fd9c013fa4705088c200bf8a
+  fetched_at: '2026-10-15T13:45:11.306189+00:00'
+  upstream_version: 4.5.2
+  engine_version: 0.1.14
+  archive_path: source/impeccable-abf5779c.tar.gz
+  archive_sha256: 8bfee216ffccbf414d25af93fc41d2992c245f2a38e3dbbeefdae5cb2981ffa3
+  extracted_root: source/impeccable-abf5779cabc20147fd9c013fa4705088c200bf8a
+  intended_skill: source/impeccable-abf5779cabc20147fd9c013fa4705088c200bf8a/.agents/skills/impeccable
+  regular_files: 3984
+  text_files_scanned: 3951
+  binary_or_unknown_files: 33
+  intended_skill_files: 62
+  inventory: file-inventory.json
+  machine_scan: static-scan.json
+purpose_summary: 前端视觉方向、设计审查、局部打磨、文案、布局、响应式、异常状态及设计系统维护；完整上游还包含CLI、二进制分发、遥测、hooks和浏览器写回系统。
+license:
+  result: allowed
+  identifier: Apache-2.0
+  files: [LICENSE, NOTICE.md, cursor-plugin/LICENSE]
+  obligations:
+    - 保留原始版权、许可和NOTICE；只保存源归档，不在本轮安装或再分发发布二进制。
+category_assessment:
+  result: matched-existing
+  matched_category: 02-ui-design
+  rationale: 主要交付职责是前端界面设计、审查与打磨。
+risk_assessment:
+  overall: medium
+  scope: 仅针对禁用上游全部可执行运行时的受限接入建议；完整插件及CLI未获安全放行。
+  findings:
+    - 原始SKILL.md的Setup默认调用scripts/impeccable context；启动器可能下载engine-v0.1.14二进制、写入用户缓存并执行。新下载验证同源.sha256，但该校验不构成独立签名或源代码到二进制一致性证明。
+    - 启动器可通过IMPECCABLE_BIN、PATH、用户缓存及IMPECCABLE_DOWNLOAD_BASE选择执行来源；这些不是本次批准的可执行依赖。
+    - crates/context/src/telemetry.rs默认允许抽选及选择反馈遥测，支持DO_NOT_TRACK和IMPECCABLE_NO_TELEMETRY退出；关闭遥测仍不等于离线，roll功能仍会请求API。首期禁止执行整个运行时，不能只调用telemetry off后宣称无网络。
+    - .codex/hooks.json及plugin/hooks/hooks.json包含PostToolUse和Stop命令；安装器和hooks管理会修改工具配置。用户要求暂不启用，禁止复制或注册任何hooks、插件配置和后台任务。
+    - live系统有本地服务、token、浏览器交互及源码写回能力；本轮不启用，也未验证全部路由、CSRF、路径解析和写回安全性。
+    - 原件会读取或创建PRODUCT.md、DESIGN.md及.impeccable状态；OPCSkills已有PRD和UI规范，必须优先引用现有权威入口，不自动生成第二套冲突文档或重置设计规范。
+    - reference/new-work.md含图像工具、子代理、生成图、废弃素材删除和设计文档写入流程；评估和普通打磨请求不构成这些操作的授权。
+    - 3951份UTF-8文本已做模式扫描，重点人工核对Skill入口、launcher、CLI入口、遥测、hook配置和live服务；33份图片等非文本及大型生成JS未完成可执行行为证明，禁止因扫描无告警声称无后门。
+  compatibility:
+    - 使用Codex构建的.agents/skills/impeccable/SKILL.md和reference文本，原件字节保留；不运行安装器或执行package.json生命周期。
+    - 首期可用能力为人工读取上下文后的audit、critique、polish、clarify、distill、layout、typeset、harden；调用方明确拒绝launcher后走原文允许的直接读取上下文回退路径，并报告运行时功能未执行。
+    - 仅生成OPCSkills external适配入口，不安装到全局Skill目录；Codex和Claude通过已有opc-skills入口路由。
+  license: Apache-2.0；保留LICENSE和NOTICE。
+  recommendation: 建议原样保存来源并用受限external适配入口接入；只允许文本指导，不执行二进制、hooks、遥测、live或自更新。完整运行时若以后需要，另做审计和授权。
+planned_destination: skills-external/02-ui-design/impeccable
+proposed_adapter: proposed-adapter.yaml
+validation:
+  - 仅HTTPS下载固定提交；归档SHA-256、逐文件哈希和全部文本模式扫描已记录。
+  - 提取前检查绝对路径、父目录逃逸、链接祖先、链接目标、设备成员及展开体积；本归档没有链接。
+  - 未执行第三方脚本、CLI、构建、发布二进制或生命周期命令；未向第三方发送本地私有内容。
+  - 只写入skills-temp-inbox，未修改manifest、正式Skill、用户配置或安装目录。
+  - 风险结论为静态评估，不是动态运行验证或安全证明。
+next_actions:
+  - $opc-skills 确认原样入库 20261015T134511Z-impeccable-8bfee216，采用评估中的文本指导模式，禁止hooks、启动器、二进制、遥测和live
+  - $opc-skills 确认改造入库 20261015T134511Z-impeccable-8bfee216，要求：提炼离线审查与打磨规则，保留来源和许可，禁用全部上游运行时
+  - $opc-skills 丢弃 20261015T134511Z-impeccable-8bfee216

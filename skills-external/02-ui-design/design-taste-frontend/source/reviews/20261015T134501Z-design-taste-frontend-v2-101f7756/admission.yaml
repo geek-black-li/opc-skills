@@ -1,0 +1,37 @@
+schema_version: '1.0'
+result: approved-original
+action: approve-original
+inbox_id: 20261015T134501Z-design-taste-frontend-v2-101f7756
+confirmation:
+  confirmed: true
+  action: approve-original
+  inbox_id: 20261015T134501Z-design-taste-frontend-v2-101f7756
+  user_request: Impeccable 和 Taste Skill 都按刚才评估的受限方案正式入库，自动 hooks 继续禁用，验证没问题后提交推送一下。
+  scope: 升级现有design-taste-frontend，按本条已展示评估保留旧来源并限制运行时；不授权上游代码执行。
+category_assessment:
+  result: confirmed-existing
+  matched_category: 02-ui-design
+upgrade:
+  previous_commit: 3c7017d636c3a4aad378433ea6d0cfa6c921da4a
+  resolved_commit: f624f37a8c650b9cc550253104925efe4c8de246
+  archive_sha256: 101f7756231e954cb1f668d014cb6d0eea443e846bf8515749b64f657ea68b07
+  source_location: source/source/taste-skill-f624f37a8c650b9cc550253104925efe4c8de246
+  archive_location: source/source/design-taste-frontend-v2-f624f37a.tar.gz
+  path_base: 正式Skill目录；原始source-record.json及assessment.yaml保存暂存时路径语义，此处说明迁入后的实际位置。
+  previous_adapter_backup: previous-adapter.yaml
+  previous_source_preserved: true
+  adapter_version_before: 1.0.0
+  adapter_version_after: 1.1.0
+  upstream_version: 2.0.0
+runtime_policy:
+  automatic_hooks: disabled
+  native_inspect: disabled
+  upstream_installers: disabled
+  draw_history: authorized-project-only-with-TASTE_SKILL_HISTORY
+  lint_scope: explicit-realpath-checked-files-only
+  assets_network: separately-authorized-public-queries-only
+validation:
+  - 新归档及89个原始文件逐字节哈希复核一致，MIT许可保留。
+  - 旧source/assessment.yaml、归档和原始Skill目录未覆盖；旧适配入口保存于previous-adapter.yaml。
+  - 原始inspect和CDP源码只封存，不由正式入口调用；原生gate未执行，不宣称通过。
+  - 本机全局受限安装保持现状；此次不改工具配置、不运行脚本或启用hooks。

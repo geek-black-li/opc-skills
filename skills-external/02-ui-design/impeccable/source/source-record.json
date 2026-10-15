@@ -1,0 +1,18 @@
+{
+  "inbox_id": "20261015T134511Z-impeccable-8bfee216",
+  "repository": "https://github.com/pbakaus/impeccable",
+  "resolved_commit": "abf5779cabc20147fd9c013fa4705088c200bf8a",
+  "latest_main_checked": "abf5779cabc20147fd9c013fa4705088c200bf8a",
+  "fetched_at": "2026-10-15T13:45:11.306189+00:00",
+  "final_url": "https://codeload.github.com/pbakaus/impeccable/tar.gz/abf5779cabc20147fd9c013fa4705088c200bf8a",
+  "archive_sha256": "8bfee216ffccbf414d25af93fc41d2992c245f2a38e3dbbeefdae5cb2981ffa3",
+  "archive_path": "source/impeccable-abf5779c.tar.gz",
+  "extracted_root": "source/impeccable-abf5779cabc20147fd9c013fa4705088c200bf8a",
+  "intended_skill": "source/impeccable-abf5779cabc20147fd9c013fa4705088c200bf8a/.agents/skills/impeccable",
+  "regular_files": 3984,
+  "text_files_scanned": 3951,
+  "binary_or_unknown_files": 33,
+  "symlinks": 0,
+  "scope_files": 62,
+  "scan_note": "Static pattern triage only; matches are not proof of malicious behavior or safety."
+}

@@ -1,0 +1,18 @@
+{
+  "inbox_id": "20261015T134501Z-design-taste-frontend-v2-101f7756",
+  "repository": "https://github.com/Leonxlnx/taste-skill",
+  "resolved_commit": "f624f37a8c650b9cc550253104925efe4c8de246",
+  "latest_main_checked": "f624f37a8c650b9cc550253104925efe4c8de246",
+  "fetched_at": "2026-10-15T13:45:01.350802+00:00",
+  "final_url": "https://codeload.github.com/Leonxlnx/taste-skill/tar.gz/f624f37a8c650b9cc550253104925efe4c8de246",
+  "archive_sha256": "101f7756231e954cb1f668d014cb6d0eea443e846bf8515749b64f657ea68b07",
+  "archive_path": "source/design-taste-frontend-v2-f624f37a.tar.gz",
+  "extracted_root": "source/taste-skill-f624f37a8c650b9cc550253104925efe4c8de246",
+  "intended_skill": "source/taste-skill-f624f37a8c650b9cc550253104925efe4c8de246/skills/taste-skill",
+  "regular_files": 89,
+  "text_files_scanned": 75,
+  "binary_or_unknown_files": 14,
+  "symlinks": 0,
+  "scope_files": 29,
+  "scan_note": "Static pattern triage only; matches are not proof of malicious behavior or safety."
+}

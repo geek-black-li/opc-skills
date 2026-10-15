@@ -1,0 +1,536 @@
+[
+  {
+    "path": ".agents/plugins/marketplace.json",
+    "size": 410,
+    "sha256": "b9325fd668c8c27de5b82cd415287219804243615be6af9f6af2f347298d5290",
+    "content": "utf-8-text"
+  },
+  {
+    "path": ".claude-plugin/marketplace.json",
+    "size": 651,
+    "sha256": "f9bd477e912d311170b79b996a70101b2bc5f8643fa0c1ba0e6e8c8d17bf033e",
+    "content": "utf-8-text"
+  },
+  {
+    "path": ".claude-plugin/plugin.json",
+    "size": 577,
+    "sha256": "62fdfb034546c878bae26f8ae4f567a8921d929f51deea8e5968512b001d12fd",
+    "content": "utf-8-text"
+  },
+  {
+    "path": ".codex-plugin/plugin.json",
+    "size": 1150,
+    "sha256": "15af7eeeffef62f9401fbad7113d1a69b2b8477d34e17fa6f8decd9315162e24",
+    "content": "utf-8-text"
+  },
+  {
+    "path": ".gitattributes",
+    "size": 17,
+    "sha256": "1d5d71dcc6ccd28ab46a335349ecc74742ca4b81f4fcad212f8d134f70f1f13e",
+    "content": "utf-8-text"
+  },
+  {
+    "path": ".github/FUNDING.yml",
+    "size": 17,
+    "sha256": "38f3a3fac585c3c35d6ed2297baba8d2d22ea974fa9799f842771c2f7c42d916",
+    "content": "utf-8-text"
+  },
+  {
+    "path": ".gitignore",
+    "size": 48,
+    "sha256": "017e423c61b2a8991ae6db3c6d25463efbc5497765ac0c9083b9d0e517b7fa44",
+    "content": "utf-8-text"
+  },
+  {
+    "path": "CHANGELOG.md",
+    "size": 14519,
+    "sha256": "a52a51fabe1cd13b53d3781526b65c28a9ac1b05cccd612ef42c55e3ec67e2d7",
+    "content": "utf-8-text"
+  },
+  {
+    "path": "LICENSE",
+    "size": 1065,
+    "sha256": "4575a543ab88dad12ccea7d97e563d0bce5b448b06072e65d3264497dad326df",
+    "content": "utf-8-text"
+  },
+  {
+    "path": "README.md",
+    "size": 18616,
+    "sha256": "5f38d137da629b97572aa59f9faaca4f36afc8ba5366025b47dac6ff4f5721a2",
+    "content": "utf-8-text"
+  },
+  {
+    "path": "assets/readme-banner.webp",
+    "size": 56236,
+    "sha256": "93f8eef2253bd1ae4f0a5aaf8780706e9418e311dfb01d7886840d3e41a8f6d0",
+    "content": "binary-or-unknown"
+  },
+  {
+    "path": "assets/readme-tastecode.webp",
+    "size": 29104,
+    "sha256": "242e045fb27f05c63bb836334452bdba34c20dab57c11e881a6693b4649029b5",
+    "content": "binary-or-unknown"
+  },
+  {
+    "path": "assets/sponsors/animations-dev.webp",
+    "size": 16024,
+    "sha256": "37d37fd9b4181c0dfc1260fe7f11265a0c7fb5ee7dd54558c6c6733aa7a72cea",
+    "content": "binary-or-unknown"
+  },
+  {
+    "path": "assets/sponsors/emil-animations-dev.webp",
+    "size": 39216,
+    "sha256": "64dde04e4594bea4f17b48214f30fee884462faabd70b98feac50703bbbd9ef4",
+    "content": "binary-or-unknown"
+  },
+  {
+    "path": "assets/sponsors/imgly-logo.svg",
+    "size": 1174,
+    "sha256": "2dd10ba9f8005d6b52149db678d611678609e653d0870b42cdb083fe9506e85f",
+    "content": "utf-8-text"
+  },
+  {
+    "path": "assets/sponsors/interfaces-dev-icon.webp",
+    "size": 1924,
+    "sha256": "bc6607b4721cd0b3f9a8314a6b5c8e36ee3bb53b988fbc55cb0d856e893a2873",
+    "content": "binary-or-unknown"
+  },
+  {
+    "path": "assets/sponsors/kimi-icon.png",
+    "size": 11486,
+    "sha256": "dbd00e2ad61ea8832ef0b024662a4a8a5d1b66f0599d5d42e1c9688b9d4cfdf6",
+    "content": "binary-or-unknown"
+  },
+  {
+    "path": "assets/sponsors/reactbits-icon-dark.svg",
+    "size": 3939,
+    "sha256": "e78e92b5289d049945dd6c3c7403d6d6799d78c7c4e503a4ace5ac0927df4840",
+    "content": "utf-8-text"
+  },
+  {
+    "path": "assets/sponsors/reactbits-icon-light.svg",
+    "size": 3937,
+    "sha256": "fbb62de0895647def6c562ec3bf2819de0d4bb091ce3114dfd72b17288af4020",
+    "content": "utf-8-text"
+  },
+  {
+    "path": "assets/sponsors/sentdm.png",
+    "size": 4382,
+    "sha256": "e22c024eba502cf83b1d86018d310d23430b8173093dda9f9686190df1db0b48",
+    "content": "binary-or-unknown"
+  },
+  {
+    "path": "assets/sponsors/sidrune-ai.png",
+    "size": 21326,
+    "sha256": "566009ccc7995311710eb0da3c0c57ed77706cbc54f501492ba82ebccbe6d0d3",
+    "content": "binary-or-unknown"
+  },
+  {
+    "path": "assets/sponsors/vercel-logo.svg",
+    "size": 242,
+    "sha256": "e1346e2d4f4d2e81f01939f5e333720c527185471dcdae90304f476766c1633f",
+    "content": "utf-8-text"
+  },
+  {
+    "path": "assets/taste-skill-logo.png",
+    "size": 17279,
+    "sha256": "0a1071bf1b34238add2519dccd4e727cd5d269ef91dd467ea664aa80d83efaad",
+    "content": "binary-or-unknown"
+  },
+  {
+    "path": "assets/taste-skill-logo.webp",
+    "size": 3280,
+    "sha256": "f59c2954a0a2a32c4a65a3599d2d2834a2a4068820aa34c8b2c902491bafc16c",
+    "content": "binary-or-unknown"
+  },
+  {
+    "path": "assets/vercel-oss-program-badge.svg",
+    "size": 13296,
+    "sha256": "edd338b3735bc2668b84d11d6f98b2704c45fae93fa5918d5cfbdcd6b43cf041",
+    "content": "utf-8-text"
+  },
+  {
+    "path": "examples/v2/CREDITS.md",
+    "size": 10491,
+    "sha256": "5e865281e168253eb49ce77ee2028c797a5c5c9eb2db54213ec9d1dae35de18e",
+    "content": "utf-8-text"
+  },
+  {
+    "path": "examples/v2/coffee-questions.webp",
+    "size": 26692,
+    "sha256": "9bdbbf34a628babd282f7a551ab6950ddbe9f39276bd6339d482c2c032b5c718",
+    "content": "binary-or-unknown"
+  },
+  {
+    "path": "examples/v2/coffee-roast.webp",
+    "size": 113142,
+    "sha256": "58c09f2a49e70aba014064d51a8964d8ee8bc816f060df84cb647fe453a8f523",
+    "content": "binary-or-unknown"
+  },
+  {
+    "path": "examples/v2/coffee-storefront.webp",
+    "size": 29172,
+    "sha256": "56cce0f3f4afdff3b8d977479fb892278caca5dee7599fd78252e56f7d98f0ff",
+    "content": "binary-or-unknown"
+  },
+  {
+    "path": "examples/v2/night-dates.webp",
+    "size": 173606,
+    "sha256": "a312f4f1c8fdee4f242adcf17e9724f6d5533b9cfe4ece5a7d25560002ec9e56",
+    "content": "binary-or-unknown"
+  },
+  {
+    "path": "install.sh",
+    "size": 4012,
+    "sha256": "710df355887360965f9135e4460d8e37049282b5eedad2ee94075048b9f2560f",
+    "content": "utf-8-text"
+  },
+  {
+    "path": "research/README.md",
+    "size": 368,
+    "sha256": "6af3f83631c2fcb740df05ba5b1bad447745f5ee8677a12dbe41b5cdae765d62",
+    "content": "utf-8-text"
+  },
+  {
+    "path": "research/laziness/README.md",
+    "size": 1870,
+    "sha256": "baec2b1cf754ce8c772cc169d9ab98c8440c314f47b126f39356df6aafc34a75",
+    "content": "utf-8-text"
+  },
+  {
+    "path": "research/laziness/findings/empirical-results.md",
+    "size": 2820,
+    "sha256": "e48786188084a861079de1eb4f24a9896aed7318fb8a9254efc06c8e04ec36c3",
+    "content": "utf-8-text"
+  },
+  {
+    "path": "research/laziness/findings/references.md",
+    "size": 1512,
+    "sha256": "e2b1192c22274062b3beea8539024604df82fab5c009983f2bfa98a9d933b6c7",
+    "content": "utf-8-text"
+  },
+  {
+    "path": "research/laziness/remediation/architectural-patterns.md",
+    "size": 3142,
+    "sha256": "d4503aee332ac71be509908a5c0455642af86b8c6aca2be561c6b7ab017fdade",
+    "content": "utf-8-text"
+  },
+  {
+    "path": "research/laziness/remediation/parameter-tuning.md",
+    "size": 2856,
+    "sha256": "efa8888a0849947be26d7b7185f1ec689f56da7400d415943e5b53ceb67d881c",
+    "content": "utf-8-text"
+  },
+  {
+    "path": "research/laziness/remediation/prompt-engineering.md",
+    "size": 3261,
+    "sha256": "d702f06f68ccb367958e79b05093dc9dd5e6d37995569e89c8fb68fa720300d9",
+    "content": "utf-8-text"
+  },
+  {
+    "path": "research/laziness/remediation/reference-prompts.md",
+    "size": 2363,
+    "sha256": "b39dd6724397684081bdb41a8a407b60853d5152522fc4c1e305984cdb03fe0d",
+    "content": "utf-8-text"
+  },
+  {
+    "path": "research/laziness/root-causes/cognitive-shortcuts.md",
+    "size": 2124,
+    "sha256": "d0400b85c5f4f63904eab21689c00c218b227bb474d9a7b3c24607f21a6071f7",
+    "content": "utf-8-text"
+  },
+  {
+    "path": "research/laziness/root-causes/output-limits.md",
+    "size": 2568,
+    "sha256": "acd1cbf44e931409343dc588cac5b4d7254bc40040889b70be1ca1fb745dda85",
+    "content": "utf-8-text"
+  },
+  {
+    "path": "research/laziness/root-causes/rlhf-and-compute.md",
+    "size": 2165,
+    "sha256": "c0563aaf6fd9cfc68f765ed0a0d12344d27bfc03a8706ff8791bf10327d2f981",
+    "content": "utf-8-text"
+  },
+  {
+    "path": "research/laziness/root-causes/training-data-bias.md",
+    "size": 1666,
+    "sha256": "433b4fbec70c06aa710bc69492c58f9013360cb3ef63dddb485148359005cfdd",
+    "content": "utf-8-text"
+  },
+  {
+    "path": "skill.sh",
+    "size": 2256,
+    "sha256": "2a08307d5e2104b03dfaffde9c3fd026ec0539589f6442329a68c75a81bc3c93",
+    "content": "utf-8-text"
+  },
+  {
+    "path": "skills/brandkit/SKILL.md",
+    "size": 19057,
+    "sha256": "9584a127e535c90b686c8dcb5a707ede586dac6791fbf92cfd118c5fea96f9a0",
+    "content": "utf-8-text"
+  },
+  {
+    "path": "skills/brutalist-skill/SKILL.md",
+    "size": 8456,
+    "sha256": "fffbaac8597f07679e9d87145533567658aedba3b5eca6f16a7075a333048caa",
+    "content": "utf-8-text"
+  },
+  {
+    "path": "skills/gpt-tasteskill/SKILL.md",
+    "size": 8384,
+    "sha256": "d2dfb60b01f5b45bdc2d25a3c6a7eed04d6ec59715361182c2f49369a3f87a77",
+    "content": "utf-8-text"
+  },
+  {
+    "path": "skills/image-to-code-skill/SKILL.md",
+    "size": 36442,
+    "sha256": "4c060a8064a8b13380bc2ef3d6e6a1d0b1e316aa093cd9807d0ce9e4eeb037fa",
+    "content": "utf-8-text"
+  },
+  {
+    "path": "skills/imagegen-frontend-mobile/SKILL.md",
+    "size": 40326,
+    "sha256": "8a33389979f3074fa0926678e266ad2eb9234624472254469fc1ad916b9caa24",
+    "content": "utf-8-text"
+  },
+  {
+    "path": "skills/imagegen-frontend-web/SKILL.md",
+    "size": 36854,
+    "sha256": "6b5c2256522fdba1e3313eafa3d743b960a7b13ec029d3e6586e04b23327c1f8",
+    "content": "utf-8-text"
+  },
+  {
+    "path": "skills/llms.txt",
+    "size": 2107,
+    "sha256": "815609e755f23c95f0c557a7c7fd14393e1173698630f8756a121c42933f42b7",
+    "content": "utf-8-text"
+  },
+  {
+    "path": "skills/minimalist-skill/SKILL.md",
+    "size": 8212,
+    "sha256": "769ab38eed137bb22c7c09ee08ebb628e9acf3ad37f138d43f772e3af83933e4",
+    "content": "utf-8-text"
+  },
+  {
+    "path": "skills/output-skill/SKILL.md",
+    "size": 2592,
+    "sha256": "e5bf48b1ae561511439cf71672209a10a88cee0968cc925909ff861dfa0a96a7",
+    "content": "utf-8-text"
+  },
+  {
+    "path": "skills/redesign-skill/SKILL.md",
+    "size": 16267,
+    "sha256": "a75d547d04595fe97a5d377dddf145d029d51487a4f2a0a5a9d3b532ca3b84cd",
+    "content": "utf-8-text"
+  },
+  {
+    "path": "skills/soft-skill/SKILL.md",
+    "size": 10561,
+    "sha256": "e1e32f5e2d420872c6c7332b53d5ff7721946766b78c4822b424c2d512c8fdbc",
+    "content": "utf-8-text"
+  },
+  {
+    "path": "skills/stitch-skill/DESIGN.md",
+    "size": 12053,
+    "sha256": "0ab6740c4ebb1966dbceddb823a66d4bf027e960efbd73faca56cbf8370ae2ad",
+    "content": "utf-8-text"
+  },
+  {
+    "path": "skills/stitch-skill/SKILL.md",
+    "size": 11851,
+    "sha256": "46bdb08fee2dded38b6ba0a051230a502d6ac6e4044afd47592cb40c256028b5",
+    "content": "utf-8-text"
+  },
+  {
+    "path": "skills/taste-skill-v1/SKILL.md",
+    "size": 21172,
+    "sha256": "43f6f3ed310642931dcebf978a6844d09d6b220c3fa89a177a041d60d06004ed",
+    "content": "utf-8-text"
+  },
+  {
+    "path": "skills/taste-skill-v2-experimental/SKILL.md",
+    "size": 89635,
+    "sha256": "eed1412f267baabb9329cece8cf6caf1f19c3abfcc5c150da05c6b0b392a72fb",
+    "content": "utf-8-text"
+  },
+  {
+    "path": "skills/taste-skill/README.md",
+    "size": 5345,
+    "sha256": "5e33fd716b3e1ffaca9340f645d44c193f9b446107fa67f0cce498d33025672c",
+    "content": "utf-8-text"
+  },
+  {
+    "path": "skills/taste-skill/SKILL.md",
+    "size": 29312,
+    "sha256": "ee847084e58f5a81a46120912be9cd15f083570a6ca8f3d1a30372a720633043",
+    "content": "utf-8-text"
+  },
+  {
+    "path": "skills/taste-skill/assets/base.css",
+    "size": 6017,
+    "sha256": "6cb587d7238819288599ea500c60f683be6601351202857c068c6ced1e54fab0",
+    "content": "utf-8-text"
+  },
+  {
+    "path": "skills/taste-skill/assets/base.js",
+    "size": 2162,
+    "sha256": "8d50416125596b84c0083d5d5ffba09add57db4b06cbf0eedac2d4999b7653bc",
+    "content": "utf-8-text"
+  },
+  {
+    "path": "skills/taste-skill/evals/evals.json",
+    "size": 5153,
+    "sha256": "07856fb030058f3dc5ab17f9ac25f5609bf0021b7f050587801823b6d31e9d68",
+    "content": "utf-8-text"
+  },
+  {
+    "path": "skills/taste-skill/library/directions.json",
+    "size": 61466,
+    "sha256": "d71e3824af33a92d9e1ca543e17f80baa5b7a30c815df5125cfe3300a14892c1",
+    "content": "utf-8-text"
+  },
+  {
+    "path": "skills/taste-skill/library/heroes.json",
+    "size": 87404,
+    "sha256": "b6015f6de0a6b8bcb8e20a118816df138e4e5ef31ce7dc08158bbe5d924d5877",
+    "content": "utf-8-text"
+  },
+  {
+    "path": "skills/taste-skill/library/motions.json",
+    "size": 4554,
+    "sha256": "1129ce0f0d552c9d5b4dccdd5ebeee66d3e487eaa385bf1e5cb7890f466f3237",
+    "content": "utf-8-text"
+  },
+  {
+    "path": "skills/taste-skill/library/palettes.json",
+    "size": 34753,
+    "sha256": "a14be9f45baba848c53436f4aa44eb4f1925ad3e232c5d1dcddf4f565661a525",
+    "content": "utf-8-text"
+  },
+  {
+    "path": "skills/taste-skill/library/photos.json",
+    "size": 160632,
+    "sha256": "8fc3b76bca90f44675bd99d99bb4ce95b0756c6c5d4141b7e917d11d90e61520",
+    "content": "utf-8-text"
+  },
+  {
+    "path": "skills/taste-skill/library/sections.json",
+    "size": 253292,
+    "sha256": "4be76b7da5b1f5a84070385eba2bb88d8e1e91320981d734d08ad1617f46237b",
+    "content": "utf-8-text"
+  },
+  {
+    "path": "skills/taste-skill/library/sites.json",
+    "size": 686973,
+    "sha256": "92196d14a05e7518d38b4bd189f45d24147a92179bf5ce5737922ba41ef2f9a4",
+    "content": "utf-8-text"
+  },
+  {
+    "path": "skills/taste-skill/library/type.json",
+    "size": 82290,
+    "sha256": "01a36c53c4398f48ff945b0f31a256281c1c0c1075729747c11bec70867b6232",
+    "content": "utf-8-text"
+  },
+  {
+    "path": "skills/taste-skill/references/colour.md",
+    "size": 6853,
+    "sha256": "6556bcc7eed48b7bc2d0d281c28bf57c1b75e94d7ca0bde49f5d9df8c6a09351",
+    "content": "utf-8-text"
+  },
+  {
+    "path": "skills/taste-skill/references/copy.md",
+    "size": 9436,
+    "sha256": "676edbe75d5f3cfd8a793010ea9f730525ae074b231a674c2426264d3398262e",
+    "content": "utf-8-text"
+  },
+  {
+    "path": "skills/taste-skill/references/critique.md",
+    "size": 10179,
+    "sha256": "5943ea74ebe015cf33de3f8e2116f4fb990a126ae47fa56b4e6e8932d748f5b8",
+    "content": "utf-8-text"
+  },
+  {
+    "path": "skills/taste-skill/references/imagery.md",
+    "size": 24421,
+    "sha256": "c5e2b5e50a8f947a6ad65bb50ce2010a84972f777389bdeb61fd6a35ed019917",
+    "content": "utf-8-text"
+  },
+  {
+    "path": "skills/taste-skill/references/layout.md",
+    "size": 10540,
+    "sha256": "87d915bfb9324cafa23d90d2b71e977c835c01f56ea96ada31f604ada81bf675",
+    "content": "utf-8-text"
+  },
+  {
+    "path": "skills/taste-skill/references/motion.md",
+    "size": 13999,
+    "sha256": "12b193563cc4b5d1107f61b90cdbaa9850885b73433d06976fa44b52cde11965",
+    "content": "utf-8-text"
+  },
+  {
+    "path": "skills/taste-skill/references/research.md",
+    "size": 20403,
+    "sha256": "016d908b429099f49c665fb0ef649932f79dc35832e2e5689eceefdb1a0ec5c7",
+    "content": "utf-8-text"
+  },
+  {
+    "path": "skills/taste-skill/references/tells.md",
+    "size": 7420,
+    "sha256": "31a759a787afdde60ec052086b7c2345d881b6cfadd3188af40df38eef404709",
+    "content": "utf-8-text"
+  },
+  {
+    "path": "skills/taste-skill/references/type.md",
+    "size": 8495,
+    "sha256": "6353ff1d0ce2f9913628c88fbcb7dad3cc3877e61196848bce99e33a17d20611",
+    "content": "utf-8-text"
+  },
+  {
+    "path": "skills/taste-skill/scripts/assets.mjs",
+    "size": 64522,
+    "sha256": "b4b4b99b5634735f5a0b4213169cda5240ee6bbed8ed8042ad1bcf2b6607c1fa",
+    "content": "utf-8-text"
+  },
+  {
+    "path": "skills/taste-skill/scripts/draw.mjs",
+    "size": 48609,
+    "sha256": "1e680f8dc80341541afd3830a4598c574311415a1ffef6a3311f591bb6eb968d",
+    "content": "utf-8-text"
+  },
+  {
+    "path": "skills/taste-skill/scripts/inspect.mjs",
+    "size": 17810,
+    "sha256": "0fc0a847b038f554a70911c7da91c26a3491e86987fc34fea7cb25833e5d5906",
+    "content": "utf-8-text"
+  },
+  {
+    "path": "skills/taste-skill/scripts/lib/cdp.mjs",
+    "size": 9691,
+    "sha256": "1065d3307c817e1b704477988cae1e4e4146f920ce38748dc3346d068a934c12",
+    "content": "utf-8-text"
+  },
+  {
+    "path": "skills/taste-skill/scripts/lib/probe.mjs",
+    "size": 45663,
+    "sha256": "5c5148893414ce7eeca4aaa0c476cf196cd8c22cfc514b737c2a614fac77fc1c",
+    "content": "utf-8-text"
+  },
+  {
+    "path": "skills/taste-skill/scripts/lib/rules.mjs",
+    "size": 17331,
+    "sha256": "71435cdac327b71f2ff8b79b8bbb26ff6023c40fb21eab8cce2ef71af4a3812a",
+    "content": "utf-8-text"
+  },
+  {
+    "path": "skills/taste-skill/scripts/lint.mjs",
+    "size": 10549,
+    "sha256": "8480ff2104f4b8f864678395d50ecefb8b2d353a48f96d72b950b6f82020c49e",
+    "content": "utf-8-text"
+  },
+  {
+    "path": "tests/skill_test.sh",
+    "size": 3219,
+    "sha256": "98a608ddb188b89f17d178983670f271d06f7524c41307515972583818162fdf",
+    "content": "utf-8-text"
+  }
+]

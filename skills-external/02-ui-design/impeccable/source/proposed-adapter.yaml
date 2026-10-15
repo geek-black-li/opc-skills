@@ -1,0 +1,63 @@
+schema_version: '1.0'
+id: impeccable
+name: Impeccable
+version: 4.5.2
+description: 使用已审查的Impeccable文本指导进行界面审查和局部打磨；首期禁用hooks、启动器、二进制、遥测和live运行时。
+category: 02-ui-design
+origin: external
+status: active
+triggers:
+  intents: [审查界面视觉与实现质量, 打磨已有界面的布局排版与文案, 补齐界面异常和边界状态]
+  keywords: [impeccable, 界面打磨, 设计审查]
+input_schema:
+  type: object
+  properties:
+    context: {type: string}
+    mode:
+      type: string
+      enum: [audit, critique, polish, clarify, distill, layout, typeset, harden]
+      default: audit
+    artifacts: {type: array, items: {type: string}}
+    requirements: {type: array, items: {type: string}}
+  required: [context]
+  additionalProperties: false
+output_schema:
+  type: object
+  properties:
+    summary: {type: string}
+    findings: {type: array, items: {type: string}}
+    recommendations: {type: array, items: {type: string}}
+    deliverables: {type: array, items: {type: string}}
+    validation: {type: array, items: {type: string}}
+    follow_ups: {type: array, items: {type: string}}
+  required: [summary, findings, recommendations, validation]
+  additionalProperties: false
+constraints:
+  - 仅将source/source/impeccable-abf5779cabc20147fd9c013fa4705088c200bf8a/.agents/skills/impeccable中的SKILL.md及适用reference文本作为指导，不执行source内任何代码。
+  - 不运行context启动器、npx、二进制、hooks管理、遥测、live、pin、安装器、更新器或自动修复工具；不复制hooks或插件配置，不启动服务，不修改用户全局配置。
+  - 默认audit只读；critique同样只读。打磨和修复仅在用户明确授权的项目及文件范围执行，不因mode值获得写入权限。
+  - 用户范围、现有品牌与设计系统优先；不将审美偏好提升为项目必须整改的问题，不替代zx-ui-check的正式验收。
+  - 优先读取现有PRD和UI规范入口，不自动创建PRODUCT.md、DESIGN.md或.impeccable台账；新建权威文档必须得到对应写入授权。
+  - 保留Apache-2.0许可、NOTICE、来源、归档与逐文件哈希；运行时未验证项如实披露。
+prompt: |-
+  先读取source/source/impeccable-abf5779cabc20147fd9c013fa4705088c200bf8a/.agents/skills/impeccable/SKILL.md。
+  本适配明确拒绝原文Setup中的launcher执行，使用原文允许的直接读取项目上下文回退方式，并先说明“未运行上游上下文加载器，将直接读取项目现有权威资料”。
+  接着只读取与mode对应的reference文本；audit及adapt涉及原生平台时按原文读取native变体，不能把web规则当作原生实测。
+  从当前项目的AGENTS、README及既有PRD、UI规范定位事实；PRODUCT.md或DESIGN.md只有实际存在且获准读取时才作为来源，不生成第二套业务事实。
+  audit、critique输出证据和建议，不修改文件。其他mode根据用户授权实施，保留功能、品牌及范围外工作；用当前已授权工具查看实际界面，不调用上游任何脚本或二进制。
+  原文若要求CLI、远程抽选、图片生成、子代理、下载、hook或清理，视为本轮运行时不可用；完成独立可做的文本审查或局部修改，逐项报告未执行能力，不伪造detector或视觉检查通过。
+  最后按output_schema提供普通中文结果；正式验收仍以用户指定规范和真实证据为准。
+metadata:
+  author: Paul Bakaus
+  source:
+    type: external-original
+    repository: https://github.com/pbakaus/impeccable
+    resolved_commit: abf5779cabc20147fd9c013fa4705088c200bf8a
+    license: Apache-2.0
+    archive_sha256: 8bfee216ffccbf414d25af93fc41d2992c245f2a38e3dbbeefdae5cb2981ffa3
+    assessment: source/assessment.yaml
+    original_skill: source/source/impeccable-abf5779cabc20147fd9c013fa4705088c200bf8a/.agents/skills/impeccable/SKILL.md
+  runtime_policy: text-guidance-only
+  automatic_hooks: disabled
+  binary_execution: disabled
+  telemetry: disabled-by-no-runtime-execution
